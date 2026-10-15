@@ -1,0 +1,482 @@
+[
+  [
+    "Estudo e materiais",
+    "Por onde começo?",
+    "Comece pelo ambiente e pelo primeiro programa no Tema 1. No Tema 2, acompanhe tipos, operadores e leitura. Depois estude textos, decisões e laços antes de avançar para arrays e objetos. Você pode abrir um assunto específico ao encontrar uma dúvida no quiz.",
+    "cont.html#modal1"
+  ],
+  [
+    "Estudo e materiais",
+    "Como os slides se relacionam com os temas?",
+    "A leitura principal tem trinta temas em sequência. Os PDFs disponíveis em Conteúdo são fontes de consulta; seus números de aula podem seguir outra organização. Para estudar um assunto, use a busca da apostila e leia a explicação completa. Para aprofundar, consulte os PDFs e as referências reunidas em Extra.",
+    "cont.html#materiais"
+  ],
+  [
+    "Estudo e materiais",
+    "Por que alguns materiais usam versões diferentes de Java?",
+    "A linguagem e suas bibliotecas evoluem. Os PDFs e a pesquisa disponíveis em Extra foram produzidos em momentos diferentes e podem mostrar uma instalação, uma IDE ou uma versão antiga. Este guia adota Java 17 como referência e explica os limites do Playground. Ao consultar outro material, confira a versão exigida pelo exemplo e use a documentação correspondente.",
+    "cont.html#materiais"
+  ],
+  [
+    "Estudo e materiais",
+    "Onde encontro programas e materiais para baixar?",
+    "Abra Extra para baixar os 53 programas do Playground, com entrada, saída de referência e orientações de teste. A pesquisa original também está disponível em um arquivo separado, com suas versões experimentais. Os sete PDFs podem ser abertos ou baixados em Conteúdo. Você não precisa de pastas ou arquivos externos ao site para acompanhar os exemplos explicados aqui.",
+    "extra.html#extraPesquisa"
+  ],
+  [
+    "Estudo e materiais",
+    "Como estudar em grupo?",
+    "Escolham um exemplo, anotem a saída esperada e expliquem o caminho de cada variável antes de executar. Uma pessoa pode propor uma entrada no limite e outra conferir o resultado. Quando houver divergência, comparem o código com o enunciado e a página indicada, em vez de escolher uma resposta apenas por parecer familiar.",
+    "cont.html"
+  ],
+  [
+    "Estudo e materiais",
+    "Como obtenho a apostila para imprimir?",
+    "Na guia Conteúdo, use “Imprimir apostila / salvar PDF”. A impressão reúne os trinta temas completos, mesmo que nenhuma janela esteja aberta. Na janela do navegador, escolha a impressora ou o destino de PDF. Os PDFs de origem estão disponíveis separadamente em Materiais.",
+    "cont.html#materiais"
+  ],
+  [
+    "Estudo e materiais",
+    "Qual é a regra de aprovação da média?",
+    "O limite faz parte do enunciado. A atividade de média do Playground usa 7,0; a de média da turma usa 6,0. Antes de escrever a condição, confira qual é a regra e se o limite está incluído. Teste um valor abaixo, exatamente no limite e acima dele. Um programa com outro critério pode compilar e ainda responder ao problema errado.",
+    "playground.html?ex=media"
+  ],
+  [
+    "Estudo e materiais",
+    "O que o quiz mede?",
+    "As 60 questões pedem interpretação de código e regras dos temas 1 a 10. Cada uma tem quatro alternativas, uma resposta correta, dica e explicação. O resultado por tema ajuda a escolher o que revisar, mas não substitui escrever e testar programas. Os temas 11 a 30 têm práticas e questões comentadas na apostila, além dos laboratórios avançados em Extra.",
+    "quiz.html"
+  ],
+  [
+    "Ambiente Java",
+    "Qual é a diferença entre JDK, JVM e IDE?",
+    "O JDK fornece ferramentas de desenvolvimento e componentes de execução. A JVM executa bytecode compatível. A IDE ajuda a editar, compilar, navegar e depurar. Ter uma IDE instalada não garante que ela esteja usando o JDK desejado. Confira a configuração do projeto.",
+    "cont.html#modal1"
+  ],
+  [
+    "Ambiente Java",
+    "Java é JavaScript?",
+    "São linguagens diferentes. Os exercícios usam a sintaxe e as bibliotecas de Java. JavaScript integra os controles deste site ao ambiente de execução. O navegador não interpreta o texto Java como JavaScript.",
+    "cont.html#modal1"
+  ],
+  [
+    "Ambiente Java",
+    "Como executo Main.java no computador?",
+    "Com um JDK configurado, abra o terminal no diretório do arquivo, compile com javac -encoding UTF-8 Main.java e execute com java Main. O nome da classe pública deve coincidir com Main.java. Se houver pacotes, use os nomes qualificados e o classpath apropriados.",
+    "cont.html#modal1"
+  ],
+  [
+    "Ambiente Java",
+    "Posso usar o Playground sem instalar Java?",
+    "Sim. O ambiente baixa uma JVM para o navegador e compila os exemplos ali. A primeira execução pode demorar mais. No computador, uma IDE com JDK continua sendo o caminho para projetos com dependências, vários arquivos e APIs fora do ambiente de estudo.",
+    "playground.html"
+  ],
+  [
+    "Ambiente Java",
+    "Qual versão o Playground utiliza?",
+    "A execução usa uma JVM Java 17. O compilador aceita sintaxe Java 17, como switch com seta, mas consulta assinaturas de APIs Java 8 para os exercícios. Isso cobre as atividades desta apostila. APIs posteriores e records não fazem parte desse ambiente; use um JDK local para esses recursos.",
+    "playground.html"
+  ],
+  [
+    "Ambiente Java",
+    "Por que não há applets para executar os exemplos?",
+    "Applets fazem parte do contexto histórico da apostila. Os antigos plug-ins Java de navegador não são a forma de executar os exercícios atuais. O Playground usa uma máquina virtual em WebAssembly, carregada pela página.",
+    "cont.html#modal1"
+  ],
+  [
+    "Playground e arquivos",
+    "Como forneço os valores para Scanner?",
+    "Preencha Entrada do programa antes de executar. Coloque os dados na ordem das leituras; texto com espaços deve ocupar a linha correspondente a nextLine. Os exemplos numéricos com Locale.US usam ponto decimal. Um menu precisa receber também a opção de saída.",
+    "playground.html?ex=entrada"
+  ],
+  [
+    "Playground e arquivos",
+    "O programa espera que eu digite durante a execução?",
+    "A entrada é fornecida previamente pela caixa System.in. O programa não abre um terminal interativo a cada pergunta. Depois de consumir os dados, outra leitura pode encontrar fim de entrada. Acrescente as linhas necessárias e execute novamente.",
+    "playground.html?ex=menu"
+  ],
+  [
+    "Playground e arquivos",
+    "Como interpreto um erro de compilação?",
+    "Abra Mensagens de compilação e comece pelo primeiro erro. Confira arquivo, linha, nomes e tipos. Uma chave ausente pode provocar mensagens posteriores. Corrija a causa e execute novamente. Uma compilação com falha não executa uma versão anterior do programa.",
+    "cont.html#modal1"
+  ],
+  [
+    "Playground e arquivos",
+    "O que significa erro de execução?",
+    "O código compilou e começou a rodar, mas encontrou uma falha, como posição inválida de array, entrada incompatível ou referência nula. A saída mostra a exceção e, quando disponível, a linha. Diferencie essa falha de uma saída incorreta sem exceção, que pode indicar erro de lógica.",
+    "cont.html#modal1"
+  ],
+  [
+    "Playground e arquivos",
+    "Por que o programa foi interrompido por tempo?",
+    "Cada etapa de compilação ou execução tem limite de 60 segundos. O carregamento inicial tem até 120 segundos. Um laço sem saída, um cálculo demorado ou uma conexão lenta podem ultrapassar o limite. Confira o fluxo e tente novamente; a mensagem de tempo, isoladamente, não prova que o laço é infinito.",
+    "playground.html"
+  ],
+  [
+    "Playground e arquivos",
+    "O que o botão Interromper faz?",
+    "Ele descarta a instância da JVM usada pelo Playground e permite outra execução. O texto do editor e a entrada são preservados. A próxima tentativa inicializa novamente o ambiente, reaproveitando downloads que o navegador tiver mantido.",
+    "playground.html"
+  ],
+  [
+    "Playground e arquivos",
+    "Meu rascunho fica salvo ao mudar de atividade?",
+    "Sim, cada atividade tem seu próprio rascunho no armazenamento local deste navegador, quando esse armazenamento é permitido. Fechar a página não substitui uma cópia de segurança. Apagar os dados do navegador remove esses rascunhos. Baixe Main.java ou o registro JSON para guardá-los.",
+    "playground.html"
+  ],
+  [
+    "Playground e arquivos",
+    "Como guardo o código e o resultado?",
+    "O seletor de exportação oferece Main.java, JSON, TXT, HTML e impressão ou PDF pelo navegador. O registro inclui código, entrada e a última execução do código atual. Depois de editar, uma saída antiga deixa de representar esse código e não é registrada como execução atual.",
+    "playground.html"
+  ],
+  [
+    "Playground e arquivos",
+    "O Playground envia o código para uma IA?",
+    "O site compila e executa no navegador usando Eclipse ECJ e CheerpJ. Não usa uma IA para prever a saída nem envia o código a um serviço remoto de compilação. O navegador acessa o CDN do CheerpJ para obter recursos. Use dados fictícios nos exercícios.",
+    "playground.html"
+  ],
+  [
+    "Playground e arquivos",
+    "Posso usar bibliotecas externas ou vários arquivos?",
+    "O editor guiado trabalha com Main.java e classes auxiliares não públicas no mesmo arquivo. Não há gerenciador de dependências nem projeto com vários arquivos. Baixe o código e continue em sua IDE quando precisar de pacotes, bibliotecas externas ou outros tipos de aplicação.",
+    "cont.html#modal10"
+  ],
+  [
+    "Playground e arquivos",
+    "O site funciona offline?",
+    "Após o primeiro carregamento completo, a apostila, o quiz e as atividades locais ficam disponíveis sem conexão. Compilar e executar Java exige internet para carregar recursos da JVM CheerpJ. O Playground mostra um aviso somente quando o navegador informa que está offline. Você ainda pode editar e exportar os rascunhos das atividades já carregadas; ao se reconectar, execute novamente. O código é compilado no próprio navegador, sem envio a uma API remota de compilação.",
+    "index.html"
+  ],
+  [
+    "Playground e arquivos",
+    "Como retomo o estudo em outro dispositivo?",
+    "O progresso do quiz e os rascunhos ficam neste navegador e não são sincronizados com outros dispositivos. Antes de trocar, exporte Main.java ou um registro completo da atividade. No outro dispositivo, abra o site e copie o código e a entrada do registro para o editor da atividade correspondente. O quiz mantém um progresso independente em cada navegador.",
+    "playground.html"
+  ],
+  [
+    "Lógica e entrada",
+    "Por que double resultado = 10 / 4 produz 2.0?",
+    "A divisão é calculada com dois operandos inteiros e produz 2. Só depois ocorre a conversão para double. Escreva 10.0 / 4 ou faça a conversão de um operando antes da divisão para preservar a fração.",
+    "playground.html?ex=tipos"
+  ],
+  [
+    "Lógica e entrada",
+    "Por que nextLine devolve vazio depois de nextInt?",
+    "nextInt lê um token numérico e pode deixar o fim da mesma linha para a próxima operação. nextLine lê esse restante e pode devolver texto vazio. Consuma aquela linha antes de pedir outro texto ou faça toda a leitura por linhas e converta os números.",
+    "playground.html?ex=entrada"
+  ],
+  [
+    "Lógica e entrada",
+    "Devo fechar Scanner em todo método?",
+    "Não feche um Scanner compartilhado sobre System.in enquanto outras partes do programa ainda precisam ler. Fechá-lo fecha a entrada associada. Para recursos próprios, como um arquivo aberto naquele trecho, controle o fechamento com uma estrutura apropriada, frequentemente try-with-resources.",
+    "cont.html#modal2"
+  ],
+  [
+    "Lógica e entrada",
+    "Por que uma condição else if nunca acontece?",
+    "Uma condição anterior mais ampla pode receber todos os valores que chegariam à seguinte. Por exemplo, depois de um teste que aceita qualquer valor acima de 40, um else if para valores acima de 71 não recebe esses valores. Coloque o intervalo específico antes do amplo ou escreva faixas sem sobreposição. Teste os dois lados de cada limite para conferir o fluxo.",
+    "playground.html?ex=salario"
+  ],
+  [
+    "Lógica e entrada",
+    "Como sei se usei && ou || corretamente?",
+    "Traduza a regra: exigir duas condições ao mesmo tempo pede &&; aceitar pelo menos uma pede ||. Confira as quatro combinações de verdadeiro e falso. Esses operadores também fazem curto-circuito, o que importa quando a segunda expressão não pode ser avaliada com segurança em todos os casos.",
+    "cont.html#modal4"
+  ],
+  [
+    "Lógica e entrada",
+    "Por que o sorteio pode gerar zero?",
+    "nextInt(limite) inclui zero e exclui o limite. Para 1 a 6, use nextInt(6) + 1. Uma semente fixa facilita reproduzir o exemplo; sem semente explícita, a sequência pode mudar entre execuções.",
+    "playground.html?ex=dado"
+  ],
+  [
+    "Textos e estruturas",
+    "Quando uso == e quando uso equals?",
+    "Para primitivos, == compara os valores. Para referências, compara se apontam para o mesmo objeto. A implementação de equals em String compara o conteúdo textual. No login didático, use equals e considere referências nulas.",
+    "playground.html?ex=textos"
+  ],
+  [
+    "Textos e estruturas",
+    "Por que toUpperCase não mudou minha variável?",
+    "String é imutável e toUpperCase retorna um resultado. Se você descartou esse retorno, a variável continua apontando para a string anterior. Atribua o retorno quando quiser guardar o texto transformado.",
+    "cont.html#modal3"
+  ],
+  [
+    "Textos e estruturas",
+    "Qual é a diferença entre length, length() e size()?",
+    "Arrays oferecem o campo length. Strings oferecem o método length(). Listas como ArrayList oferecem size(). Todos ajudam a consultar quantidade ou comprimento, mas pertencem a tipos diferentes e usam sintaxes diferentes.",
+    "cont.html#modal6"
+  ],
+  [
+    "Textos e estruturas",
+    "Por que o array falha na última posição?",
+    "O último índice válido é length - 1. Em um array de comprimento 3, use 0, 1 e 2. Uma condição i <= array.length permite chegar a uma posição inválida; para percorrer todos os elementos, use i < array.length.",
+    "playground.html?ex=arrays"
+  ],
+  [
+    "Objetos e regras",
+    "Declarar Celular aparelho cria um objeto?",
+    "Essa declaração cria uma variável por referência. Para obter um objeto, uma operação como new Celular(...) precisa criá-lo e fornecer a referência. Uma variável local sem atribuição não pode ser lida, e uma referência nula não permite chamar métodos de instância.",
+    "playground.html?ex=objetos"
+  ],
+  [
+    "Objetos e regras",
+    "Por que new Produto() parou de compilar depois que criei um construtor?",
+    "Quando você declara um construtor, o compilador deixa de fornecer automaticamente o padrão sem argumentos. Se quiser manter a chamada vazia, declare uma sobrecarga correspondente e defina os valores iniciais apropriados.",
+    "playground.html?ex=construtores"
+  ],
+  [
+    "Objetos e regras",
+    "Todo atributo privado precisa de setter?",
+    "Não. Exponha as operações necessárias ao contrato. Uma conta pode oferecer getSaldo, depositar e sacar, preservando validações sem um setSaldo irrestrito. Também verifique se getters devolvem objetos mutáveis internos que o chamador poderia alterar.",
+    "playground.html?ex=conta"
+  ],
+  [
+    "Objetos e regras",
+    "Herança permite acessar qualquer protected?",
+    "No mesmo pacote há acesso por essa regra. Fora dele, o acesso envolve código de uma subclasse e restrições sobre o receptor do membro de instância. Herdar de Carro também não torna uma classe herdeira de Motor, mesmo quando carro possui um motor.",
+    "cont.html#modal10"
+  ],
+  [
+    "Estudo e materiais",
+    "Como escolher os casos de teste de um exercício?",
+    "Comece com um caso comum que você consiga resolver à mão. Em seguida, teste os limites da regra e um valor fora dela. Para média mínima 7, use uma média abaixo de 7, exatamente 7 e acima de 7; para um array, experimente zero, um e vários elementos. Escreva o resultado esperado antes de executar. Se mudar várias entradas ao mesmo tempo, fica mais difícil identificar qual alteração explica uma diferença.",
+    "playground.html?ex=aprovacao-presenca"
+  ],
+  [
+    "Playground e arquivos",
+    "Como encontro uma atividade no Playground?",
+    "Escolha um tema para reduzir o catálogo e selecione a atividade pelo nome. Use Atividade anterior e Próxima atividade para percorrer as opções do filtro atual. Cada atividade guarda seu próprio rascunho neste navegador. Os links de prática da apostila abrem o programa correspondente. Para voltar ao catálogo completo, selecione Todos os temas; seus rascunhos continuam guardados.",
+    "playground.html"
+  ],
+  [
+    "Playground e arquivos",
+    "Vou perder as respostas do quiz com as novas questões?",
+    "As quarenta questões anteriores foram mantidas. Uma tentativa válida salva no navegador continua com as respostas e as alternativas na ordem em que você as viu. As vinte novas questões entram no fim. Se você já concluiu as quarenta, a próxima visita permite continuar a partir da primeira questão acrescentada. O armazenamento continua pertencendo a este navegador: limpar seus dados ou usar outro dispositivo não transfere o progresso.",
+    "quiz.html"
+  ],
+  [
+    "Lógica e entrada",
+    "Por que um laço de validação repete para sempre a mesma entrada inválida?",
+    "hasNextInt verifica o próximo token sem consumi-lo. Se ele não representa um inteiro e seu código apenas volta ao início, a verificação encontrará o mesmo token outra vez. Quando ainda existe entrada, consuma o token inválido com next e então tente novamente. Separe esse caso do fim de entrada, no qual não há um novo token para descartar.",
+    "playground.html?ex=leitura-validada"
+  ],
+  [
+    "Lógica e entrada",
+    "Como valido uma nota antes de classificá-la?",
+    "Defina o intervalo aceito e rejeite os valores fora dele antes de testar aprovação. Se você usa double, considere também NaN e infinito, que não representam notas válidas. Double.isFinite ajuda nessa parte. Depois de validar, aplique o limite do exercício. Uma nota fora da faixa é um dado inválido; uma nota válida abaixo do limite é outro resultado da regra.",
+    "playground.html?ex=aprovacao-presenca"
+  ],
+  [
+    "Lógica e entrada",
+    "Qual é a diferença entre x++ e ++x?",
+    "Ambos incrementam a variável em uma unidade. Quando usados dentro de uma expressão, x++ fornece o valor anterior ao incremento e ++x fornece o valor já incrementado. Se estiverem sozinhos em uma instrução, o efeito sobre x é o mesmo. Para estudar, separe as atribuições em linhas e anote x depois de cada uma, evitando misturar vários incrementos em uma expressão difícil de acompanhar.",
+    "playground.html?ex=incremento"
+  ],
+  [
+    "Lógica e entrada",
+    "Um cast para int arredonda o número?",
+    "Na conversão de um valor como 7.9 para int, a parte fracionária é descartada e o resultado é 7. Isso difere de Math.round(7.9), que devolve 8 como long nessa sobrecarga. Para valores negativos dentro da faixa, a conversão também segue em direção a zero: -7.9 se torna -7. Formatar a exibição com duas casas decimais é uma terceira operação e não troca o tipo da variável.",
+    "cont.html#modal2"
+  ],
+  [
+    "Lógica e entrada",
+    "Posso aprovar por nota ou presença usando a mesma condição de nota e presença?",
+    "A escolha entre && e || muda a regra. Exigir nota mínima e presença mínima pede que ambas sejam verdadeiras, usando &&. Com ||, basta uma delas. Na atividade correspondente, média 9 com presença 74 não atende à exigência de média de pelo menos 7 e presença de pelo menos 75. A regra é didática e precisa estar declarada no enunciado.",
+    "playground.html?ex=aprovacao-presenca"
+  ],
+  [
+    "Lógica e entrada",
+    "Por que o ponto e vírgula depois de if muda o resultado?",
+    "Em if (condicao);, a instrução controlada pela condição é uma instrução vazia. Um bloco colocado depois pode executar independentemente dela, ainda que a indentação sugira outra intenção. Remova esse ponto e vírgula quando quiser que o if controle o bloco. Para conferir, teste um valor que torne a condição falsa e observe se a mensagem ainda aparece.",
+    "cont.html#modal4"
+  ],
+  [
+    "Lógica e entrada",
+    "Por que meu acumulador guarda só o último valor?",
+    "Confira onde ele é inicializado. Se int soma = 0 estiver dentro do laço, essa inicialização acontece em cada passagem e apaga o que foi acumulado antes. Declare o acumulador antes do laço quando ele precisar reunir várias entradas. Já uma variável usada apenas no processamento de um item pode ser reiniciada dentro do corpo. A posição depende do papel daquele valor.",
+    "playground.html?ex=acumuladores"
+  ],
+  [
+    "Lógica e entrada",
+    "A opção de saída deve entrar no cálculo da média?",
+    "Uma sentinela é um valor reservado para encerrar a leitura e normalmente não representa um dado do cálculo. No exercício de inteiros positivos, zero encerra antes de somar ou incrementar a quantidade. Valores negativos são ignorados conforme o enunciado. Se nenhum positivo foi aceito, o programa informa essa ausência e evita dividir pela quantidade zero.",
+    "playground.html?ex=acumuladores"
+  ],
+  [
+    "Textos e estruturas",
+    "Por que indexOf retorna zero e minha condição diz que não encontrou?",
+    "Zero significa que a ocorrência está no início do texto. A ausência é representada por -1. Se a pergunta é apenas se o trecho existe, use indexOf(trecho) >= 0 ou contains(trecho). Testar apenas > 0 exclui uma posição válida. Isso também importa ao procurar uma letra em uma string de referência, como a lista de vogais da atividade.",
+    "playground.html?ex=contar-vogais"
+  ],
+  [
+    "Textos e estruturas",
+    "Como diferencio texto vazio, espaços e null?",
+    "O texto vazio é uma string de comprimento zero. Uma string contendo espaços tem caracteres e pode se tornar vazia depois de trim. null é a ausência de uma referência e não permite chamar métodos de instância por ela. Antes de usar trim em um valor possivelmente nulo, verifique essa condição ou defina outro tratamento. Não remova espaços de dados em que eles fazem parte da regra, como uma senha que deve ser comparada exatamente.",
+    "playground.html?ex=normalizar-texto"
+  ],
+  [
+    "Textos e estruturas",
+    "Por que o for-each não alterou os inteiros do meu array?",
+    "A variável de iteração recebe uma cópia do valor de cada posição. Fazer valor *= 2 muda essa variável local, sem gravar de volta no array. Para alterar os elementos, percorra os índices e faça numeros[i] *= 2. Se os elementos forem referências a objetos, um método chamado no objeto pode alterar seu estado; reatribuir a variável de iteração continua não substituindo a posição do array.",
+    "cont.html#modal6"
+  ],
+  [
+    "Textos e estruturas",
+    "Como ordeno valores sem perder a sequência original?",
+    "Crie outro array com Arrays.copyOf e passe a cópia para Arrays.sort. A ordenação modifica o array recebido. Uma atribuição como copia = original apenas cria outra referência ao mesmo array e não preserva uma sequência independente. Essa cópia de elementos primitivos é suficiente no exercício; ao copiar referências a objetos, os objetos internos ainda podem continuar compartilhados.",
+    "playground.html?ex=copia-array"
+  ],
+  [
+    "Textos e estruturas",
+    "Toda matriz pode ser transposta com o mesmo código?",
+    "O exemplo de transposição foi escrito para uma matriz retangular não vazia, com linhas de mesmo comprimento. Java também permite arrays de arrays com linhas de tamanhos diferentes ou referências nulas. Nesses casos, primeiro defina qual deve ser o formato do resultado e como tratar posições ausentes. Não reutilize os limites de uma matriz retangular sem verificar os dados recebidos.",
+    "playground.html?ex=matriz-transposta"
+  ],
+  [
+    "Objetos e regras",
+    "Reatribuir um parâmetro muda a variável do chamador?",
+    "Não. Java copia o valor do argumento para o parâmetro. No caso de um objeto, copia a referência. O método pode usar essa referência para alterar o objeto compartilhado, mas apontar o parâmetro para outro objeto não troca a variável do chamador. Se quiser que o chamador passe a usar um novo objeto, devolva-o e atribua o retorno explicitamente no ponto da chamada.",
+    "playground.html?ex=referencias"
+  ],
+  [
+    "Objetos e regras",
+    "Sobrecarga e sobrescrita escolhem o método da mesma forma?",
+    "A sobrecarga envolve métodos com o mesmo nome e parâmetros diferentes; sua seleção considera os tipos na compilação. A sobrescrita fornece outra implementação para um método de instância herdado e permite despacho conforme o objeto em execução. Uma variável declarada como Animal pode apontar para Cachorro: isso não faz uma sobrecarga que recebe Cachorro ser escolhida automaticamente quando a chamada usa o tipo Animal.",
+    "playground.html?ex=sobrecarga"
+  ],
+  [
+    "Objetos e regras",
+    "Um campo final torna o objeto inteiro imutável?",
+    "final impede reatribuir a variável depois da inicialização. Se ela guarda uma referência para um array, os elementos ainda podem ser alterados. Para preservar o estado, avalie quais referências entram e saem da classe e quais operações podem modificá-lo. No boletim, o construtor copia o array recebido e o getter devolve outra cópia, evitando que essas referências externas alterem as notas internas.",
+    "playground.html?ex=copia-defensiva"
+  ],
+  [
+    "Objetos e regras",
+    "Por que usar um contador static e um identificador final por objeto?",
+    "O contador pertence à classe e fornece uma sequência compartilhada. O identificador pertence a cada objeto e é atribuído no construtor; final impede que seja trocado depois. Os modificadores de acesso, como private e public, continuam tratando de quem pode acessar cada membro. O exemplo reinicia a sequência quando o programa recomeça e não implementa geração persistente de identificadores de um sistema real.",
+    "playground.html?ex=static-final"
+  ],
+  [
+    "Estudo e materiais",
+    "O que encontro na página Extra?",
+    "Extra reúne fontes de consulta, a pesquisa original, programas para download, um roteiro de testes, links de JDKs e editores, cursos, vídeos, livros e informações para continuar estudando. A apostila dos trinta temas mantém a sequência principal. Você pode consultar Extra quando precisar instalar uma ferramenta, conferir uma referência ou guardar os exercícios para praticar fora do navegador.",
+    "extra.html"
+  ],
+  [
+    "Estudo e materiais",
+    "Preciso ler os PDFs antes da apostila do site?",
+    "Você pode começar pelos trinta temas. Cada tema apresenta os conceitos e os exemplos necessários, com links para praticar. Os PDFs são fontes de consulta e aprofundamento, não um pré-requisito oculto. Quando surgir uma dúvida, busque o termo no conteúdo, leia o exemplo e teste uma alteração. Consulte o documento indicado se quiser comparar outra apresentação do assunto.",
+    "cont.html"
+  ],
+  [
+    "Estudo e materiais",
+    "Qual é a diferença entre a pesquisa original e este guia?",
+    "O guia organiza e revisa os conceitos para uma leitura contínua. O pacote da pesquisa original preserva o material de estudo e as versões experimentais que serviram de referência. Ele contém escolhas e informações da época de elaboração. Para a sequência de aprendizado, as regras e a execução dos programas, use a apostila e o Playground atuais; para consultar os arquivos de pesquisa, use o download identificado em Extra.",
+    "extra.html#extraPesquisa"
+  ],
+  [
+    "Estudo e materiais",
+    "Como uso o roteiro de testes para estudar sozinho?",
+    "Escolha uma atividade, leia o objetivo e anote a saída que espera. Execute com a entrada inicial, compare com a referência e faça o desafio. Depois teste valores no limite e entradas inválidas conforme a regra. O roteiro disponível em Extra reúne objetivo, entrada e saída dos programas. A coincidência com um único resultado não comprova todas as regras; explique também por que cada caso deve funcionar.",
+    "extra.html#extraTestes"
+  ],
+  [
+    "Estudo e materiais",
+    "Como abro um programa baixado na minha IDE?",
+    "Descompacte o pacote de programas e escolha uma atividade. Abra o Main.java dessa pasta em um projeto Java com JDK compatível com 17. Cada pasta contém um programa independente, por isso não coloque todos os arquivos Main.java no mesmo pacote. Leia as instruções e a entrada associada antes de executar. Se a IDE pedir uma classe principal, selecione Main da atividade escolhida.",
+    "extra.html#extraPesquisa"
+  ],
+  [
+    "Playground",
+    "Como avanço sem perder o código que editei?",
+    "Use Atividade anterior ou Próxima atividade. A navegação respeita o tema selecionado e salva o rascunho da atividade atual antes de trocar. Ao voltar, você verá o código e a entrada que deixou. Exportar uma cópia ainda é necessário para guardar o trabalho fora deste navegador. O armazenamento local pode ser removido pelas configurações ou pela limpeza de dados do dispositivo.",
+    "playground.html"
+  ],
+  [
+    "Playground",
+    "Por que o botão de atividade anterior ou próxima está desativado?",
+    "Você chegou ao início ou ao fim da lista do filtro atual, ou há uma compilação ou execução em andamento. Aguarde a conclusão ou use Interromper para liberar a troca. Se quiser percorrer mais opções, escolha Todos os temas. Os botões não retornam automaticamente ao começo, para que a sequência de estudo e sua posição permaneçam claras.",
+    "playground.html"
+  ],
+  [
+    "Playground",
+    "Por que a saída mostra que foi interrompida?",
+    "Ao interromper, o ambiente de execução é descartado para encerrar inclusive programas com laços sem saída. O código e a entrada continuam no editor. Uma perda de conexão também pode interromper a preparação ou a execução. Revise a condição do laço e os dados de entrada, reconecte se necessário e execute novamente. Uma saída parcial não representa necessariamente o resultado final do programa.",
+    "playground.html"
+  ],
+  [
+    "Playground",
+    "Como sei que o resultado corresponde ao código atual?",
+    "Depois de compilar e executar, confira a saída e o estado apresentado acima dela. Ao editar código ou entrada, a saída anterior é marcada como desatualizada e deixa de entrar como última execução na exportação. Execute novamente para obter um resultado correspondente. Se a compilação falhar, leia as mensagens de compilação; nesse caso, o programa atual não chegou a executar.",
+    "playground.html"
+  ],
+  [
+    "Playground",
+    "Como testo os exemplos de interfaces, coleções e enum?",
+    "Use o link Praticar este programa no Playground ao lado do exemplo da apostila. Ele abre uma atividade própria, com código inicial, desafio, dica e saída de referência. Cada exemplo possui seu rascunho separado. Altere uma regra por vez e preveja o efeito: uma constante no enum, uma chave no mapa ou uma nova classe que implementa a interface.",
+    "cont.html"
+  ],
+  [
+    "Objetos e regras",
+    "Quando devo usar uma interface em vez de uma classe abstrata?",
+    "Uma interface permite que o consumidor dependa de uma capacidade ou contrato comum a implementações diferentes. Uma classe abstrata pode reunir estado, construtores e comportamento compartilhado em uma relação de herança. Uma classe estende uma classe diretamente e pode implementar várias interfaces. Antes de escolher, escreva qual comportamento o chamador precisa e quais dados realmente pertencem à base.",
+    "cont.html#modal7"
+  ],
+  [
+    "Objetos e regras",
+    "Injeção de dependência exige Spring?",
+    "Você pode receber um colaborador pelo construtor sem usar framework. Se uma classe recebe um objeto que implementa uma interface, o chamador escolhe qual implementação fornecer. Isso torna a colaboração explícita e facilita substituir um recurso em um teste. Spring oferece mecanismos para organizar essa criação em aplicações maiores, mas o conceito pode ser aprendido primeiro em um programa de console.",
+    "cont.html#modal9"
+  ],
+  [
+    "Objetos e regras",
+    "Uma exceção capturada significa que a operação deu certo?",
+    "A captura informa que uma falha foi tratada naquele ponto. Ela não prova que a regra foi concluída nem desfaz automaticamente alterações anteriores. Confira o resultado e o estado depois da operação. Em um saque recusado, por exemplo, o saldo precisa continuar igual. Evite imprimir sucesso fora do caminho que realmente concluiu a alteração esperada.",
+    "cont.html#modal9"
+  ],
+  [
+    "Objetos e regras",
+    "Por que NumberFormatException deve vir antes de IllegalArgumentException?",
+    "NumberFormatException é uma subclasse de IllegalArgumentException. O catch mais geral também aceitaria o caso específico; se vier primeiro, a captura específica se torna inalcançável. Escreva primeiro o tratamento de formato inválido e depois o de outras violações de argumento. A atividade de quantidade permite comparar texto não numérico, zero e um inteiro positivo.",
+    "playground.html?ex=validar-quantidade"
+  ],
+  [
+    "Textos e estruturas",
+    "Como escolho entre List, Set e Map?",
+    "Use List quando precisar de uma sequência com posições e repetições. Use Set para reunir valores distintos segundo a igualdade dos elementos. Use Map para associar uma chave a um valor, como matrícula e nota. Escolha também a implementação conforme a ordem necessária: HashMap não promete preservar inserção, enquanto LinkedHashMap oferece essa ordem. A escolha começa pela regra de consulta, não pelo nome mais conhecido.",
+    "playground.html?ex=colecoes-cadastro"
+  ],
+  [
+    "Textos e estruturas",
+    "Colocar outra nota com a mesma chave cria dois registros?",
+    "Em um Map, cada chave possui uma associação. Uma nova chamada a put com uma chave igual substitui o valor associado. Se dois alunos podem ter o mesmo nome, o nome sozinho é uma chave insuficiente; use um identificador ou uma estrutura que represente vários valores por chave. Teste inclusão e atualização separadamente para perceber a diferença.",
+    "playground.html?ex=colecoes-cadastro"
+  ],
+  [
+    "Textos e estruturas",
+    "Uma stream pode ser usada duas vezes?",
+    "Depois de uma operação terminal, como collect ou count, a stream foi consumida. Para outra consulta, crie uma nova a partir da coleção. A coleção pode continuar existindo e ser consultada novamente; o fluxo específico tem seu próprio ciclo de uso. Também evite modificar a origem durante o processamento e prefira lambdas sem alterações de estado externo.",
+    "playground.html?ex=filtrar-stream"
+  ],
+  [
+    "Textos e estruturas",
+    "Qual é a diferença entre enum e números de opção?",
+    "Um enum define constantes de um tipo próprio, como PENDENTE e CONCLUIDA. Um número digitado no menu é uma entrada que precisa ser validada e convertida para uma opção com significado. O enum ajuda o código a representar estados conhecidos, mas não valida automaticamente textos externos. valueOf exige o nome exato da constante e falha quando ele não existe.",
+    "playground.html?ex=estados-enum"
+  ],
+  [
+    "Estudo e materiais",
+    "Os links de cursos e certificações fazem parte da apostila?",
+    "Eles são caminhos de continuidade reunidos em Extra. A sequência principal, as atividades e o quiz estão disponíveis neste site. Serviços externos podem ter cadastro, conteúdo pago, versões e condições próprias. Antes de contratar um curso ou marcar um exame, confira a página do responsável. O guia não promete salário, aprovação em certificação ou equivalência entre seu quiz e um exame oficial.",
+    "extra.html#extraEstudo"
+  ],
+  [
+    "Playground",
+    "O que faço se o navegador não conseguir salvar o rascunho?",
+    "Leia a mensagem perto da exportação e baixe Main.java ou o registro completo antes de fechar a página. O salvamento depende da permissão e do espaço de armazenamento deste navegador. Você ainda pode editar e executar quando o ambiente estiver disponível, mas não deve contar com a retomada depois de sair. Um arquivo exportado permite conservar uma cópia no seu dispositivo.",
+    "playground.html"
+  ]
+]

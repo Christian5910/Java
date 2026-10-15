@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiz · Java</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link" href="cont.html">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link active fw-semibold" href="quiz.html" aria-current="page">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container py-5">
+<div class="text-center mb-4"><h1 class="h2 text-primary fw-bold">Quiz: Java</h1><p class="text-muted fs-5">60 questões dos fundamentos (temas 1 a 10), de nível médio/avançado com dica, gabarito comentado e progresso salvo neste navegador.</p></div><div class="gemini-panel" id="quizRoot" style="max-width:100%;border-radius:28px;"><div class="panel-toolbar"><span class="toolbar-title">Desafio de conhecimentos</span></div><p id="quizNotice" role="status" class="text-muted px-4"></p><noscript><p>Ative JavaScript para responder ao quiz. A apostila está disponível na guia Conteúdo.</p></noscript><div id="dynamicContent" class="panel-content"></div></div>
+</main>
+
+<footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <p class="mb-1">
+            <a href="index.html">Início</a> ·
+            <a href="cont.html">Conteúdo</a> ·
+            <a href="playground.html">Playground</a> ·
+            <a href="quiz.html">Quiz</a> ·
+            <a href="faq.html">FAQ</a> · <a href="extra.html">Extra</a>
+        </p>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+
+
+<script src="assets/js/quiz.js" defer></script>
+</body>
+</html>

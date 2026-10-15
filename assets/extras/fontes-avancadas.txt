@@ -1,0 +1,37 @@
+REFERÊNCIAS OFICIAIS DOS TEMAS 15 A 30
+
+Documentação consultada para os laboratórios com versões declaradas nos capítulos.
+Confira os requisitos da linha escolhida antes de migrar.
+
+https://developer.android.com/build/jdks
+https://developer.android.com/build/releases/agp-8-7-0-release-notes
+https://developer.android.com/develop/background-work/background-tasks/persistent
+https://developer.android.com/guide/components/activities/activity-lifecycle
+https://developer.android.com/studio/run/emulator-networking
+https://developer.android.com/topic/libraries/architecture/viewmodel
+https://developer.android.com/training/data-storage/room
+https://docs.oracle.com/en/java/javase/17/docs/specs/man/jlink.html
+https://docs.oracle.com/en/java/javase/17/jfapi/index.html
+https://docs.oracle.com/en/java/javase/17/jpackage/packaging-overview.html
+https://docs.oracle.com/javase/specs/jls/se17/html/jls-7.html
+https://docs.oracle.com/javase/tutorial/uiswing/concurrency/dispatch.html
+https://docs.oracle.com/javase/tutorial/uiswing/concurrency/worker.html
+https://docs.spring.io/spring-boot/3.5/maven-plugin/build-image.html
+https://docs.spring.io/spring-boot/3.5/reference/actuator/endpoints.html
+https://docs.spring.io/spring-boot/3.5/reference/features/external-config.html
+https://docs.spring.io/spring-boot/3.5/reference/testing/spring-boot-applications.html
+https://docs.spring.io/spring-boot/3.5/reference/using/structuring-your-code.html
+https://docs.spring.io/spring-boot/3.5/system-requirements.html
+https://docs.spring.io/spring-data/jpa/reference/jpa/transactions.html
+https://docs.spring.io/spring-framework/reference/integration/cache/annotations.html
+https://docs.spring.io/spring-framework/reference/integration/scheduling.html
+https://docs.spring.io/spring-framework/reference/web/webflux.html
+https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-validation.html
+https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/basic.html
+https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html
+https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html
+https://openjfx.io/javadoc/21/javafx.fxml/javafx/fxml/doc-files/introduction_to_fxml.html
+https://openjfx.io/javadoc/21/javafx.graphics/javafx/application/Application.html
+https://openjfx.io/openjfx-docs/
+https://www.graalvm.org/latest/reference-manual/native-image/
+https://developer.android.com/develop/ui/views/layout/edge-to-edge

@@ -1,0 +1,61 @@
+download
+https://www.oracle.com/java/technologies/downloads/ | Baixar Oracle JDK
+https://www.java.com/pt-BR/download/ | java.com (usuário final)
+https://adoptium.net/temurin/releases/ | Baixar Temurin (Adoptium)
+https://openjdk.org/ | OpenJDK.org
+https://aws.amazon.com/corretto/ | Baixar Corretto
+https://docs.aws.amazon.com/corretto/ | Documentação
+https://www.microsoft.com/openjdk | Download →
+https://www.azul.com/downloads/ | Download →
+https://www.graalvm.org/downloads/ | Download →
+https://bell-sw.com/pages/downloads/ | Download →
+https://adoptium.net/temurin/releases/ | adoptium.net/temurin/releases
+https://www.java.com/pt-br/download/help/remove_olderversions.html | java.com — Remover versões antigas
+https://www.java.com/pt-br/security/ | java.com/segurança
+
+recursos
+https://www.youtube.com/@loianegroner | 🇧🇷 Loiane Groner Curso Java completo do zero, Spring Boot, Angular. Melhor canal em PT-BR para Java.
+https://www.youtube.com/@DevDojo | 🇧🇷 Dev Dojo William Suane — Spring Boot, microsserviços, DevOps. Conteúdo avançado e profissional.
+https://www.youtube.com/@MichelliBrito | 🇧🇷 Michelli Brito Spring Boot, microserviços RESTful, Docker. Didática excelente.
+https://www.youtube.com/@Amigoscode | 🇬🇧 Amigoscode Java, Spring Boot, microservices, security. Inglês claro e projetos práticos.
+https://www.youtube.com/@java | ☕ Java (Oracle Official) Canal oficial Oracle Java com demos, JEPs, JavaOne talks e novidades da plataforma.
+https://www.youtube.com/@SpringSourceDev | 🌿 Spring Developer Canal oficial do Spring Framework com tutoriais, Spring Tips e novidades do ecossistema.
+https://inside.java/podcast/ | Site Oficial
+https://open.spotify.com/show/48GHfnDpk72H0POmzlnGAw | Spotify
+https://www.hipsters.tech/ | Site
+https://open.spotify.com/show/6PBmpDOeulqhqFMKZhKkFP | Spotify
+https://www.javapubhouse.com/ | Site
+https://anchor.fm/depois-do-if | Site
+https://www.caelum.com.br/apostila/apostila-java-orientacao-objetos.pdf | 📄 Java e Orientação a Objetos — Caelum (FJ-11) Apostila completa do curso FJ-11 da Caelum. Cobre Java do básico ao intermediário com foco em POO. Gratuita.
+https://www.caelum.com.br/apostila/apostila-java-testes-xml-design-patterns.pdf | 📄 Java com Testes, XML e Design Patterns — Caelum (FJ-16) Testes unitários, JUnit, Mockito, XML, JSON, Design Patterns clássicos. Gratuita.
+https://www.caelum.com.br/apostila/apostila-java-web.pdf | 📄 Desenvolvimento Web com Java — Caelum (FJ-21) Servlets, JSP, MVC, JDBC, JPA. Base sólida para desenvolvimento web Java tradicional.
+https://www.devmedia.com.br/java-fundamentals-e-book/33338 | 📗 Java Fundamentals — DevMedia E-Book Conceitos fundamentais da linguagem Java com exemplos práticos. Gratuito na plataforma DevMedia.
+https://www.oracle.com/java/technologies/java-se-glance.html | 📘 Java SE at a Glance — Oracle Visão geral oficial da plataforma Java SE da Oracle. Inclui white papers e especificações técnicas.
+https://dev.java/learn/ | 🌐 dev.java/learn — Portal Oficial de Aprendizado Java Material oficial da Oracle para aprender Java. Tutoriais, guias e material de referência. Gratuito.
+https://docs.oracle.com/en/java/javase/21/docs/api/ | 📖 JavaDoc Java 21 — API Completa Documentação de todas as classes e métodos do Java 21 LTS.
+https://docs.oracle.com/javase/specs/ | 📋 Java Language Specification (JLS) Especificação formal da linguagem Java. Para quem quer entender as regras profundas.
+https://openjdk.org/jeps/ | 🔬 JEPs — Java Enhancement Proposals Todas as propostas de melhorias do Java com status, motivação e descrição técnica.
+https://dev.java | ☕ dev.java — Portal Oficial Portal central da Oracle para desenvolvedores Java. Tutoriais, novidades e recursos.
+https://docs.spring.io/spring-boot/docs/current/reference/html/ | 🌿 Spring Boot Reference Documentation Documentação oficial completa do Spring Boot, sempre atualizada.
+https://hibernate.org/orm/documentation/ | 🗄️ Hibernate ORM Documentation Guia completo do Hibernate com exemplos, configurações e mapeamentos JPA.
+https://maven.apache.org/guides/ | 🔧 Apache Maven Guides Guias oficiais do Maven: getting started, plugins, ciclo de vida e repositórios.
+https://baeldung.com | 🎯 Baeldung — The Java Hub Site de referência não-oficial com milhares de tutoriais Java/Spring de qualidade.
+https://www.alura.com.br/cursos-online-programacao/java | Ver Cursos →
+https://www.rocketseat.com.br/java | Ver Trilha →
+https://www.udemy.com/courses/search/?q=java&lang=pt | Pesquisar →
+https://education.oracle.com/java/java-se/pFamily_48 | Ver Cursos →
+https://www.coursera.org/search?query=java | Explorar →
+https://www.dio.me/en/bootcamp/java | Ver Bootcamps →
+https://www.jetbrains.com/idea/ | 🧠 IntelliJ IDEA — JetBrains A melhor IDE Java do mercado. Community Edition gratuita; Ultimate paga com Spring, Databases, etc.
+https://www.eclipse.org/downloads/ | 🌙 Eclipse IDE IDE open-source gratuita, muito usada no mercado corporativo. Extensível via plugins.
+https://netbeans.apache.org/ | 🔶 Apache NetBeans IDE Java oficial da Apache. Gratuita e open-source. Ótima para iniciantes.
+https://code.visualstudio.com/docs/java/java-tutorial | 💻 VS Code + Extension Pack for Java VS Code com o Extension Pack for Java da Microsoft. Leve e funcional.
+https://sdkman.io/ | ☕ SDKMAN! Gerencia múltiplas versões de JDKs, Maven, Gradle e outras ferramentas facilmente.
+https://jmeter.apache.org/ | 📊 Apache JMeter Testes de carga e performance para APIs e aplicações Java. Open source.
+https://www.sonarqube.org/ | 🔍 SonarQube Análise estática de código Java. Detecta bugs, vulnerabilidades e code smells automaticamente.
+https://visualvm.github.io/ | 🔬 VisualVM Profiler e monitor de aplicações Java em tempo real. Gratuito, incluído no JDK.
+
+certificacoes
+https://education.oracle.com/java-se-21-developer/pexam_1Z0-830 | 🏢 Página Oficial Oracle
+https://enthuware.com/java-mock-exams/oracle-certified-professional | 📝 Enthuware — Simulados
+https://www.whizlabs.com/oracle-java-certification/ | 🎯 Whizlabs — Practice Tests

@@ -1,0 +1,136 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const { chromium } = require('playwright');
+const base = process.env.JAVA_SITE_URL || 'http://127.0.0.1:4177/java/';
+const examples = JSON.parse(fs.readFileSync(path.join(__dirname, '../assets/data/exercises.json'), 'utf8'));
+const questionCount = JSON.parse(fs.readFileSync(path.join(__dirname, '../assets/data/questions.json'), 'utf8')).length;
+const oldQuestions = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/quiz-v1-questions.json'), 'utf8'));
+const normalize = text => text.replace(/\r/g, '').trim();
+
+(async () => {
+  const browser = await chromium.launch({ channel: 'msedge' });
+  const context = await browser.newContext({ serviceWorkers: 'block', reducedMotion: 'reduce', acceptDownloads: true });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', error => errors.push(String(error)));
+  await page.goto(base + 'playground.html', { waitUntil: 'networkidle' });
+  await page.waitForFunction(() => !document.getElementById('runJava').disabled);
+  await page.selectOption('#exerciseTheme', '6');
+  assert.equal(await page.locator('#exerciseSelect option').count(), examples.filter(e=>e.theme===6).length);
+  await page.selectOption('#exerciseSelect', 'copia-array');
+  await page.fill('#javaCode', '// Meu rascunho de cópia\n' + examples.find(e=>e.id==='copia-array').source);
+  await page.selectOption('#exerciseTheme', '3');
+  await page.selectOption('#exerciseTheme', '6');
+  await page.selectOption('#exerciseSelect', 'copia-array');
+  assert.match(await page.inputValue('#javaCode'), /Meu rascunho/);
+  await page.selectOption('#exerciseTheme', '');
+  assert.equal(await page.locator('#exerciseSelect option').count(), examples.length);
+  console.log('UI OK theme filter preserves drafts');
+  const selectedExamples = process.argv.includes('--flows-only') ? [] : process.argv.includes('--advanced-only') ? examples.filter(e=>e.theme>10) : process.argv.includes('--new-exercises') ? examples.slice(23) : examples;
+  for (const example of selectedExamples) {
+    const started = Date.now();
+    console.log('RUN', example.id);
+    await page.selectOption('#exerciseSelect', example.id);
+    await page.fill('#javaCode', example.source);
+    await page.fill('#javaInput', example.input);
+    await page.click('#runJava');
+    await page.waitForFunction(() => !document.getElementById('runJava').disabled, null, { timeout: 200000 });
+    const output = await page.locator('#javaOutput').innerText();
+    const status = await page.locator('#runtimeStatus').innerText();
+    assert.match(status, /^Programa encerrado\./, example.id + ': ' + status + '\n' + output);
+    assert.equal(normalize(output), normalize(example.expected), example.id);
+    console.log('JAVA OK', example.id, Date.now() - started, 'ms');
+  }
+  await page.fill('#javaCode', 'public class Main { public static void main(String[] args) { System.out.println("sem ponto") } }');
+  await page.click('#runJava');
+  assert.equal(await page.locator('#previousActivity').isDisabled(), true);
+  assert.equal(await page.locator('#nextActivity').isDisabled(), true);
+  await page.waitForFunction(() => !document.getElementById('runJava').disabled, null, { timeout: 80000 });
+  assert.match(await page.locator('#runtimeStatus').innerText(), /Falha de compilação/);
+  assert.equal(await page.locator('#compilerDetails').getAttribute('open'), '');
+  assert.match(await page.locator('#outputState').innerText(), /não executou/);
+  await page.locator('#compileOutput').evaluate(el => { el.parentElement.open = true; });
+  assert.match(await page.locator('#compileOutput').innerText(), /ERROR/);
+  console.log('JAVA OK compile failure');
+  // Valid Java that fails during execution, rather than a simulated result.
+  await page.fill('#javaCode', 'public class Main { public static void main(String[] args) { int[] a = {1}; System.out.println(a[3]); } }');
+  await page.click('#runJava');
+  await page.waitForFunction(() => !document.getElementById('runJava').disabled, null, { timeout: 80000 });
+  assert.match(await page.locator('#javaOutput').innerText(), /ArrayIndexOutOfBoundsException/);
+  console.log('JAVA OK runtime failure');
+  await page.selectOption('#exerciseSelect', 'ola');
+  await page.fill('#javaCode', 'public class Main { public static void main(String[] args) { while (true) {} } }');
+  await page.click('#runJava');
+  await page.waitForFunction(() => document.getElementById('runtimeStatus').textContent.includes('Executando o programa'), null, { timeout: 80000 });
+  await page.click('#stopJava', { timeout: 15000 });
+  await page.waitForFunction(() => !document.getElementById('runJava').disabled);
+  assert.match(await page.locator('#runtimeStatus').innerText(), /interrompida/);
+  console.log('JAVA OK stop infinite loop');
+  await page.fill('#javaCode', examples[0].source);
+  await page.click('#runJava');
+  await page.waitForFunction(() => !document.getElementById('runJava').disabled, null, { timeout: 200000 });
+  assert.equal(normalize(await page.locator('#javaOutput').innerText()), examples[0].expected);
+  console.log('JAVA OK restart JVM');
+  const edited = examples[0].source.replace('Olá, ', 'Teste, ');
+  await page.fill('#javaCode', edited);
+  assert.match(await page.locator('#outputState').innerText(), /Saída desatualizada/);
+  await page.selectOption('#exerciseSelect', 'media');
+  await page.selectOption('#exerciseSelect', 'ola');
+  assert.equal(await page.inputValue('#javaCode'), edited);
+  await page.reload();
+  await page.waitForFunction(() => !document.getElementById('runJava').disabled);
+  assert.equal(await page.inputValue('#javaCode'), edited);
+  console.log('UI OK draft persistence');
+  for (const format of ['java', 'json', 'txt', 'html']) {
+    await page.selectOption('#exportFormat', format);
+    const promise = page.waitForEvent('download');
+    await page.click('#exportWork');
+    const download = await promise;
+    assert.ok(download.suggestedFilename().endsWith('.' + format));
+    const content = fs.readFileSync(await download.path(), 'utf8');
+    assert.ok(content.includes(format === 'html' ? 'Teste,' : 'Teste,'));
+    if (format === 'json') assert.equal(JSON.parse(content).lastRun, null);
+  }
+  console.log('UI OK exports');
+  await page.goto(base + 'quiz.html');
+  await page.waitForSelector('.option-card');
+  for (let i = 0; i < questionCount; i++) {
+    const correct = await page.evaluate(() => QUIZ_DATA[currentIndex].correct);
+    await page.locator(`.option-card[data-opt-index="${correct}"]`).click();
+    await page.locator('#nextQuestionBtn').click();
+    if (i === 0) {
+      await page.reload();
+      await page.waitForSelector('.option-card');
+      assert.equal(await page.locator('.question-counter').innerText(), '2 / ' + questionCount);
+    }
+  }
+  assert.equal(await page.locator('.final-score-text').innerText(), questionCount + ' / ' + questionCount);
+  assert.equal(await page.locator('.result-container li').count(), 10);
+  await page.evaluate(old => {
+    const quizData = old.map(q=>({...q, options:[...q.options].reverse(), correct:3-q.correct}));
+    localStorage.setItem('java_quiz_progress_v1',JSON.stringify({quizData,currentIndex:39,quizFinished:true,userAnswers:quizData.map(q=>q.correct)}));
+  }, oldQuestions);
+  await page.reload();
+  await page.waitForSelector('.option-card');
+  assert.equal(await page.locator('.question-counter').innerText(),'41 / ' + questionCount);
+  assert.match(await page.locator('#quizNotice').innerText(), /preservadas/);
+  console.log('UI OK '+questionCount+' quiz answers, resume and migration of completed v1');
+  await page.goto(base + 'cont.html#modal10');
+  await page.locator('#modal10').waitFor({ state: 'visible' });
+  await page.locator('#modal10 .btn-close').click();
+  await page.fill('#topicSearch', 'zzzinexistente');
+  assert.equal(await page.locator('.topic-item:visible').count(), 0);
+  await page.fill('#topicSearch', 'construtor');
+  assert.ok(await page.locator('.topic-item:visible').count() > 0);
+  await page.goto(base + 'faq.html');
+  assert.equal(await page.locator('.accordion-item').count(), 80);
+  await page.fill('#faqSearch', 'nextLine');
+  assert.ok(await page.locator('.accordion-item:visible').count() < 80);
+  await page.locator('.accordion-item:visible .accordion-button').first().click();
+  await page.locator('.accordion-collapse.show').first().waitFor({ state: 'visible' });
+  console.log('UI OK search, deep links and FAQ');
+  assert.deepEqual(errors, []);
+  await browser.close();
+  console.log('PASS browser suite');
+})().catch(error => { console.error(error); process.exit(1); });

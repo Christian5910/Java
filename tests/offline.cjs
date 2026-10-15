@@ -1,0 +1,87 @@
+const { chromium } = require('playwright');
+const assert = require('node:assert/strict');
+const base = process.env.JAVA_SITE_URL || 'http://127.0.0.1:4177/java/';
+(async () => {
+  const browser = await chromium.launch({ channel: 'msedge' });
+  const context = await browser.newContext({ reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', error => errors.push(String(error)));
+  await page.goto(base + 'index.html');
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.waitForFunction(async () => {
+    const key = (await caches.keys()).find(key => key.startsWith('java-'));
+    return key && (await (await caches.open(key)).keys()).length >= 51;
+  }, null, { timeout: 60000 });
+  await page.goto(base + 'playground.html?ex=entrada');
+  await page.waitForFunction(() => !document.getElementById('runJava').disabled);
+  assert.equal(await page.locator('#offlineModal').isVisible(), false);
+  await page.evaluate(() => window.dispatchEvent(new Event('offline')));
+  assert.equal(await page.locator('#offlineModal').isVisible(), false, 'online must never show the warning');
+  const draft = await page.inputValue('#javaCode') + '\n// Rascunho offline preservado';
+  await page.fill('#javaCode', draft);
+  await context.setOffline(true);
+  await page.locator('#offlineModal.show').waitFor();
+  assert.equal(await page.inputValue('#javaCode'), draft);
+  await page.getByRole('button', {name:'Continuar estudando'}).click();
+  assert.equal(await page.locator('#offlineModal').isVisible(), false);
+  await page.click('#runJava');
+  await page.locator('#offlineModal.show').waitFor();
+  assert.equal(await page.locator('iframe').count(), 0, 'offline execution must not start a JVM');
+  await context.setOffline(false);
+  await page.locator('#offlineModal').waitFor({state:'hidden'});
+  assert.match(await page.locator('#runtimeStatus').innerText(), /restabelecida/);
+  // Interrupt an in-flight startup without depending on the external CDN speed.
+  await page.route('**/runtime.html', route => route.abort());
+  await page.click('#runJava');
+  await page.waitForFunction(() => document.getElementById('executionPanel').getAttribute('aria-busy') === 'true');
+  await context.setOffline(true);
+  await page.locator('#offlineModal.show').waitFor();
+  assert.equal(await page.locator('#executionPanel').getAttribute('aria-busy'), 'false');
+  assert.equal(await page.locator('iframe').count(), 0);
+  assert.equal(await page.inputValue('#javaCode'), draft);
+  await page.goto(base + 'cont.html#modal8');
+  await page.locator('#modal8').waitFor({state:'visible'});
+  assert.match(await page.locator('#modal8').innerText(), /Construtores/);
+  await page.goto(base + 'cont.html#modal30');
+  await page.locator('#modal30.show').waitFor();
+  assert.match(await page.locator('#modal30').innerText(), /Projeto final/);
+  await page.goto(base + 'quiz.html');
+  await page.waitForSelector('.option-card');
+  await page.goto(base + 'playground.html?ex=entrada');
+  await page.waitForFunction(() => !document.getElementById('runJava').disabled);
+  assert.ok((await page.inputValue('#javaCode')).includes('Scanner'));
+  assert.equal(await page.inputValue('#javaCode'), draft);
+  await page.locator('#offlineModal.show').waitFor();
+  await page.getByRole('button', {name:'Continuar estudando'}).click();
+  await page.click('#runJava');
+  assert.match(await page.locator('#runtimeStatus').innerText(), /conexão/);
+  await page.locator('#offlineModal.show').waitFor();
+  await page.keyboard.press('Escape');
+  await page.locator('#offlineModal').waitFor({state:'hidden'});
+  const download = page.waitForEvent('download');
+  await page.click('#exportWork');
+  assert.equal((await download).suggestedFilename(), 'Main.java');
+  const pdf = await page.evaluate(async () => {
+    const response = await fetch('assets/materiais/tema_01_java.pdf');
+    return { ok: response.ok, size: (await response.arrayBuffer()).byteLength };
+  });
+  assert.ok(pdf.ok && pdf.size > 100000);
+  await page.goto(base + 'extra.html#extraPesquisa');
+  await page.locator('#extraPesquisa.show').waitFor();
+  const files = await page.evaluate(async () => {
+    const results=[];
+    for(const name of ['programas-java.zip','pesquisa-conhecendo-java.zip','roteiro-de-testes.html','fontes-da-pesquisa.txt','laboratorio-swing.zip','laboratorio-javafx.zip','laboratorio-android.zip','laboratorio-spring.zip','roteiro-avancado.html','fontes-avancadas.txt']) {
+      const response=await fetch('assets/extras/'+name);
+      results.push(response.ok && (await response.arrayBuffer()).byteLength>1000);
+    }
+    return results;
+  });
+  assert.ok(files.every(Boolean),'extras must be available offline');
+  await page.goto(base + 'extra.html#extraCapstone');
+  await page.locator('#extraCapstone.show').waitFor();
+  assert.match(await page.locator('#extraCapstone').innerText(), /Matriz final/);
+  assert.deepEqual(errors, []);
+  console.log('PASS offline content, quiz, drafts, export, PDF; modal only offline, reconnect and interrupted startup.');
+  await browser.close();
+})().catch(error => { console.error(error); process.exit(1); });
