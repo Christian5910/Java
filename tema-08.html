@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>08 · Construtores e inicialização · Java</title>
+<meta name="description" content="Construa objetos coerentes desde o início: validação, sobrecarga, inicialização e cópias com limites explícitos.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 8 de 30</span></nav><header class="lesson-header"><h1>08 · Construtores e inicialização</h1><p class="lead">Construa objetos coerentes desde o início: validação, sobrecarga, inicialização e cópias com limites explícitos.</p><p class="text-muted">Java 17 como referência · Teoria, laboratórios e exercícios comentados</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-22">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Construir é estabelecer um estado inicial que faça sentido</a></li><li><a href="#secao-2">Definir como um objeto começa</a></li><li><a href="#secao-3">Construtor sem argumentos e construtor padrão</a></li><li><a href="#secao-4">Valores iniciais dos atributos</a></li><li><a href="#secao-5">Sobrecarga e encadeamento</a></li><li><a href="#secao-6">Validar antes de tornar o estado disponível</a></li><li><a href="#secao-7">Construtores e herança</a></li><li><a href="#secao-8">Construtor de cópia e limites da cópia</a></li><li><a href="#secao-9">Erros comuns no exercício</a></li><li><a href="#secao-10">Prática orientada</a></li><li><a href="#secao-11">O contrato do objeto começa pelos estados permitidos</a></li><li><a href="#secao-12">Ordem de inicialização: valores padrão, parte herdada e corpo</a></li><li><a href="#secao-13">Padrão, sem argumentos e construtor com parâmetros</a></li><li><a href="#secao-14">Encadeamento para validar uma única vez</a></li><li><a href="#secao-15">Quando um construtor falha, não finja que houve um objeto válido</a></li><li><a href="#secao-16">Não publique this antes de terminar a construção</a></li><li><a href="#secao-17">Final e imutabilidade: proteja também os objetos recebidos</a></li><li><a href="#secao-18">Construtor de cópia: defina o que permanecerá compartilhado</a></li><li><a href="#secao-19">Herança: inicializar a parte comum sem repetir o contrato</a></li><li><a href="#secao-20">Fábricas nomeadas e listas de parâmetros difíceis de ler</a></li><li><a href="#secao-21">Testar a construção inclui conferir a falha e a independência</a></li><li><a href="#secao-22">Prática orientada, resoluções e revisão da construção</a></li><li><a href="#fontes">Fontes e continuidade</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. Construir é estabelecer um estado inicial que faça sentido</h2>
+<p>Criar um objeto não é apenas reservar espaço e preencher campos. O programa passa a ter uma referência para uma entidade que promete certas regras. Um círculo precisa de um raio permitido; um produto precisa de um nome; uma reserva precisa de uma capacidade coerente. Se o objeto só ficar válido depois de uma sequência de setters que alguém talvez esqueça, as operações seguintes terão de lidar com um estado incompleto.</p><p>Este capítulo continua o estudo de classes e referências. A meta é escrever construtores que recebam o necessário, concentrem validação e não tornem disponível um estado contraditório. Você deverá distinguir o construtor padrão gerado pelo compilador de uma forma sem argumentos declarada por você, explicar o encadeamento e justificar até onde uma cópia deve ser independente.</p><p>Os exemplos adotam Java 17. Regras de versões posteriores não mudam automaticamente os projetos configurados para essa versão. No Playground, os programas completos deste capítulo cabem em um Main.java com classes auxiliares sem public. Exemplos que exigem arquivos separados ou recursos adicionais indicam essa necessidade no próprio texto.</p>
+<h2 id="secao-2">2. Definir como um objeto começa</h2>
+<p>Um construtor participa da inicialização de um objeto. Ele tem o mesmo nome da classe e não declara tipo de retorno, nem mesmo <code>void</code>. <code>Celular(String modelo)</code> pode ser um construtor de <code>Celular</code>; <code>void Celular(String modelo)</code> é um método comum. A expressão <code>new</code> cria o objeto e aciona a inicialização correspondente. O construtor pode atribuir atributos e validar argumentos para evitar que o objeto comece em um estado incoerente.</p>
+<p>A apostila chama o construtor de método especial para introduzir a ideia. Na linguagem, construtores possuem regras próprias e não são métodos comuns: não são herdados e não podem ser chamados como uma operação qualquer com ponto. Esse detalhe importa quando você começa a usar sobrecarga e herança.</p>
+<h2 id="secao-3">3. Construtor sem argumentos e construtor padrão</h2>
+<p>Se uma classe comum não declara construtor, o compilador fornece um construtor padrão. Ele não é criado pela JVM em tempo de execução. Depois que você declara qualquer construtor, o compilador não acrescenta automaticamente aquele sem argumentos. Se precisar das duas formas, declare as duas. Uma classe com apenas <code>Celular(String modelo)</code> não aceita <code>new Celular()</code> sem outra declaração correspondente.</p>
+<pre><code>class Celular {
+    String modelo;
+    int bateria;
+
+    Celular(String modelo) {
+        this.modelo = modelo;
+        this.bateria = 100;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Celular aparelho = new Celular("Modelo de estudo");
+        System.out.println(aparelho.modelo + ": " + aparelho.bateria);
+    }
+}</code></pre>
+<p><code>this.modelo</code> identifica o atributo do objeto atual; <code>modelo</code> identifica o parâmetro nesse escopo. Sem a distinção, <code>modelo = modelo;</code> apenas reatribui o parâmetro a ele mesmo e deixa o atributo com o valor anterior. Quando não há conflito de nomes, o uso de <code>this</code> pode ser opcional, mas a referência explícita ajuda a acompanhar a inicialização.</p>
+<h2 id="secao-4">4. Valores iniciais dos atributos</h2>
+<p>Antes das atribuições feitas pelo seu código, campos de instância recebem valores padrão: zero para tipos numéricos, <code>false</code> para booleano, <code>'\u0000'</code> para char e <code>null</code> para referências. Um caractere padrão não é um texto vazio. Variáveis locais não recebem essa autorização de leitura automática: precisam de atribuição antes do uso. Os elementos de arrays, por sua vez, também são inicializados com valores padrão.</p>
+<p>Esses padrões não necessariamente atendem ao domínio. Um saldo inicial zero pode ser aceitável, mas um título nulo pode não ser. O construtor deve receber ou estabelecer as informações obrigatórias. Exigir que o chamador lembre de executar vários setters depois de <code>new</code> pode deixar períodos em que o objeto está incompleto e sujeito a erros.</p>
+<h2 id="secao-5">5. Sobrecarga e encadeamento</h2>
+<pre><code>class Circulo {
+    private double raio;
+    private String cor;
+
+    Circulo() {
+        this(1.0, "azul");
+    }
+
+    Circulo(double raio, String cor) {
+        if (!Double.isFinite(raio) || raio &lt;= 0) {
+            throw new IllegalArgumentException("Raio deve ser positivo e finito");
+        }
+        this.raio = raio;
+        this.cor = cor;
+    }
+
+    double area() {
+        return Math.PI * raio * raio;
+    }
+}</code></pre>
+<p>Os dois construtores têm listas de parâmetros diferentes. O construtor sem argumentos chama o outro com valores de referência usando <code>this(...)</code>, concentrando a validação e a atribuição. Na versão adotada, essa chamada precisa ser a primeira instrução do construtor. Não crie uma cadeia circular em que um construtor chama outro e volta a chamar o primeiro.</p>
+<p><code>new Circulo()</code> inicia com raio 1.0; <code>new Circulo(2.0, "verde")</code> usa raio 2.0. A área do segundo é quatro vezes a do primeiro, pois o raio é elevado ao quadrado. O valor de <code>Math.PI</code> evita repetir uma aproximação manual de pi em cada objeto. A cor não altera a área nesse modelo e poderia ser validada separadamente se a regra exigisse um conjunto de cores.</p>
+<h2 id="secao-6">6. Validar antes de tornar o estado disponível</h2>
+<p>O exemplo rejeita raio não positivo e valores não finitos. O método <code>Double.isFinite</code> ajuda a excluir <code>NaN</code> e infinito, que passariam por algumas verificações ingênuas. Uma comparação simples <code>raio &lt;= 0</code> não reconhece <code>NaN</code> como um valor válido ou inválido da forma esperada: comparações ordenadas com ele retornam falso. Para dados de entrada, valide o significado exigido pelo programa.</p>
+<p><code>throw new IllegalArgumentException(...)</code> informa que um argumento não atende ao contrato. O código chamador pode tratar essa exceção para apresentar uma mensagem e permitir correção. Apenas imprimir “valor inválido” e continuar atribuindo o mesmo valor não protege o estado. O construtor deve estabelecer claramente o objeto válido ou interromper sua criação com a falha apropriada.</p>
+<h2 id="secao-7">7. Construtores e herança</h2>
+<p>Uma subclasse precisa inicializar a parte herdada do objeto. Na referência Java 17, <code>super(...)</code> chama um construtor da superclasse como primeira instrução. Quando não há chamada explícita a outro construtor, o compilador tenta usar <code>super()</code>. Se a superclasse não oferecer um construtor sem argumentos acessível, a subclasse precisa informar os argumentos em uma chamada explícita.</p>
+<p>Construtores não são sobrescritos. Uma subclasse pode definir seus próprios construtores, com nomes iguais ao nome da própria subclasse. Isso difere de um método de instância com <code>@Override</code>. Ao revisar, separe o processo de construção das operações que serão chamadas depois que o objeto existir.</p>
+<h2 id="secao-8">8. Construtor de cópia e limites da cópia</h2>
+<p>Um construtor de cópia recebe outro objeto do mesmo tipo e inicializa uma nova instância com os valores escolhidos. Você precisa implementá-lo: Java não fornece esse construtor automaticamente para classes comuns. Defina como tratar uma origem nula. Copiar campos primitivos produz valores independentes; copiar uma referência de array ou lista continua compartilhando o objeto se nenhuma estrutura nova for criada.</p>
+<p>Suponha que um cadastro possua um nome e uma lista de telefones. Copiar a string do nome é adequado para compartilhar seu conteúdo imutável. Para impedir que uma alteração na lista original modifique a cópia, crie outra lista. Se os elementos dessa lista forem objetos mutáveis, a independência desses elementos exigirá outra decisão de cópia. O contrato deve dizer até onde vai essa separação. Relacione esse cuidado ao <a href="playground.html?ex=copia-defensiva">boletim com cópia defensiva</a> antes de oferecer uma operação de duplicação.</p>
+<h2 id="secao-9">9. Erros comuns no exercício</h2>
+<p>Um erro frequente é declarar um método com o nome da classe e <code>void</code> e esperar que seja executado automaticamente no <code>new</code>. Outro é criar um construtor com argumentos e continuar chamando a forma vazia. Também aparece a atribuição do parâmetro a ele mesmo por falta de <code>this</code>. Cada caso pode ser observado com um atributo que será impresso logo após a criação.</p>
+<p>A visibilidade do construtor controla quem pode utilizá-lo. Uma classe pública com construtor sem modificador pode ser visível fora do pacote enquanto aquele construtor não é acessível ali. Nome de classe, lista de parâmetros e modificador precisam ser examinados em conjunto ao investigar uma falha de instanciação.</p>
+<h2 id="secao-10">10. Prática orientada</h2>
+<p>Crie um círculo com raio padrão e outro com raio 2.0. Compare suas áreas, depois tente criar raios 0 e -1 e observe a falha de validação. Acrescente uma sobrecarga que receba somente o raio e delegue para o construtor principal com uma cor definida. Teste se a regra continua concentrada em um lugar. Ao revisar, diferencie o que o compilador fornece do que você escreveu explicitamente.</p>
+<p><a href="playground.html?ex=construtores">Abrir a atividade de construtores</a>. Para a distinção entre construtor declarado e padrão, consulte as <a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-8.html#jls-8.8.9">regras de construtores da especificação Java</a>.</p>
+<p id="extraActivities8">Outras atividades deste tema: <a href="playground.html?ex=construtor-validado">Construir um objeto válido</a>.</p><h2 id="secao-11">11. O contrato do objeto começa pelos estados permitidos</h2>
+<p>Antes de escrever o construtor, liste o que precisa ser verdade depois que ele termina. Para um produto simples: nome não nulo, nome não vazio após remover espaços externos e quantidade não negativa. Para um círculo: raio positivo e finito. Essas afirmações são invariantes do modelo; as demais operações também deverão preservá-las quando houver mutação.</p><p>Nem todo valor padrão da linguagem é um valor padrão do domínio. Zero pode representar uma quantidade vazia válida, mas um prazo zero pode não representar uma entrega válida. Não confunda “o campo foi inicializado” com “o objeto atende à regra”. A primeira afirmação fala do mecanismo da linguagem; a segunda depende do problema.</p><p>Um construtor deve validar os dados de que precisa sem tentar adivinhar informações ausentes. Se a regra não permite nome vazio, substituí-lo silenciosamente por “Sem nome” pode esconder um erro de cadastro. Se o domínio permite essa ausência, represente-a explicitamente e documente quais operações continuam disponíveis.</p>
+<h2 id="secao-12">12. Ordem de inicialização: valores padrão, parte herdada e corpo</h2>
+<p>Na perspectiva do programa Java, campos recebem valores padrão antes de inicializações explícitas. A construção também envolve a parte da superclasse. Só depois de retornar dessa inicialização a parte da subclasse executa seus inicializadores de instância e o restante do seu construtor. Essa ordem importa quando um método chamado cedo demais tenta observar dados da subclasse.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t8-ordem" data-java-program>class Base {
+    Base() { System.out.println("Base pronta"); }
+}
+class Derivada extends Base {
+    private int valor = 7;
+    Derivada() {
+        super();
+        System.out.println("Campo: " + valor);
+        valor = 9;
+        System.out.println("Corpo: " + valor);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        new Derivada();
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t8-ordem">Base pronta
+Campo: 7
+Corpo: 9</samp></pre></figure><p>O exemplo não depende de uma chamada a método sobrescrito durante a construção. Ele apenas torna a ordem observável por mensagens. Não generalize a ordem das linhas do arquivo como se todos os campos de todas as classes fossem inicializados antes de qualquer construtor participar.</p><p>Inicializadores de campos e blocos de inicialização podem simplificar valores locais, mas também podem esconder trabalho que lança exceção. Evite consultas externas, gravações e outras operações surpreendentes em inicializações de um objeto de domínio simples. Quem usa new deve conseguir compreender o que precisa fornecer e que tipo de falha pode acontecer.</p>
+<h2 id="secao-13">13. Padrão, sem argumentos e construtor com parâmetros</h2>
+<p>O termo construtor padrão tem um significado específico: ele é fornecido pelo compilador quando a classe comum não declara nenhum construtor. Um construtor sem argumentos escrito por você pode aplicar regras ou delegar a outra forma, mas não é aquele construtor implícito. Essa distinção evita atribuir à JVM uma criação que pertence à compilação.</p><p>Ao declarar uma forma com parâmetros, não espere que a forma vazia continue existindo automaticamente. Se ela representa um estado válido e útil, declare-a com os valores que o contrato permite. Não invente valores arbitrários apenas para conservar uma chamada antiga que já não tem informações suficientes.</p><p>Um construtor não declara retorno, nem mesmo void. Um método com o nome da classe e retorno void não será chamado automaticamente por new. Quando uma instância parece começar sem os dados esperados, confira essa diferença antes de acrescentar chamadas repetidas de inicialização no main.</p>
+<h2 id="secao-14">14. Encadeamento para validar uma única vez</h2>
+<p>Sobrecargas podem oferecer conveniência sem duplicar as regras. Um construtor que recebe somente nome pode fornecer quantidade zero ao construtor principal; a versão com nome e quantidade faz a validação comum. Na referência Java 17, a chamada this(...) ou super(...) deve aparecer como primeira instrução quando usada dessa forma.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t8-produto" data-java-program>class Produto {
+    private final String nome;
+    private final int quantidade;
+
+    Produto(String nome) { this(nome, 0); }
+
+    Produto(String nome, int quantidade) {
+        if (nome == null || nome.trim().isEmpty() || quantidade &lt; 0) {
+            throw new IllegalArgumentException("Nome ou quantidade inválidos");
+        }
+        this.nome = nome.trim();
+        this.quantidade = quantidade;
+    }
+
+    String descricao() { return nome + ": " + quantidade; }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(new Produto(" Caderno ").descricao());
+        System.out.println(new Produto("Caneta", 3).descricao());
+        try {
+            new Produto(" ", 1);
+        } catch (IllegalArgumentException erro) {
+            System.out.println(erro.getMessage());
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t8-produto">Caderno: 0
+Caneta: 3
+Nome ou quantidade inválidos</samp></pre></figure><p>As duas formas permitidas passam pela mesma verificação. Se amanhã a quantidade máxima do exercício for limitada, a decisão terá um único ponto de atualização. Os testes ainda precisam percorrer cada forma pública de construir, pois uma sobrecarga poderia fornecer um argumento incompatível com a nova regra.</p><p>Evite cadeias difíceis de seguir e chamadas circulares entre construtores. Se a lista de combinações crescer muito, talvez a interface precise de outra apresentação, mas não crie um builder para um objeto simples com dois dados. Primeiro mantenha os nomes, a quantidade de parâmetros e o caminho de validação claros.</p>
+<h2 id="secao-15">15. Quando um construtor falha, não finja que houve um objeto válido</h2>
+<p>Se um construtor lança uma exceção e não termina normalmente, a expressão new não entrega ao chamador um resultado de construção bem-sucedida. Isso permite impedir o uso de uma instância que não atende ao contrato. Apenas imprimir uma mensagem e continuar o corpo normalmente deixa o objeto existir com dados que o próprio código acabou de chamar de inválidos.</p><p>O chamador deve tratar a falha em um ponto capaz de explicar o problema ou pedir correção. Um programa de console pode capturar IllegalArgumentException e mostrar a mensagem. Uma biblioteca pode deixar a exceção seguir para a camada responsável. Não capture qualquer exceção apenas para retornar uma instância vazia, a menos que essa política seja explícita e faça sentido no domínio.</p><p>Uma falha durante a construção também não desfaz automaticamente efeitos externos já realizados. Se o construtor gravou um arquivo antes de validar o último argumento, essa gravação pode permanecer. Por isso, valide antes de publicar o estado e evite efeitos externos desnecessários no processo. Recuperação de memória e reversão de uma operação de negócio são responsabilidades diferentes.</p>
+<h2 id="secao-16">16. Não publique this antes de terminar a construção</h2>
+<p>Durante o construtor, o objeto ainda está estabelecendo suas invariantes. Guardar this em uma coleção global, registrar callbacks que podem executar imediatamente ou iniciar uma tarefa que observa os campos pode expor esse estado incompleto. Mesmo em um programa sem threads explícitas, uma chamada indireta pode ocorrer antes do ponto que você imaginava.</p><p>Chamar um método sobrescrevível do construtor é uma forma de risco. O despacho pode chegar a uma implementação da subclasse antes que seus campos tenham recebido as inicializações explícitas. O resultado pode ser zero, null ou outro estado intermediário. Para a inicialização, prefira operações que não dependam de uma extensão ainda não construída.</p><p>Isso não exige transformar toda classe em uma arquitetura complicada. Um objeto simples pode validar argumentos, atribuir seus campos privados e terminar. Depois, uma rotina externa pode registrar a instância ou iniciar o trabalho que depende dela. Essa separação também torna mais fácil testar o domínio sem acionar serviços inesperados.</p>
+<h2 id="secao-17">17. Final e imutabilidade: proteja também os objetos recebidos</h2>
+<p>Um campo final impede uma nova atribuição àquele campo depois da inicialização permitida, mas não impede que um array ou uma lista referenciada seja alterada. Um objeto com private final double[] notas não é automaticamente imutável. Se ele guarda o próprio array que o chamador forneceu, esse chamador ainda pode mudar seus elementos por outra referência.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t8-defensiva" data-java-program>import java.util.Arrays;
+
+class Boletim {
+    private final double[] notas;
+
+    Boletim(double[] notas) {
+        if (notas == null || notas.length == 0) {
+            throw new IllegalArgumentException("Informe notas");
+        }
+        double[] copia = Arrays.copyOf(notas, notas.length);
+        for (double nota : copia) {
+            if (!Double.isFinite(nota) || nota &lt; 0 || nota &gt; 10) {
+                throw new IllegalArgumentException("Nota inválida");
+            }
+        }
+        this.notas = copia;
+    }
+
+    double[] notas() { return Arrays.copyOf(notas, notas.length); }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        double[] entrada = {6, 8};
+        Boletim boletim = new Boletim(entrada);
+        entrada[0] = 0;
+        double[] consulta = boletim.notas();
+        consulta[1] = 0;
+        System.out.println(Arrays.toString(boletim.notas()));
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t8-defensiva">[6.0, 8.0]</samp></pre></figure><p>O laboratório copia na entrada e na saída. A primeira cópia evita que o chamador altere o estado por sua referência inicial. A segunda impede que uma consulta entregue o armazenamento interno para modificação. Para doubles, a cópia dos elementos já separa os valores. Para elementos mutáveis, seria necessário definir outro nível de independência.</p><p>A cópia tem custo proporcional à quantidade de elementos. Não a retire apenas por parecer repetitiva se ela protege o contrato. Se o volume justificar outra estratégia, considere representações imutáveis ou outra interface e verifique a propriedade dos dados. O ganho precisa ser medido sem eliminar a proteção que o usuário espera.</p>
+<h2 id="secao-18">18. Construtor de cópia: defina o que permanecerá compartilhado</h2>
+<p>Um construtor que recebe outra instância pode criar uma cópia, mas Java não o fornece automaticamente para uma classe comum. O contrato deve dizer quais dados são duplicados e quais referências podem ser compartilhadas. Strings podem compartilhar conteúdo imutável; uma lista de objetos mutáveis exige uma decisão adicional sobre cada elemento.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t8-copia" data-java-program>import java.util.Arrays;
+
+class Medicoes {
+    private final int[] valores;
+
+    Medicoes(int[] valores) {
+        if (valores == null) throw new IllegalArgumentException("Valores ausentes");
+        this.valores = valores.clone();
+    }
+    Medicoes(Medicoes origem) {
+        if (origem == null) throw new IllegalArgumentException("Origem ausente");
+        this.valores = origem.valores.clone();
+    }
+    void definir(int indice, int valor) { valores[indice] = valor; }
+    String texto() { return Arrays.toString(valores); }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Medicoes original = new Medicoes(new int[]{1, 2});
+        Medicoes copia = new Medicoes(original);
+        copia.definir(0, 9);
+        System.out.println(original.texto());
+        System.out.println(copia.texto());
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t8-copia">[1, 2]
+[9, 2]</samp></pre></figure><p>O método definir usa a verificação de limites do próprio array para índices inválidos; este exercício não fornece uma mensagem personalizada para essa falha. A construção e a cópia não mudam a regra de acesso posterior. Defina separadamente quais erros cada operação assume tratar.</p><p>Clone também não é uma promessa universal de cópia profunda. Em uma matriz de objetos, duplicar o array externo não duplica as linhas nem os objetos internos. Evite usar termos como “duplicar tudo” sem descrever a estrutura concreta. Uma cópia correta é a que atende ao grau de independência combinado.</p>
+<h2 id="secao-19">19. Herança: inicializar a parte comum sem repetir o contrato</h2>
+<p>Se uma classe base exige um código, uma subclasse não pode ignorar essa necessidade. Ela precisa chamar um construtor acessível da base com um argumento válido. Quando não há chamada explícita, o compilador tenta a forma super() em uma classe comum; se essa forma não existe ou não é acessível, a compilação falha.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t8-heranca" data-java-program>class Item {
+    private final String codigo;
+    Item(String codigo) {
+        if (codigo == null || codigo.trim().isEmpty()) {
+            throw new IllegalArgumentException("Código obrigatório");
+        }
+        this.codigo = codigo.trim();
+    }
+    String codigo() { return codigo; }
+}
+class Livro extends Item {
+    private final String titulo;
+    Livro(String codigo, String titulo) {
+        super(codigo);
+        if (titulo == null || titulo.trim().isEmpty()) {
+            throw new IllegalArgumentException("Título obrigatório");
+        }
+        this.titulo = titulo.trim();
+    }
+    String descricao() { return codigo() + ": " + titulo; }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(new Livro(" L1 ", " Java ").descricao());
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t8-heranca">L1: Java</samp></pre></figure><p>A base protege o código; a subclasse protege o título. Isso não significa que você deva usar herança em todo cadastro com campos parecidos. A relação de substituição precisa fazer sentido para as operações. Se duas classes apenas usam um mesmo componente, composição pode manter os contratos mais independentes.</p><p>Construtores não são herdados nem sobrescritos. A subclasse declara os seus, com seu próprio nome. Uma anotação Override não transforma um construtor em método herdado. Ao diagnosticar uma falha, confira nome, acesso, lista de parâmetros e a chamada inicial à base.</p>
+<h2 id="secao-20">20. Fábricas nomeadas e listas de parâmetros difíceis de ler</h2>
+<p>Uma chamada com vários parâmetros do mesmo tipo pode esconder trocas: Pessoa("Ana", "Recife", "Rua A") depende de lembrar a ordem. Nomes claros, tipos adequados e uma interface menor podem ajudar. Em algumas situações, um método de fábrica com nome expressivo comunica uma forma de criação melhor do que outra sobrecarga ambígua.</p><p>Uma fábrica não elimina a validação do construtor ou da rotina comum de construção. Ela deve conduzir aos mesmos estados permitidos. Também pode escolher quando criar uma nova instância ou devolver um objeto apropriado, mas essas possibilidades não justificam acrescentá-la a todo exemplo. Para o Produto com nome e quantidade, o encadeamento já resolve a necessidade de forma direta.</p><p>Outro caso delicado envolve null e sobrecargas de referências não relacionadas. Uma chamada com null pode ser ambígua quando há construtores que recebem tipos diferentes igualmente aplicáveis. O compilador precisa de uma escolha definida. Em vez de adicionar casts arbitrários nos chamadores, revise se a interface de construção está realmente comunicando alternativas claras.</p>
+<h2 id="secao-21">21. Testar a construção inclui conferir a falha e a independência</h2>
+<p>Faça testes de estados mínimos válidos, estados típicos e cada argumento inválido. Para quantidade não negativa, zero é válido e menos um é inválido. Para nome obrigatório, null, vazio e somente espaços são casos diferentes. Para raio positivo, zero não é permitido, e NaN precisa de uma verificação que realmente o reconheça.</p><p>Nas cópias, o teste deve alterar a origem depois da construção e também alterar o que uma consulta devolveu. Se você testar somente a descrição inicial, uma implementação que compartilha tudo parecerá correta. A independência é um comportamento observado depois de mudanças por outras referências.</p><p>Uma validação em um construtor não autoriza os demais caminhos a violarem a mesma regra. Percorra sobrecargas, fábricas e operações de mutação. No próximo tema, setters e outros métodos precisarão preservar invariantes da mesma forma. Não basta que uma instância comece válida e aceite dados incoerentes na primeira atualização.</p>
+<h2 id="secao-22">22. Prática orientada, resoluções e revisão da construção</h2>
+<ol><li><strong>Produto:</strong> escreva dois construtores, um com nome e outro com nome e quantidade. A primeira forma deve delegar quantidade zero. Aceite Caderno com 0 e 3; recuse null, nome vazio e quantidade -1. Mostre as mensagens de falha no main.</li><li><strong>Círculo:</strong> ofereça raio padrão 1 e raio informado. Valide valor positivo e finito. Compare as áreas para 1 e 2 usando Math.PI. Teste 0, -1 e NaN como recusas.</li><li><strong>Cópia defensiva:</strong> construa um Boletim com {6, 8}; modifique a entrada original e uma cópia obtida por consulta. O estado do Boletim deve continuar {6, 8}.</li><li><strong>Diagnóstico:</strong> em uma cópia do exercício, coloque void antes do nome que deveria ser construtor. Explique por que a inicialização automática deixou de ocorrer e restaure a declaração.</li></ol><details><summary>Possível solução: círculo com construção validada</summary><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t8-circulo" data-java-program>import java.util.Locale;
+
+class Circulo {
+    private final double raio;
+    Circulo() { this(1); }
+    Circulo(double raio) {
+        if (!Double.isFinite(raio) || raio &lt;= 0) {
+            throw new IllegalArgumentException("Raio inválido");
+        }
+        this.raio = raio;
+    }
+    double area() { return Math.PI * raio * raio; }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.printf(Locale.US, "Áreas: %.2f e %.2f%n",
+                new Circulo().area(), new Circulo(2).area());
+        try {
+            new Circulo(0);
+        } catch (IllegalArgumentException erro) {
+            System.out.println(erro.getMessage());
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t8-circulo">Áreas: 3.14 e 12.57
+Raio inválido</samp></pre></figure><p>O raio padrão é válido segundo o mesmo contrato da forma com parâmetro. O cálculo usa double e a saída de duas casas é uma apresentação; para raios muito grandes, uma aplicação que prometa área finita precisaria limitar o intervalo ou conferir o resultado. O exercício não promete aritmética ilimitada.</p></details><details><summary>Conferir produto, cópia e diagnóstico</summary><p>O Produto com somente nome começa em quantidade zero. As outras recusas lançam IllegalArgumentException, sem entregar uma construção válida ao chamador. Na cópia defensiva, o Boletim continua mostrando 6 e 8 após as duas tentativas externas de alteração. Uma declaração com void é um método comum; ela não é executada automaticamente por new.</p></details><p>Você pode avançar quando sabe explicar quais estados o construtor aceita, por que cada sobrecarga preserva a regra e quais dados são compartilhados ou copiados. O tema 9 continua com encapsulamento e operações que mantêm a coerência depois da construção.</p><h2 id="fontes">Fontes e continuidade</h2><p class="text-muted">Referência para consulta: <a href="assets/materiais/07DesenvolvimentodeAplicaes.pdf">Desenvolvimento de aplicações</a>, páginas 79 a 84. A explicação e os exemplos estão completos abaixo.</p><p>A base original foi preservada; os laboratórios ampliados acrescentam contratos, casos de fronteira e exercícios comentados. Use a versão da documentação correspondente ao ambiente configurado.</p><ul><li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-14.html">Java 17 · blocos, condições e repetições</a></li><li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-10.html">Java 17 · arrays</a></li><li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-8.html">Java 17 · classes, métodos e construtores</a></li><li><a href="https://docs.oracle.com/en/java/javase/17/docs/api/index.html">Biblioteca padrão Java 17</a></li><li><a href="extra.html">Projetos, laboratórios e referências adicionais</a></li></ul></article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-07.html">Anterior · Tema 7</a><a class="btn btn-primary" href="cont.html#modal9">Próximo · Tema 9</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <p class="mb-1">
+            <a href="index.html">Início</a> ·
+            <a href="cont.html">Conteúdo</a> ·
+            <a href="playground.html">Playground</a> ·
+            <a href="quiz.html">Quiz</a> ·
+            <a href="faq.html">FAQ</a> · <a href="extra.html">Extra</a>
+        </p>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+
+
+
+</body>
+</html>

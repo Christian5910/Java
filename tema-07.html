@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>07 · Classes, objetos e métodos · Java</title>
+<meta name="description" content="Modele dados e comportamentos com classes, métodos e contratos: acompanhe referências, instâncias e polimorfismo.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 7 de 30</span></nav><header class="lesson-header"><h1>07 · Classes, objetos e métodos</h1><p class="lead">Modele dados e comportamentos com classes, métodos e contratos: acompanhe referências, instâncias e polimorfismo.</p><p class="text-muted">Java 17 como referência · Teoria, laboratórios e exercícios comentados</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-23">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">De instruções soltas a objetos com responsabilidades</a></li><li><a href="#secao-2">Organizar dados e comportamentos</a></li><li><a href="#secao-3">Declarar uma classe e criar objetos</a></li><li><a href="#secao-4">Métodos, parâmetros e retorno</a></li><li><a href="#secao-5">Membros de instância e membros static</a></li><li><a href="#secao-6">Java passa argumentos por valor</a></li><li><a href="#secao-7">Sobrecarga, herança e polimorfismo</a></li><li><a href="#secao-8">Interfaces e polimorfismo com um exemplo completo</a></li><li><a href="#secao-9">Classe abstrata, interface e composição</a></li><li><a href="#secao-10">Lambdas e processamento com streams</a></li><li><a href="#secao-11">Estado, memória e responsabilidade</a></li><li><a href="#secao-12">Prática e revisão</a></li><li><a href="#secao-13">Desenhar a responsabilidade antes de desenhar as classes</a></li><li><a href="#secao-14">Parâmetros e retorno formam o contrato de uma chamada</a></li><li><a href="#secao-15">Referências: mutar o objeto não é reatribuir o chamador</a></li><li><a href="#secao-16">Static, instância e o risco de compartilhar estado sem querer</a></li><li><a href="#secao-17">Sobrecarga e sobrescrita respondem a perguntas diferentes</a></li><li><a href="#secao-18">Polimorfismo: preserve o contrato do código que chama</a></li><li><a href="#secao-19">Composição e dependências explícitas em um exemplo pequeno</a></li><li><a href="#secao-20">Igualdade de objetos e identidade não são intercambiáveis</a></li><li><a href="#secao-21">Lambdas e streams: operações sobre dados sem esconder seus efeitos</a></li><li><a href="#secao-22">Testar uma classe sem depender da sua interface de entrada</a></li><li><a href="#secao-23">Prática orientada, possíveis soluções e revisão</a></li><li><a href="#fontes">Fontes e continuidade</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. De instruções soltas a objetos com responsabilidades</h2>
+<p>Uma classe pode reunir estado e operações que precisam obedecer às mesmas regras. Isso ajuda quando uma aplicação já não cabe em uma sequência curta no main. A vantagem não vem de criar uma classe para cada palavra do enunciado, mas de manter uma decisão de negócio em um lugar que consiga protegê-la e explicá-la.</p><p>Comece com um caso concreto: um estoque tem quantidade e operações de entrada e saída. Uma saída não deveria produzir quantidade negativa. Se qualquer código puder mudar o campo sem passar pela regra, o objeto não está garantindo seu próprio contrato. Este tema introduz a relação entre estado, método, referência e responsabilidade; encapsulamento recebe aprofundamento no tema 9.</p><p>Ao terminar, você deverá diferenciar uma classe de uma instância, seguir os argumentos de uma chamada, explicar o que uma alteração de referência muda e usar polimorfismo sem depender do tipo concreto em todo lugar. Não é necessário aprender um framework para testar essas ideias. Programas pequenos de console tornam as decisões observáveis.</p>
+<h2 id="secao-2">2. Organizar dados e comportamentos</h2>
+<p>Programação orientada a objetos organiza o programa em objetos que possuem estado e comportamento. Uma classe define um tipo; um objeto é uma instância desse tipo. No programa abaixo, marca, modelo e bateria são atributos de um celular, enquanto tirar foto é uma operação. Para uma conta, saldo é estado e depositar é uma operação que o modifica segundo regras.</p>
+<p>A modelagem deve atender ao problema que o programa resolve. Uma classe não precisa reproduzir tudo que um objeto do mundo real possui. Para controlar empréstimos de um livro, título e disponibilidade podem importar; para calcular frete, peso e dimensões podem ser necessários. Abstrair é escolher as informações e operações relevantes e oferecer uma forma de usá-las sem exigir que todo chamador conheça seus detalhes internos.</p>
+<h2 id="secao-3">3. Declarar uma classe e criar objetos</h2>
+<pre><code>class Celular {
+    String marca;
+    String modelo;
+    int bateria;
+
+    void tirarFoto() {
+        System.out.println("Foto registrada por " + modelo);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Celular primeiro = new Celular();
+        primeiro.marca = "Marca A";
+        primeiro.modelo = "Modelo 1";
+        primeiro.bateria = 100;
+        primeiro.tirarFoto();
+    }
+}</code></pre>
+<p>Este programa cabe em <code>Main.java</code>, pois apenas <code>Main</code> é uma classe pública de topo. <code>Celular primeiro;</code> declara uma variável, e <code>new Celular()</code> cria um objeto e devolve uma referência para ele. Declarar a variável sem instanciar não cria um celular. O ponto acessa um membro: <code>primeiro.modelo</code> lê o atributo e <code>primeiro.tirarFoto()</code> chama o método.</p>
+<p>Dois objetos criados com <code>new</code> podem ter valores diferentes, mesmo pertencendo à mesma classe. Alterar a bateria de um não altera automaticamente a bateria do outro. Se duas variáveis guardarem a mesma referência, ambas acessarão o mesmo objeto. Copiar uma referência não é criar uma cópia independente do estado.</p>
+<h2 id="secao-4">4. Métodos, parâmetros e retorno</h2>
+<p>Um método reúne instruções para executar uma tarefa. A declaração informa o nome, os parâmetros e o tipo de retorno. <code>int somar(int a, int b)</code> recebe dois inteiros e promete devolver um inteiro. Na chamada <code>somar(5, 10)</code>, 5 e 10 são argumentos: valores fornecidos aos parâmetros. O nome do parâmetro pertence ao método e não precisa coincidir com o nome da variável usada pelo chamador.</p>
+<pre><code>static int somar(int a, int b) {
+    return a + b;
+}
+
+static void apresentar(int resultado) {
+    System.out.println("Resultado: " + resultado);
+}</code></pre>
+<p><code>return</code> encerra a execução atual do método e, quando necessário, entrega um valor ao chamador. Um método com retorno precisa ter um resultado compatível em todos os caminhos que podem terminar normalmente. Um método <code>void</code> executa uma ação sem fornecer um valor; ele pode usar <code>return;</code> para encerrar antes do fim. Imprimir um número e devolvê-lo são efeitos diferentes: um retorno pode ser armazenado, somado e testado sem depender do texto no console.</p>
+<p>Em um conversor de moedas, o método pode calcular e retornar o valor, deixando a apresentação para <code>main</code>. Uma chamada com 105 reais e cotação 5.25 devolve 20.0. O chamador decide como formatar o resultado. A cotação deve ser fornecida pelo enunciado; zero e valores negativos são inválidos nesse modelo.</p>
+<h2 id="secao-5">5. Membros de instância e membros static</h2>
+<p>Um atributo de instância pertence a cada objeto. Um membro <code>static</code> pertence à classe e é compartilhado por suas instâncias. Um método estático não possui <code>this</code>, pois não há um objeto receptor implícito. Esse é o motivo de os primeiros métodos auxiliares da apostila serem estáticos: podem ser chamados diretamente do <code>main</code> estático. A visibilidade <code>public</code> é outra decisão e não é o que torna essa chamada estática possível.</p>
+<pre><code>class Contador {
+    int valor;
+    static int objetosCriados;
+
+    Contador() {
+        objetosCriados++;
+    }
+
+    void incrementar() {
+        valor++;
+    }
+}</code></pre>
+<p>Ao criar dois contadores, cada <code>valor</code> começa em zero e <code>objetosCriados</code> chega a dois. Incrementar um contador não altera o valor do outro. Um saldo estático seria compartilhado por todas as instâncias da classe. Para representar várias contas, o saldo deve pertencer a cada objeto de conta, evitando compartilhar indevidamente o mesmo dinheiro entre usuários.</p>
+<h2 id="secao-6">6. Java passa argumentos por valor</h2>
+<p>Java copia o valor de cada argumento para o parâmetro. Para um primitivo, o método recebe uma cópia do número ou booleano. Reatribuir o parâmetro não altera a variável do chamador. Para um objeto, o valor copiado é a referência. O método pode usar essa referência para modificar o objeto compartilhado, mas reatribuir o parâmetro para outro objeto não troca a variável do chamador.</p>
+<pre><code>static void alterar(int numero, int[] valores) {
+    numero = 99;
+    valores[0] = 99;
+}
+// Se n vale 1 e dados contém {1}, depois de alterar(n, dados):
+// n continua 1; dados[0] passa a 99.</code></pre>
+<p>Esse comportamento explica por que um método pode preencher um array recebido e por que uma função que apenas reatribui seu parâmetro não consegue substituir a referência original. Para criar outra estrutura e permitir que o chamador a use, retorne essa estrutura e atribua o retorno no ponto da chamada.</p>
+<h2 id="secao-7">7. Sobrecarga, herança e polimorfismo</h2>
+<p>Sobrecarga declara métodos com o mesmo nome e listas de parâmetros diferentes. <code>somar(int, int)</code> e <code>somar(double, double)</code> são assinaturas distintas. Apenas mudar o tipo de retorno não cria uma sobrecarga válida. A escolha da sobrecarga considera os tipos dos argumentos na compilação, não um texto impresso pelo método.</p>
+<p>Herança com <code>extends</code> permite definir uma classe a partir de outra. Java permite uma superclasse direta para uma classe. Sobrescrita fornece outra implementação para um método de instância herdado; a anotação <code>@Override</code> ajuda o compilador a verificar essa intenção. Quando uma referência de um tipo mais geral aponta para um objeto de uma subclasse, a chamada de um método sobrescrito usa a implementação do objeto em execução. Esse é um caso de polimorfismo.</p>
+<p>Uma interface descreve um contrato que classes podem implementar. A relação de herança deve representar uma relação adequada de tipos. Um carro que possui um motor usa composição: guarda uma referência para um objeto <code>Motor</code>. Isso não faz o carro herdar do motor nem receber automaticamente seus direitos de acesso. A seguir, observe um contrato implementado por duas classes.</p>
+<h2 id="secao-8">8. Interfaces e polimorfismo com um exemplo completo</h2>
+<p>Abstração escolhe o que um contrato precisa representar; encapsulamento controla o estado e as operações permitidas. Herança estabelece uma relação de subtipos. Polimorfismo permite que uma chamada por um contrato comum use implementações diferentes. No programa abaixo, cada mensagem possui seu texto, enquanto o método que a apresenta trabalha com o mesmo contrato.</p>
+<pre><code id="research-interface">interface Mensagem {
+    String texto();
+}
+
+class BoasVindas implements Mensagem {
+    @Override
+    public String texto() {
+        return "Bem-vindo ao estudo";
+    }
+}
+
+class Lembrete implements Mensagem {
+    @Override
+    public String texto() {
+        return "Revise o exemplo antes de executar";
+    }
+}
+
+public class Main {
+    static void apresentar(Mensagem mensagem) {
+        System.out.println(mensagem.texto());
+    }
+
+    public static void main(String[] args) {
+        apresentar(new BoasVindas());
+        apresentar(new Lembrete());
+    }
+}</code></pre><p><a href="playground.html?ex=contrato-mensagem">Praticar este programa no Playground</a></p>
+<p>As duas linhas apresentam os textos definidos em cada classe. O parâmetro de <code>apresentar</code> é do tipo <code>Mensagem</code>; a implementação do objeto determina qual método de instância sobrescrito é executado. O chamador não precisa consultar o nome da classe nem usar um <code>if</code> para cada mensagem. Os métodos de implementação são públicos porque o método abstrato declarado nessa interface possui esse acesso. A anotação <code>@Override</code> ajuda a detectar uma assinatura que não cumpre o contrato.</p>
+<p>Acrescente outra classe que implemente <code>Mensagem</code> e faça uma terceira chamada. Alterar o nome do método para <code>textos</code> sem implementar <code>texto</code> deve impedir a compilação. Essa experiência distingue contrato de simples coincidência de nomes. Abra a atividade <a href="playground.html?ex=contrato-mensagem">Um contrato, duas mensagens</a> para praticar este programa. O rascunho é salvo separadamente.</p>
+<h2 id="secao-9">9. Classe abstrata, interface e composição</h2>
+<p>Uma classe abstrata não pode ser instanciada diretamente. Ela pode reunir estado de instância, construtores e métodos implementados ou abstratos. Sua construção participa da inicialização da subclasse. Uma interface expressa um tipo que classes podem implementar; no recorte básico, define operações exigidas. Interfaces também podem oferecer métodos <code>default</code> e estáticos, portanto a regra “interface nunca tem implementação” está incompleta.</p>
+<p>Uma classe pode estender uma única classe diretamente e implementar várias interfaces. Use uma base abstrata quando há uma relação de tipos e estado ou comportamento compartilhado que pertencem àquela base. Use uma interface quando o consumidor precisa de uma capacidade ou contrato sem exigir a mesma hierarquia de classes. Um carro que possui um motor pode receber esse motor como colaborador; essa composição evita apresentar o carro como um tipo de motor. O guia de <a href="https://docs.oracle.com/javase/tutorial/java/IandI/abstract.html">classes e métodos abstratos</a> compara essas possibilidades.</p>
+<p>A relação de herança deve preservar o que o chamador espera do tipo mais geral. Se uma operação da base promete aceitar determinada entrada, uma subclasse não pode recusá-la arbitrariamente e continuar cumprindo a mesma promessa. Reutilizar algumas linhas de código não basta para justificar <code>extends</code>. Antes de construir uma árvore de classes, escreva o contrato e teste duas implementações pelo mesmo tipo de referência.</p>
+<h2 id="secao-10">10. Lambdas e processamento com streams</h2>
+<p>Uma lambda descreve um comportamento para uma interface funcional, que possui um único método abstrato relevante para esse contrato. Em <code>n -&gt; n &gt;= 7</code>, o parâmetro recebe um valor e a expressão responde se ele atende ao limite. A Stream API encadeia operações sobre uma fonte de dados. <code>filter</code> seleciona elementos, <code>map</code> transforma cada um e <code>collect</code> reúne o resultado. Isso permite descrever uma consulta sem substituir as coleções que armazenam os dados.</p>
+<pre><code id="research-streams">import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class Main {
+    public static void main(String[] args) {
+        List&lt;Integer&gt; notas = Arrays.asList(5, 7, 9, 7);
+        List&lt;Integer&gt; aprovadas = notas.stream()
+            .filter(n -&gt; n &gt;= 7)
+            .sorted()
+            .collect(Collectors.toList());
+        System.out.println(aprovadas);
+        System.out.println(notas);
+    }
+}</code></pre><p><a href="playground.html?ex=filtrar-stream">Praticar este programa no Playground</a></p>
+<p>A saída é <code>[7, 7, 9]</code> e depois <code>[5, 7, 9, 7]</code>. Nesse pipeline, a origem continua na sequência inicial; <code>sorted</code> ordena os elementos do fluxo. Operações intermediárias são preguiçosas: o processamento acontece quando uma operação terminal consome o fluxo. Uma stream consumida não deve ser reutilizada. Crie outra com <code>notas.stream()</code> para uma nova consulta. Streams não tornam os objetos envolvidos imutáveis e efeitos colaterais nas lambdas podem alterar estado.</p>
+<p>O exemplo usa APIs disponíveis desde Java 8 para funcionar no ambiente deste site. Recursos como <code>Stream.toList()</code> exigem bibliotecas posteriores e não estão incluídos no compilador do Playground. Compare o pipeline com um laço que filtra e ordena os mesmos valores. Não escolha <code>parallelStream()</code> apenas pelo nome: paralelismo acrescenta coordenação e pode piorar uma tarefa pequena. Experimente a atividade <a href="playground.html?ex=filtrar-stream">Filtrar notas com streams</a> para acompanhar o pipeline. A <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html">documentação de Stream</a> detalha as regras do fluxo.</p>
+<h2 id="secao-11">11. Estado, memória e responsabilidade</h2>
+<p>Uma variável de referência pode deixar de apontar para um objeto quando recebe outro valor. Se o objeto não puder mais ser alcançado pelo programa, sua memória pode ser recuperada pelo coletor de lixo. O momento dessa coleta não é uma etapa que você controla apenas atribuindo <code>null</code>. Recursos como arquivos e conexões precisam de fechamento apropriado; coleta de memória não substitui esse cuidado.</p>
+<p>Uma classe deve concentrar operações relacionadas a sua responsabilidade. Uma conta pode proteger saldo e movimentações; a interface de console lê a opção e apresenta mensagens. Essa separação ajuda a testar o cálculo sem precisar digitar todo o menu. No projeto de estudo, comece com métodos pequenos e nomes concretos. Criar muitas classes sem uma necessidade compreensível dificulta acompanhar o fluxo.</p>
+<h2 id="secao-12">12. Prática e revisão</h2>
+<p>Crie dois celulares com modelos diferentes e mostre o estado de cada um. Depois faça duas variáveis apontarem para o mesmo celular e altere sua bateria. Escreva um método que calcula a soma e outro que apresenta a mensagem. Explique qual deles pode ser testado diretamente pelo valor de retorno. Por fim, compare um contador de instância com um contador estático.</p>
+<p><a href="playground.html?ex=metodos">Praticar métodos</a>, <a href="playground.html?ex=objetos">criar objetos</a> e <a href="playground.html?ex=polimorfismo">observar sobrescrita e polimorfismo</a>. O código das atividades mantém a classe pública principal no mesmo arquivo para facilitar a execução no navegador.</p>
+<p id="extraActivities7">Outras atividades deste tema: <a href="playground.html?ex=sobrecarga">Resolver uma sobrecarga</a> · <a href="playground.html?ex=referencias">Mutação e reatribuição de parâmetro</a>.</p><h2 id="secao-13">13. Desenhar a responsabilidade antes de desenhar as classes</h2>
+<p>Liste o que o sistema precisa fazer e quais informações cada operação exige. Para controlar uma reserva de vagas, uma classe pode conhecer sua capacidade e ocupação; uma camada de apresentação lê a opção e mostra a mensagem. A regra de reservar não precisa perguntar ao Scanner qual texto será digitado. Separar essas tarefas permite verificar o domínio sem simular toda a interface.</p><p>Evite classes que só repassam cada chamada sem acrescentar uma fronteira útil. Evite também uma classe central que conhece todas as entradas, regras e formatos de saída. O tamanho do arquivo sozinho não decide a divisão: procure decisões que mudam juntas e dependências que tornam difícil testar um comportamento isolado.</p><p>Uma responsabilidade clara pode ser descrita em uma frase: “controlar a quantidade disponível sem permitir negativos”. Se a frase começa a listar relatórios, login, arquivos e mensagens de erro da interface, talvez existam tarefas diferentes. Não crie uma arquitetura inteira antecipadamente; extraia uma fronteira quando o problema real a justificar.</p>
+<h2 id="secao-14">14. Parâmetros e retorno formam o contrato de uma chamada</h2>
+<p>O tipo, a ordem e o significado dos parâmetros importam. Dois doubles chamados a e b podem representar preço e desconto, reais e cotação ou medidas diferentes. Nomes e documentação precisam indicar as unidades. Um retorno também exige interpretação: zero pode ser resultado válido, enquanto -1 pode ser sentinela de ausência em uma busca.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t7-contrato" data-java-program>public class Main {
+    static double converter(double reais, double reaisPorDolar) {
+        if (!Double.isFinite(reais) || reais &lt; 0
+                || !Double.isFinite(reaisPorDolar) || reaisPorDolar &lt;= 0) {
+            throw new IllegalArgumentException("Valor ou cotação inválidos");
+        }
+        double dolares = reais / reaisPorDolar;
+        if (!Double.isFinite(dolares)) {
+            throw new IllegalArgumentException("Resultado não finito");
+        }
+        return dolares;
+    }
+    public static void main(String[] args) {
+        System.out.println(converter(100, 5));
+        try {
+            converter(100, 0);
+        } catch (IllegalArgumentException erro) {
+            System.out.println(erro.getMessage());
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t7-contrato">20.0
+Valor ou cotação inválidos</samp></pre></figure><p>A operação não imprime o resultado dentro do método. Quem chama pode apresentá-lo em console, interface gráfica ou teste. A cotação é dada pelo exercício e não vem de uma consulta de mercado. O retorno não deve fingir sucesso quando os argumentos forem inválidos; a falha tem uma forma explícita.</p><p>Uma função com retorno não precisa modificar estado. Isso costuma facilitar a verificação porque a mesma entrada pode ser comparada à mesma regra sem depender do histórico do objeto. Quando houver estado mutável, documente quais operações o alteram e quais são apenas consultas.</p>
+<h2 id="secao-15">15. Referências: mutar o objeto não é reatribuir o chamador</h2>
+<p>Java passa argumentos por valor. Para um primitivo, o método recebe uma cópia daquele valor primitivo. Para um objeto, recebe uma cópia do valor da referência. As duas referências podem alcançar o mesmo objeto, permitindo observar uma mutação. Reatribuir apenas o parâmetro, por outro lado, não muda a variável do chamador.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t7-referencias" data-java-program>class Caixa {
+    int valor;
+    Caixa(int valor) { this.valor = valor; }
+}
+
+public class Main {
+    static void alterar(Caixa recebida) {
+        recebida.valor = 9;
+        recebida = new Caixa(100);
+    }
+    public static void main(String[] args) {
+        Caixa original = new Caixa(1);
+        Caixa alias = original;
+        alterar(original);
+        System.out.println(original.valor);
+        System.out.println(alias == original);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t7-referencias">9
+true</samp></pre></figure><p>Desenhe duas variáveis apontando para o mesmo objeto antes da chamada. Durante alterar, a referência recebida inicialmente aponta para esse mesmo objeto. A criação da Caixa com valor 100 muda apenas o destino do parâmetro local. Se o objetivo fosse substituir o valor usado pelo chamador, o método poderia devolver a nova referência para uma atribuição explícita.</p><p>Não descreva esse comportamento como passagem por referência. Essa expressão costuma sugerir que o método poderia substituir diretamente a variável do chamador. A distinção evita erros em métodos que tentam “trocar” dois objetos reatribuindo somente seus parâmetros.</p>
+<h2 id="secao-16">16. Static, instância e o risco de compartilhar estado sem querer</h2>
+<p>Um campo de instância pertence ao estado de cada objeto. Um campo static pertence à classe e é compartilhado por suas instâncias. Use static para uma decisão que realmente é da classe ou para uma função sem dependência de estado de instância. Não transforme todos os campos em static apenas para acessá-los a partir do main.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t7-instancias" data-java-program>class Contador {
+    private int valor;
+    void incrementar() { valor++; }
+    int valor() { return valor; }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Contador a = new Contador();
+        Contador b = new Contador();
+        a.incrementar();
+        a.incrementar();
+        b.incrementar();
+        System.out.println("A: " + a.valor());
+        System.out.println("B: " + b.valor());
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t7-instancias">A: 2
+B: 1</samp></pre></figure><p>Se valor fosse static, os dois contadores observariam o mesmo total. Isso seria uma regra diferente, não uma correção para a dificuldade de acessar um campo. A escolha precisa acompanhar a propriedade do dado. Estado global mutável também dificulta testes porque uma execução pode depender de outra.</p><p>Um método static não possui this. Para operar sobre uma instância específica, ele precisaria receber ou criar essa instância. Chamar uma função por meio do nome da classe torna essa relação visível e evita que uma sintaxe permitida esconda o fato de não haver despacho de instância naquele ponto.</p>
+<h2 id="secao-17">17. Sobrecarga e sobrescrita respondem a perguntas diferentes</h2>
+<p>Sobrecarga oferece métodos com o mesmo nome e listas de parâmetros diferentes. A escolha usa as regras de tipos da chamada. Sobrescrita fornece uma implementação de um método de instância herdado; o objeto real pode determinar qual implementação será executada. Mudar apenas o tipo de retorno não cria uma sobrecarga válida.</p><p>Use @Override ao sobrescrever. Se a grafia ou a assinatura estiver incorreta, o compilador poderá apontar que você não está sobrescrevendo como pretendia. Sem a anotação, um método extra com nome semelhante pode compilar e nunca ser chamado pelo contrato que você esperava atender.</p><p>Também diferencie membros static, que não participam do mesmo despacho dinâmico dos métodos de instância. Evite aprender polimorfismo pela ideia vaga de que “o Java escolhe o método mais específico em tempo de execução” para qualquer chamada. O tipo da referência limita quais membros podem ser chamados; o objeto e as regras do membro determinam como aquela chamada válida se comporta.</p>
+<h2 id="secao-18">18. Polimorfismo: preserve o contrato do código que chama</h2>
+<p>Uma interface pode representar uma capacidade usada por uma rotina. O chamador não precisa conhecer cada classe concreta se o contrato oferece a operação necessária. Isso permite acrescentar uma implementação sem reescrever um switch de tipos em cada ponto de uso. A vantagem depende de uma promessa comum real, não apenas de nomes iguais.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t7-polimorfismo" data-java-program>interface Mensagem {
+    String texto();
+}
+class BoasVindas implements Mensagem {
+    public String texto() { return "Olá, estudante"; }
+}
+class Aviso implements Mensagem {
+    public String texto() { return "Revise sua entrada"; }
+}
+
+public class Main {
+    static void apresentar(Mensagem mensagem) {
+        if (mensagem == null) throw new IllegalArgumentException("Mensagem ausente");
+        System.out.println(mensagem.texto());
+    }
+    public static void main(String[] args) {
+        apresentar(new BoasVindas());
+        apresentar(new Aviso());
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t7-polimorfismo">Olá, estudante
+Revise sua entrada</samp></pre></figure><p>O método apresentar usa apenas Mensagem. Uma nova implementação precisa respeitar o significado de texto, incluindo as expectativas de quem o apresenta. Se uma implementação começar a pedir leitura no console enquanto as outras apenas devolvem uma string, a surpresa pode violar a expectativa do contrato mesmo que a assinatura compile.</p><p>Herança não é apenas um mecanismo para reaproveitar linhas. Se a subclasse exige condições que o chamador da superclasse não conhece, pode não ser uma substituição adequada. Quando o relacionamento é “usa uma capacidade”, composição costuma expressar a dependência de forma mais direta.</p>
+<h2 id="secao-19">19. Composição e dependências explícitas em um exemplo pequeno</h2>
+<p>Um serviço de apresentação pode receber a capacidade de obter uma mensagem no construtor. Ele não precisa construir internamente sempre o mesmo tipo concreto. Isso é uma forma simples de fornecer uma dependência, sem exigir um container ou um framework. O código do exercício continua inteiro e rastreável em um arquivo.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t7-composicao" data-java-program>interface Saudacao {
+    String para(String nome);
+}
+class SaudacaoSimples implements Saudacao {
+    public String para(String nome) { return "Olá, " + nome; }
+}
+class Apresentador {
+    private final Saudacao saudacao;
+    Apresentador(Saudacao saudacao) {
+        if (saudacao == null) throw new IllegalArgumentException("Saudação ausente");
+        this.saudacao = saudacao;
+    }
+    String apresentar(String nome) {
+        if (nome == null || nome.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nome vazio");
+        }
+        return saudacao.para(nome.trim());
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Apresentador apresentador = new Apresentador(new SaudacaoSimples());
+        System.out.println(apresentador.apresentar(" Ana "));
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t7-composicao">Olá, Ana</samp></pre></figure><p>O campo final impede trocar a referência depois da construção, mas não garante a imutabilidade de qualquer objeto recebido. O contrato da dependência continua importante. O nome é validado no ponto em que entra na operação; o chamador não precisa lembrar de limpá-lo em cada interface diferente.</p><p>Não crie uma interface para toda classe automaticamente. Ela se justifica quando o código precisa depender de uma capacidade estável, quando existem alternativas ou quando a fronteira melhora o teste e a compreensão. Para uma única função trivial, uma chamada direta pode ser a solução completa mais simples.</p>
+<h2 id="secao-20">20. Igualdade de objetos e identidade não são intercambiáveis</h2>
+<p>Dois objetos podem representar o mesmo valor e ainda possuir identidades distintas. A implementação herdada de Object para equals compara identidade. Se uma classe representa um valor, pode precisar de uma definição de igualdade por conteúdo e de hashCode coerente. Alterar equals sem acompanhar o contrato de hashCode pode prejudicar consultas em coleções baseadas em hash.</p><p>Nem todo objeto deve ser comparado por todos os campos. Em um cadastro, uma identidade estável pode determinar a equivalência, enquanto nome e endereço mudam. Em um valor como uma coordenada imutável, os componentes podem definir igualdade. Decida pelo domínio e pelos usos da classe; não gere automaticamente uma regra sem avaliar o que ela significa.</p><p>Evite usar como chave de um mapa um objeto cujos dados usados em igualdade e hash mudam enquanto ele estiver armazenado. A posição lógica da chave depende desse contrato. O tema 11 detalha os casos; aqui, reconheça que estado, identidade e igualdade são escolhas que afetam mais do que a impressão de um objeto.</p>
+<h2 id="secao-21">21. Lambdas e streams: operações sobre dados sem esconder seus efeitos</h2>
+<p>Uma lambda pode fornecer o comportamento exigido por uma interface funcional. Em uma stream, filter escolhe elementos, map transforma e uma operação terminal produz um resultado ou efeito. O pipeline pode ser preguiçoso: declarar operações intermediárias não significa que todo o trabalho já aconteceu. Uma stream consumida também não deve ser reutilizada como se fosse uma coleção guardada.</p><p>Separar os dados de origem do resultado filtrado ajuda a testar. Não escreva uma lambda que modifica a própria coleção que está sendo percorrida. E não troque um laço claro por uma cadeia apenas para parecer avançado: a escolha precisa tornar a transformação mais legível. Quando há controle de fluxo complexo, um laço pode ser a representação mais direta.</p><p>Sorted não significa que a coleção original tenha sido ordenada. Ele participa da sequência produzida pelo pipeline. Se o contrato exige preservar a origem, teste a origem depois da operação. Em paralelo, efeitos externos exigem cuidados adicionais; não acrescente parallel como uma promessa genérica de velocidade sem medir e entender as operações.</p>
+<h2 id="secao-22">22. Testar uma classe sem depender da sua interface de entrada</h2>
+<p>Uma classe com uma operação bem definida pode ser testada por chamadas diretas. Crie o estado inicial, aplique a operação e compare o resultado com o contrato. Não use apenas a impressão final de um projeto grande como prova de cada regra. Um teste pequeno permite localizar a primeira decisão que não corresponde ao esperado.</p><p>Inclua o histórico quando o objeto for mutável: reservar uma vaga duas vezes não é o mesmo que chamar uma função pura com os mesmos argumentos. Verifique o estado antes e depois e teste uma operação inválida para assegurar que ela não deixou uma modificação parcial. Uma exceção após metade das atribuições pode proteger a mensagem de erro sem proteger o estado.</p><p>Não exponha campos apenas para facilitar o teste. Consultas que fazem parte da interface útil podem mostrar o estado relevante; o teste deve observar o comportamento prometido. Esse cuidado mantém a implementação livre para mudar sem exigir que todo teste conheça cada detalhe privado.</p>
+<h2 id="secao-23">23. Prática orientada, possíveis soluções e revisão</h2>
+<ol><li><strong>Instâncias:</strong> escreva a classe Contador e crie dois objetos. Incremente o primeiro duas vezes e o segundo uma. A saída deve ser A: 2 e B: 1. Depois, em uma cópia do exercício, compartilhe a mesma referência e explique a diferença.</li><li><strong>Passagem por valor:</strong> escreva o programa Caixa sem consultar o código. Depois de alterar, imprima o valor do objeto original. Explique por que a nova Caixa de valor 100 não substituiu a variável original do main.</li><li><strong>Contrato:</strong> implemente converter com validação de reais e cotação. Faça duas chamadas válidas e uma com cotação zero. O método não deve imprimir a quantia: a apresentação fica no main.</li><li><strong>Polimorfismo:</strong> acrescente uma terceira classe Mensagem que devolva “Pratique novamente”. Use o mesmo método apresentar. Não acrescente um teste de tipo para escolher a mensagem.</li></ol><details><summary>Possível solução: terceira implementação do contrato</summary><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t7-terceira" data-java-program>interface Mensagem {
+    String texto();
+}
+class Incentivo implements Mensagem {
+    public String texto() { return "Pratique novamente"; }
+}
+
+public class Main {
+    static void apresentar(Mensagem mensagem) {
+        System.out.println(mensagem.texto());
+    }
+    public static void main(String[] args) {
+        apresentar(new Incentivo());
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t7-terceira">Pratique novamente</samp></pre></figure><p>O objeto criado é conhecido neste programa pequeno, mas a rotina de apresentação depende somente do contrato. A nova implementação não exige modificar a rotina. Se mensagens externas pudessem ser ausentes, preserve a validação de entrada usada no laboratório anterior.</p></details><details><summary>Conferir o raciocínio sobre estado e chamadas</summary><p>Os contadores independentes imprimem 2 e 1. Na Caixa, a mutação do objeto mantém valor 9 no original, enquanto a reatribuição do parâmetro não muda a referência do main. Na conversão, dividir 100 por 5 produz 20; cotação zero é recusada antes do cálculo. Uma implementação válida de Mensagem fornece o texto pela operação comum.</p></details><p>Avance quando conseguir desenhar referências e justificar o lugar de cada regra. O próximo tema aprofunda a construção: um objeto deve começar coerente e não depender de uma sequência incerta de correções posteriores.</p><h2 id="fontes">Fontes e continuidade</h2><p class="text-muted">Referência para consulta: <a href="assets/materiais/07DesenvolvimentodeAplicaes.pdf">Desenvolvimento de aplicações</a>, páginas 68 a 78. A explicação e os exemplos estão completos abaixo.</p><p>A base original foi preservada; os laboratórios ampliados acrescentam contratos, casos de fronteira e exercícios comentados. Use a versão da documentação correspondente ao ambiente configurado.</p><ul><li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-14.html">Java 17 · blocos, condições e repetições</a></li><li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-10.html">Java 17 · arrays</a></li><li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-8.html">Java 17 · classes, métodos e construtores</a></li><li><a href="https://docs.oracle.com/en/java/javase/17/docs/api/index.html">Biblioteca padrão Java 17</a></li><li><a href="extra.html">Projetos, laboratórios e referências adicionais</a></li></ul></article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-06.html">Anterior · Tema 6</a><a class="btn btn-primary" href="tema-08.html">Próximo · Tema 8</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <p class="mb-1">
+            <a href="index.html">Início</a> ·
+            <a href="cont.html">Conteúdo</a> ·
+            <a href="playground.html">Playground</a> ·
+            <a href="quiz.html">Quiz</a> ·
+            <a href="faq.html">FAQ</a> · <a href="extra.html">Extra</a>
+        </p>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+
+
+
+</body>
+</html>

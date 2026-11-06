@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>05 · Repetição e controle de fluxo · Java</title>
+<meta name="description" content="Domine contadores, acumuladores, sentinelas e laços: entenda como cada repetição avança, produz um resultado e termina.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 5 de 30</span></nav><header class="lesson-header"><h1>05 · Repetição e controle de fluxo</h1><p class="lead">Domine contadores, acumuladores, sentinelas e laços: entenda como cada repetição avança, produz um resultado e termina.</p><p class="text-muted">Java 17 como referência · Teoria, laboratórios e exercícios comentados</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-20">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Um laço precisa de trabalho, estado e progresso</a></li><li><a href="#secao-2">Repetir uma tarefa com uma condição de saída</a></li><li><a href="#secao-3">A ordem do for</a></li><li><a href="#secao-4">Tabuada com limite claro</a></li><li><a href="#secao-5">While e atualização do estado</a></li><li><a href="#secao-6">Do/while, sentinela e menus</a></li><li><a href="#secao-7">Break e continue</a></li><li><a href="#secao-8">Calcular a média da turma</a></li><li><a href="#secao-9">Prática com laços aninhados e rastreamento</a></li><li><a href="#secao-10">Teste de mesa: acompanhe antes e depois de cada corpo</a></li><li><a href="#secao-11">Invariantes e o motivo para acreditar no acumulador</a></li><li><a href="#secao-12">Limite inclusivo, limite exclusivo e contagens sem surpresa</a></li><li><a href="#secao-13">Escolher entre for, while e do/while pelo contrato</a></li><li><a href="#secao-14">Consumir entradas inválidas para garantir progresso</a></li><li><a href="#secao-15">Média por sentinela: calcule depois de saber a quantidade</a></li><li><a href="#secao-16">Break, continue e return têm alcances diferentes</a></li><li><a href="#secao-17">Laços aninhados e custo: conte o trabalho antes de ampliar</a></li><li><a href="#secao-18">Investigar primos sem multiplicação que pode estourar</a></li><li><a href="#secao-19">Depuração de laços: encontre a primeira passagem incorreta</a></li><li><a href="#secao-20">Prática guiada, soluções e teste dos casos de borda</a></li><li><a href="#fontes">Fontes e continuidade</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. Um laço precisa de trabalho, estado e progresso</h2>
+<p>Repetição não é apenas escrever uma linha muitas vezes. O programa mantém um estado, testa se ainda deve continuar e faz uma atualização que aproxima o término. Antes de escolher for ou while, descreva o que uma passagem representa: um aluno lido, um elemento somado, uma tentativa descartada ou uma opção de menu processada. Essa unidade torna a contagem e a revisão mais claras.</p><p>Este capítulo parte das condições e dos tipos já estudados. Ao terminar, você deverá rastrear a ordem de execução, escolher uma sentinela sem confundi-la com um dado válido, evitar divisões quando não houve itens e reconhecer um laço que não progride. Não basta obter a soma correta para três entradas: é necessário explicar como o algoritmo reage a zero entradas, a uma entrada inválida e ao fim do arquivo.</p><p>No Playground, a entrada já está escrita quando o programa começa. Um Scanner local pode esperar pelo teclado; no navegador deste guia, você fornece todas as linhas previamente. Uma operação de leitura não é uma instrução para continuar esperando indefinidamente por uma resposta que a interface não oferece. Inclua a sentinela quando a regra exigir e trate também o fim da entrada.</p>
+<h2 id="secao-2">2. Repetir uma tarefa com uma condição de saída</h2>
+<p>Laços executam instruções repetidas vezes. Para acompanhar um laço, identifique o estado inicial, a condição de continuidade, as operações do corpo e a atualização que permite chegar ao fim. Um contador acompanha a posição ou o número de repetições; um acumulador agrega valores. Na média da turma, o contador indica qual aluno está sendo processado e o acumulador soma as médias.</p>
+<p>O tipo de laço deve ajudar a ler o problema. <code>for</code> costuma reunir bem inicialização, limite e atualização quando há uma contagem; <code>while</code> destaca a permanência em um estado; <code>do / while</code> executa o corpo antes da primeira verificação. É possível reescrever várias tarefas com formas diferentes, desde que a ordem de avaliação seja preservada.</p>
+<h2 id="secao-3">3. A ordem do for</h2>
+<pre><code>for (int i = 1; i &lt;= 5; i++) {
+    System.out.println("Contagem: " + i);
+}</code></pre>
+<p>A inicialização acontece uma vez. Antes de cada repetição, a condição é avaliada. Se for verdadeira, o corpo executa; depois acontece a atualização. O ciclo então volta à condição. No exemplo, os valores impressos vão de 1 a 5. Depois do corpo com 5, o incremento produz 6 e a condição deixa de ser verdadeira. O valor 6 não é impresso.</p>
+<p>Começar em zero e usar <code>i &lt; 5</code> também produz cinco iterações, mas imprime de 0 a 4. Esse padrão será útil em arrays. Não confunda a quantidade de repetições com o valor final da variável. A variável declarada no cabeçalho fica no escopo do laço; para consultá-la depois, precisaria ser declarada fora, se essa consulta fizer parte da necessidade do programa.</p>
+<h2 id="secao-4">4. Tabuada com limite claro</h2>
+<pre><code>int numero = 7;
+for (int i = 1; i &lt;= 10; i++) {
+    int produto = numero * i;
+    System.out.printf("%d x %d = %d%n", numero, i, produto);
+}</code></pre>
+<p>A variável <code>numero</code> permanece igual em todas as repetições. O contador muda de 1 a 10 e o produto é recalculado. Antes de executar, confira a primeira e a última linha: <code>7 x 1 = 7</code> e <code>7 x 10 = 70</code>. Se o código usa <code>i &lt; 10</code>, a última multiplicação desaparece. Se usa <code>i = 0</code>, uma linha com multiplicação por zero será incluída.</p>
+<p>Para uma soma de produtos, declare o acumulador antes do laço. Criá-lo novamente dentro do corpo reinicia seu valor a cada passagem. Esse erro produz um número plausível em alguns casos e precisa ser investigado pelo fluxo das atribuições. Uma tabela com as colunas contador, produto e acumulador permite verificar as primeiras repetições manualmente.</p>
+<h2 id="secao-5">5. While e atualização do estado</h2>
+<pre><code>int contador = 0;
+while (contador &lt; 3) {
+    System.out.println(contador);
+    contador++;
+}</code></pre>
+<p>O <code>while</code> verifica a condição antes do corpo. Se <code>contador</code> começasse em 3, nenhuma linha seria impressa. Com zero, imprime 0, 1 e 2. O incremento é necessário para a condição mudar nesse exemplo. Retirá-lo mantém o mesmo estado e causa repetição sem término. Uma condição inicial falsa e uma condição que nunca se torna falsa são casos diferentes.</p>
+<p>No exercício da apostila com <code>iteracao &lt; 5</code> e início em zero, os valores são 0 a 4, não 0 a 5 como diz um trecho explicativo. O limite excluído deve ser respeitado ao contar. Essa mesma conferência evita acessar um array na posição igual ao seu comprimento.</p>
+<h2 id="secao-6">6. Do/while, sentinela e menus</h2>
+<pre><code>int tentativa = 5;
+do {
+    System.out.println("Executou ao menos uma vez");
+    tentativa++;
+} while (tentativa &lt; 3);</code></pre>
+<p>O corpo executa uma vez apesar de a condição final ser falsa. Observe o ponto e vírgula depois da condição. Essa forma serve para uma operação que deve acontecer antes de decidir pela repetição, como apresentar um menu. A regra de entrada ainda precisa tratar dados ausentes ou inválidos.</p>
+<p>Uma sentinela é um valor reservado para encerrar a leitura. Por exemplo, um menu pode usar 0 para sair. O valor não deve ser processado como uma operação comum depois que o programa o reconhece. No Playground, os dados são fornecidos previamente. Inclua a opção de saída na entrada de um menu: se o programa pedir outro dado após a última linha, receberá fim de entrada.</p>
+<pre><code>java.util.Scanner entrada = new java.util.Scanner(System.in);
+int opcao;
+do {
+    System.out.println("1: consultar | 0: sair");
+    if (!entrada.hasNextInt()) {
+        System.out.println("Entrada ausente ou inválida");
+        break;
+    }
+    opcao = entrada.nextInt();
+    if (opcao == 1) {
+        System.out.println("Consulta realizada");
+    } else if (opcao != 0) {
+        System.out.println("Opção desconhecida");
+    }
+} while (opcao != 0);</code></pre>
+<h2 id="secao-7">7. Break e continue</h2>
+<p><code>break</code> encerra a estrutura de repetição ou switch mais próxima. Em um switch dentro de um while, um <code>break</code> do switch não encerra automaticamente o while. Para sair do menu, altere a variável que controla o laço ou faça o método informar que a repetição terminou. No projeto <code>Combo</code>, o retorno booleano da operação participa dessa decisão no método principal.</p>
+<p><code>continue</code> pula o restante do corpo da iteração atual. Em um <code>for</code>, a atualização do cabeçalho ainda acontece antes da próxima verificação. Em um <code>while</code>, um continue colocado antes do incremento pode impedir que a variável mude. Use essas instruções com atenção à atualização necessária em cada caminho.</p>
+<pre><code>int soma = 0;
+for (int i = 1; i &lt;= 5; i++) {
+    if (i == 3) {
+        continue;
+    }
+    soma += i;
+}
+System.out.println(soma); // 12: soma 1, 2, 4 e 5</code></pre>
+<h2 id="secao-8">8. Calcular a média da turma</h2>
+<p>Considere uma turma com 30 alunos e duas notas por aluno. Comece testando dois alunos e aumente a quantidade depois de conferir o resultado. Inicialize a soma das médias em zero, leia os dados de cada aluno, calcule sua média e acrescente esse resultado à soma. Depois do laço, divida pela quantidade de alunos. Com médias individuais 6 e 8, a média da turma deve ser 7.</p>
+<p>Se a quantidade pode ser zero, a divisão precisa de validação. Também defina se notas inválidas serão rejeitadas, solicitarão nova leitura ou serão consideradas erro de entrada. Ao ler nome depois de nota numérica com <code>Scanner</code>, coordene <code>nextLine</code> conforme o capítulo anterior. A contagem precisa corresponder ao número de alunos efetivamente aceitos, especialmente se entradas forem descartadas.</p>
+<h2 id="secao-9">9. Prática com laços aninhados e rastreamento</h2>
+<p>Um laço dentro de outro permite percorrer linhas e colunas. Para cada passagem do laço externo, o interno executa suas próprias repetições. Com duas linhas e três colunas, o corpo interno executa seis vezes. Use nomes como <code>linha</code> e <code>coluna</code> quando forem mais claros do que letras. Conte o trabalho antes de ampliar limites, para evitar executar milhares de repetições sem necessidade.</p>
+<p>Para investigar um laço, imprima temporariamente os valores que controlam a condição e o acumulador. Depois de corrigir o problema, preserve apenas mensagens que façam parte do programa. No Playground, há botão para interromper e reiniciar o ambiente, e o tempo de execução é limitado. Uma interrupção por tempo não comprova que o algoritmo seja infinito: ele também pode estar demorando ou carregando recursos.</p>
+<p><a href="playground.html?ex=tabuada">Praticar tabuada</a>, <a href="playground.html?ex=lacos">comparar laços</a> e <a href="playground.html?ex=menu">executar um menu com saída</a>. Explique por que a condição muda em cada atividade e o que aconteceria se a atualização fosse removida.</p>
+<p id="extraActivities5">Outras atividades deste tema: <a href="playground.html?ex=acumuladores">Sentinela, soma e quantidade</a> · <a href="playground.html?ex=primo">Investigar um número primo</a>.</p><h2 id="secao-10">10. Teste de mesa: acompanhe antes e depois de cada corpo</h2>
+<p>Use uma tabela com contador, condição, valor processado e acumulador. Faça a primeira linha antes de executar o corpo. Depois registre a atualização e só então avalie a condição seguinte. Esse detalhe evita atribuir ao código uma ordem intuitiva que ele não segue. No for, a atualização ocorre depois do corpo; no while, você precisa escrevê-la no lugar adequado.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t5-rastreio" data-java-program>public class Main {
+    public static void main(String[] args) {
+        int soma = 0;
+        for (int i = 1; i &lt;= 3; i++) {
+            int antes = soma;
+            soma += i;
+            System.out.println(i + ": " + antes + " -&gt; " + soma);
+        }
+        System.out.println("Total: " + soma);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t5-rastreio">1: 0 -&gt; 1
+2: 1 -&gt; 3
+3: 3 -&gt; 6
+Total: 6</samp></pre></figure><p>A soma é inicializada fora do corpo porque precisa sobreviver entre passagens. Se você declarar soma igual a zero novamente a cada iteração, não estará acumulando o histórico: só terá o valor da passagem atual. Esse é um exemplo de erro de lógica que o compilador não precisa rejeitar.</p><p>Use o rastreamento como ferramenta temporária. Em uma atividade com saída exata, impressões extras de depuração mudam o resultado. Retire-as depois de entender a falha ou escreva testes separados para conferir o estado. Não transforme um relatório de diagnóstico em parte acidental do contrato público do programa.</p>
+<h2 id="secao-11">11. Invariantes e o motivo para acreditar no acumulador</h2>
+<p>Uma invariante é uma afirmação que você consegue manter verdadeira ao longo do laço. Na soma dos primeiros elementos de um array, antes de processar a posição i, o acumulador representa a soma das posições anteriores. No início, não há posição anterior e o acumulador zero está correto. Depois de somar o elemento i, a afirmação passa a valer para a próxima posição.</p><p>Essa forma de raciocinar serve para verificar um algoritmo sem testar todos os dados possíveis. Você confere o estado inicial, a preservação em uma passagem e o significado quando a condição termina. Um erro na inicialização ou no índice pode quebrar a afirmação imediatamente. Uma condição de término errada pode fazer a invariante valer para uma quantidade diferente da desejada.</p><p>Não é necessário escrever uma prova formal em cada exercício. Uma frase precisa já ajuda: “quantidade é o número de valores positivos aceitos”, por exemplo. Se você incrementa quantidade também quando ignora um negativo, a frase deixa de ser verdadeira. Esse contraste transforma uma revisão abstrata em uma pergunta direta sobre cada atribuição.</p>
+<h2 id="secao-12">12. Limite inclusivo, limite exclusivo e contagens sem surpresa</h2>
+<p>O intervalo de 0 até n excluído contém n posições quando n não é negativo. Esse padrão combina com arrays, cujo último índice é length menos um. Já uma tabuada apresentada de 1 a 10 costuma usar os dois extremos incluídos. Escolha a convenção que acompanha o dado e escreva a primeira e a última passagem esperadas antes de executar.</p><p>Para n igual a zero, um laço iniciado em zero com condição i menor que n não executa o corpo. Para n igual a um, executa apenas na posição zero. Esses dois testes pequenos revelam mais sobre o limite do que uma execução com mil itens. Evite acrescentar ou retirar um do limite apenas para fazer uma saída específica coincidir; retorne à definição do intervalo.</p><p>O tipo do contador também importa. Incrementar um int além de seu máximo faz overflow. Um laço que espera ultrapassar Integer.MAX_VALUE pode voltar ao mínimo e nunca terminar da forma prevista. Nos exercícios, use limites pequenos e documentados. Em um método que recebe um limite externo, valide a faixa e pense no custo antes de prometer aceitar qualquer inteiro.</p>
+<h2 id="secao-13">13. Escolher entre for, while e do/while pelo contrato</h2>
+<p>For agrupa inicialização, condição e atualização quando há uma progressão clara. While destaca uma condição de permanência, como ainda existir entrada. Do/while estabelece que o corpo acontece antes da primeira decisão de repetir. Não escolha do/while apenas por ser mais curto quando zero execuções é uma possibilidade legítima.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t5-formas" data-java-program>public class Main {
+    public static void main(String[] args) {
+        int contador = 0;
+        while (contador &lt; 3) {
+            System.out.println("while: " + contador);
+            contador++;
+        }
+        contador = 0;
+        do {
+            System.out.println("do: " + contador);
+            contador++;
+        } while (contador &lt; 3);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t5-formas">while: 0
+while: 1
+while: 2
+do: 0
+do: 1
+do: 2</samp></pre></figure><p>Mude o estado inicial para 3 nos dois casos e preveja a diferença. O primeiro não imprime. O segundo imprime uma vez, pois o contrato dessa estrutura coloca a decisão depois do trabalho. Quando reescrever uma forma na outra, preserve esse comportamento ou diga explicitamente que a regra mudou.</p><p>Na leitura de dados, um while com hasNext evita tentar consumir uma informação inexistente. Ainda assim, você precisa decidir o que fazer com um token que existe mas tem formato errado. Presença e validade não são a mesma verificação. A próxima seção combina as duas sem deixar a leitura presa no mesmo token.</p>
+<h2 id="secao-14">14. Consumir entradas inválidas para garantir progresso</h2>
+<p>HasNextInt verifica o próximo token sem retirá-lo da entrada. Se um laço encontrar “texto”, imprimir um erro e voltar a hasNextInt, continuará vendo “texto” para sempre. O caminho de recusa também precisa avançar: consuma o token inválido com next ou encerre o processamento, conforme o contrato.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t5-leitura" data-java-program>import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        int aceitos = 0;
+        while (entrada.hasNext()) {
+            if (!entrada.hasNextInt()) {
+                System.out.println("Descartado: " + entrada.next());
+                continue;
+            }
+            int valor = entrada.nextInt();
+            if (valor == 0) break;
+            if (valor &lt; 0) {
+                System.out.println("Negativo ignorado");
+                continue;
+            }
+            aceitos++;
+        }
+        System.out.println("Aceitos: " + aceitos);
+    }
+}</code></pre><p>Entrada de teste:</p><pre tabindex="0"><samp data-input-for="t5-leitura">texto
+-1
+4
+8
+0
+</samp></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t5-leitura">Descartado: texto
+Negativo ignorado
+Aceitos: 2</samp></pre></figure><p>Em cada caminho, o programa consome algo, encontra a sentinela ou chega ao fim. Isso é uma justificativa de progresso. A sentinela zero não é contada como um valor aceito. Se o problema permitir zero como dado comum, você precisará de outra estratégia de término, como uma quantidade informada antes ou um comando separado.</p><p>O limite de execução do Playground serve para recuperar a interface de uma falha; ele não corrige o algoritmo. Use Interromper ao experimentar um laço deliberadamente sem término e restaure a atualização antes de continuar. Não dependa do limite de tempo como regra normal de saída.</p>
+<h2 id="secao-15">15. Média por sentinela: calcule depois de saber a quantidade</h2>
+<p>O contrato deste laboratório aceita inteiros positivos, ignora negativos e termina com zero ou fim de entrada. Um token não inteiro é informado e descartado. A média só existe quando houve ao menos um positivo aceito. O exemplo usa long para a soma e detecta overflow, porque aumentar o tipo não o torna ilimitado.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t5-media" data-java-program>import java.util.Locale;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        long soma = 0;
+        long quantidade = 0;
+        while (entrada.hasNext()) {
+            if (!entrada.hasNextInt()) {
+                System.out.println("Token inválido: " + entrada.next());
+                continue;
+            }
+            int valor = entrada.nextInt();
+            if (valor == 0) break;
+            if (valor &lt; 0) continue;
+            try {
+                soma = Math.addExact(soma, valor);
+                quantidade = Math.addExact(quantidade, 1L);
+            } catch (ArithmeticException erro) {
+                System.out.println("Limite numérico atingido");
+                return;
+            }
+        }
+        if (quantidade == 0) {
+            System.out.println("Sem valores positivos");
+            return;
+        }
+        System.out.println("Quantidade: " + quantidade);
+        System.out.println("Soma: " + soma);
+        System.out.printf(Locale.US, "Média: %.2f%n", (double) soma / quantidade);
+    }
+}</code></pre><p>Entrada de teste:</p><pre tabindex="0"><samp data-input-for="t5-media">10
+-3
+20
+0
+</samp></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t5-media">Quantidade: 2
+Soma: 30
+Média: 15.00</samp></pre></figure><p>A conversão para double aparece antes da divisão, evitando a perda da fração por aritmética inteira. A formatação de duas casas é uma escolha de apresentação. A quantidade conta apenas valores incorporados à soma, por isso o denominador representa o mesmo conjunto do numerador.</p><p>Teste entrada vazia, somente zero, somente negativos e um positivo seguido de fim de entrada. Nos três primeiros casos não há média. No último há média de um elemento mesmo sem sentinela, porque o contrato aceita fim de entrada. Não anuncie erro apenas por não haver zero se você decidiu que o fim também encerra legitimamente o processamento.</p>
+<h2 id="secao-16">16. Break, continue e return têm alcances diferentes</h2>
+<p>Break encerra a repetição ou switch mais próximo ao qual se aplica. Continue avança para a próxima iteração do laço. Return sai do método. Quando um switch está dentro de um while, o break que encerra o switch não é uma instrução universal para sair do menu. Dê um significado à variável de continuidade e atualize-a no ramo de saída.</p><p>Em um for, continue ainda passa pela atualização do cabeçalho antes de reavaliar a condição. Em um while, não existe essa atualização implícita; se ela estiver depois do continue, poderá nunca acontecer. Para cada caminho, pergunte qual variável muda e se a próxima leitura consome outro dado.</p><p>Java permite rótulos para certas saídas de estruturas aninhadas, mas não use esse recurso como substituto de entender o fluxo. Em exercícios pequenos, um método separado com retorno claro frequentemente expressa melhor a busca que precisa terminar. Escolha o mecanismo pelo alcance realmente necessário e cubra o caminho de saída em um teste.</p>
+<h2 id="secao-17">17. Laços aninhados e custo: conte o trabalho antes de ampliar</h2>
+<p>Se o laço externo executa m vezes e o interno n vezes para cada passagem, o corpo interno executa m vezes n, quando os limites são independentes. Uma grade de duas linhas e três colunas tem seis posições. Duplicar ambos os limites quadruplica essa quantidade. Esse raciocínio ajuda a reconhecer por que um algoritmo aparentemente pequeno pode ficar caro.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t5-grade" data-java-program>public class Main {
+    public static void main(String[] args) {
+        int visitas = 0;
+        for (int linha = 0; linha &lt; 2; linha++) {
+            for (int coluna = 0; coluna &lt; 3; coluna++) {
+                visitas++;
+                System.out.println(linha + "," + coluna);
+            }
+        }
+        System.out.println("Visitas: " + visitas);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t5-grade">0,0
+0,1
+0,2
+1,0
+1,1
+1,2
+Visitas: 6</samp></pre></figure><p>Nem todo laço aninhado custa exatamente o produto de dois números fixos. Se o limite interno depende da linha, some as quantidades de cada passagem. Um triângulo que processa 1, depois 2, depois 3 elementos tem seis visitas em três linhas, e não nove. A estrutura visual sozinha não prova a complexidade.</p><p>Evite fazer uma consulta lenta ou uma gravação externa em cada passagem sem perceber quantas vezes ela será chamada. Os primeiros exercícios trabalham em memória, mas a mesma contagem se torna importante em arquivos, banco de dados e interfaces. Primeiro corrija o algoritmo; depois meça uma carga representativa para decidir se uma otimização é necessária.</p>
+<h2 id="secao-18">18. Investigar primos sem multiplicação que pode estourar</h2>
+<p>Um inteiro maior que um é primo quando não possui divisores positivos além de um e dele próprio. Ao encontrar um divisor, a busca pode terminar. Basta investigar até a raiz quadrada porque um divisor maior teria um par menor. Para evitar calcular divisor vezes divisor em int, o limite pode ser escrito como divisor menor ou igual a numero dividido por divisor.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t5-primo" data-java-program>public class Main {
+    static boolean ehPrimo(int numero) {
+        if (numero &lt; 2) return false;
+        for (int divisor = 2; divisor &lt;= numero / divisor; divisor++) {
+            if (numero % divisor == 0) return false;
+        }
+        return true;
+    }
+    public static void main(String[] args) {
+        int[] casos = {0, 1, 2, 29, 49};
+        for (int numero : casos) {
+            System.out.println(numero + ": " + ehPrimo(numero));
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t5-primo">0: false
+1: false
+2: true
+29: true
+49: false</samp></pre></figure><p>O número 2 não exige nenhuma divisão no corpo, pois a condição inicial já é falsa; ele continua sendo reconhecido como primo. O número 49 precisa testar o divisor 7, exatamente na fronteira. Trocar menor ou igual por menor excluiria esse caso e poderia classificá-lo incorretamente.</p><p>O método expressa uma regra didática simples, não uma ferramenta criptográfica. Sua utilidade neste capítulo é relacionar condição, término e um teste que detecta um defeito na fronteira. Reescreva a explicação com suas palavras antes de tentar acelerar o algoritmo.</p>
+<h2 id="secao-19">19. Depuração de laços: encontre a primeira passagem incorreta</h2>
+<p>Se a saída está errada, identifique o primeiro ponto em que o estado diverge da previsão. Uma média final incorreta pode vir de soma reiniciada, contador incrementado no caminho errado, divisão inteira ou último elemento ignorado. Acrescentar um valor ao resultado para compensar o teste atual não corrige nenhuma dessas causas.</p><p>Use breakpoints e observe condição, contador e acumulador. Se o programa não termina, verifique se todos os caminhos avançam. Um ramo pode funcionar e outro continuar lendo o mesmo dado. Se a operação apenas demora, conte o número esperado de passagens e distinga tempo de carga do runtime de tempo do seu próprio algoritmo.</p><p>Nos exemplos, mantenha o resultado do processamento separado do registro de depuração. Uma rotina que imprime cada passo pode parecer lenta por causa da saída, não da aritmética. Testes de desempenho exigem outra estratégia; para os fundamentos, escolha entradas pequenas e torne o estado legível.</p>
+<h2 id="secao-20">20. Prática guiada, soluções e teste dos casos de borda</h2>
+<ol><li><strong>Contagem:</strong> escreva um for que imprima 0, 1 e 2 em linhas separadas. Depois reescreva com while sem mudar a saída. Faça uma tabela com valor antes do corpo e valor depois da atualização.</li><li><strong>Tabuada:</strong> use o número 9 e multiplicadores de 1 a 10, inclusive. Imprima apenas as multiplicações em que o multiplicador é par. A saída deve conter cinco linhas, começando em 9 x 2 = 18 e terminando em 9 x 10 = 90.</li><li><strong>Média:</strong> implemente o laboratório por sentinela com o editor vazio. Use 10, -3, 20 e 0 como entrada. Depois teste somente 0 e confira a mensagem de ausência de positivos, sem dividir.</li><li><strong>Primalidade:</strong> preveja os resultados de 1, 2, 29 e 49 antes de executar. Explique por que o divisor 7 precisa participar do teste de 49.</li></ol><details><summary>Possível solução: tabuada com multiplicadores pares</summary><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t5-tabuada-pares" data-java-program>public class Main {
+    public static void main(String[] args) {
+        for (int multiplicador = 2; multiplicador &lt;= 10; multiplicador += 2) {
+            System.out.printf("9 x %d = %d%n", multiplicador, 9 * multiplicador);
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t5-tabuada-pares">9 x 2 = 18
+9 x 4 = 36
+9 x 6 = 54
+9 x 8 = 72
+9 x 10 = 90</samp></pre></figure><p>A atualização de dois em dois visita diretamente os multiplicadores desejados. Outra solução válida percorre todos e usa uma condição de paridade. Compare as duas pela clareza do contrato, sem afirmar que uma diferença pequena decide o desempenho de qualquer aplicação.</p></details><details><summary>Conferir contagem, ausência de dados e término</summary><p>As duas contagens devem executar três vezes. Na versão while, inicialize o contador antes do laço e incremente depois da impressão. Na média, zero encerra sem entrar na soma. Se ele é o primeiro token, não há quantidade aceita e a saída é Sem valores positivos. No teste de primos, 1 é falso, 2 e 29 são verdadeiros e 49 é falso.</p></details><p>Você está pronto para avançar quando consegue explicar por que cada laço termina, quantos elementos foram processados e o que acontece sem elementos. O próximo tema guarda vários valores em estruturas; os limites e acumuladores estudados aqui serão usados em seus percursos.</p><h2 id="fontes">Fontes e continuidade</h2><p class="text-muted">Referência para consulta: <a href="assets/materiais/07DesenvolvimentodeAplicaes.pdf">Desenvolvimento de aplicações</a>, páginas 55 a 61. A explicação e os exemplos estão completos abaixo.</p><p>A base original foi preservada; os laboratórios ampliados acrescentam contratos, casos de fronteira e exercícios comentados. Use a versão da documentação correspondente ao ambiente configurado.</p><ul><li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-14.html">Java 17 · blocos, condições e repetições</a></li><li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-10.html">Java 17 · arrays</a></li><li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-8.html">Java 17 · classes, métodos e construtores</a></li><li><a href="https://docs.oracle.com/en/java/javase/17/docs/api/index.html">Biblioteca padrão Java 17</a></li><li><a href="extra.html">Projetos, laboratórios e referências adicionais</a></li></ul></article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-04.html">Anterior · Tema 4</a><a class="btn btn-primary" href="tema-06.html">Próximo · Tema 6</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <p class="mb-1">
+            <a href="index.html">Início</a> ·
+            <a href="cont.html">Conteúdo</a> ·
+            <a href="playground.html">Playground</a> ·
+            <a href="quiz.html">Quiz</a> ·
+            <a href="faq.html">FAQ</a> · <a href="extra.html">Extra</a>
+        </p>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>01 · Introdução, ambiente e primeiro programa · Java</title>
+<meta name="description" content="Comece do zero: entenda o ambiente, execute seu primeiro programa e aprenda a investigar o que acontece entre o código e o resultado.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page">
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main">
+<nav aria-label="Você está aqui" class="lesson-breadcrumb"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 1 de 30</span></nav>
+<header class="lesson-header"><h1>01 · Introdução, ambiente e primeiro programa</h1><p class="lead">Comece do zero: entenda o ambiente, execute seu primeiro programa e aprenda a investigar o que acontece entre o código e o resultado.</p><p class="text-muted">Java 17 como referência · Teoria, laboratórios e exercícios comentados</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-22">Ir aos exercícios</a><button type="button" class="btn btn-outline-primary" id="printBook">Imprimir este tema / PDF</button></div></header>
+<div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Aprender programando: seu primeiro roteiro de estudo</a></li>
+<li><a href="#secao-2">Para que serve estudar Java</a></li>
+<li><a href="#secao-3">História e referências que envelheceram</a></li>
+<li><a href="#secao-4">JDK, JVM, ambiente de execução e IDE</a></li>
+<li><a href="#secao-5">Preparar uma pasta e trabalhar com segurança</a></li>
+<li><a href="#secao-6">Instalar e conferir um JDK no computador</a></li>
+<li><a href="#secao-7">Do arquivo fonte ao resultado</a></li>
+<li><a href="#secao-8">Seu primeiro programa completo</a></li>
+<li><a href="#secao-9">Ler o primeiro programa, palavra por palavra</a></li>
+<li><a href="#secao-10">Compilar e executar no computador</a></li>
+<li><a href="#secao-11">Um laboratório de saída, escapes e argumentos</a></li>
+<li><a href="#secao-12">Compilação reproduzível e compatibilidade</a></li>
+<li><a href="#secao-13">Pacotes, importações e dois arquivos de verdade</a></li>
+<li><a href="#secao-14">Distribuir um JAR e executá-lo em outra pasta</a></li>
+<li><a href="#secao-15">Carregamento, memória e coleta de lixo</a></li>
+<li><a href="#secao-16">O que a JVM garante e o que depende do ambiente</a></li>
+<li><a href="#secao-17">Ferramentas que acompanham o desenvolvimento</a></li>
+<li><a href="#secao-18">Ler mensagens de erro</a></li>
+<li><a href="#secao-19">Investigar erros com um procedimento que você pode repetir</a></li>
+<li><a href="#secao-20">Do primeiro arquivo ao trabalho profissional: como seguir a trilha</a></li>
+<li><a href="#secao-21">Prática e revisão</a></li>
+<li><a href="#secao-22">Prática guiada, soluções e critérios para avançar</a></li><li><a href="#fontes">Fontes e próximos passos</a></li></ol></nav></details></aside>
+<div class="lesson-reading"><article class="study-text lesson-article" aria-label="Conteúdo do tema 1"><h2 id="secao-1">1. Aprender programando: seu primeiro roteiro de estudo</h2>
+<p>Você não precisa conhecer outra linguagem para começar. Precisa conseguir criar e salvar um arquivo, localizar uma pasta e abrir um terminal. Um terminal recebe comandos; um editor altera o texto do programa; o compilador verifica esse texto. São tarefas diferentes. Se ainda não conhece o terminal, use primeiro o Playground e depois repita o mesmo exemplo no computador. Compare os dois resultados: mudar de ferramenta não muda a soma feita pelo programa.</p>
+<p>Estude em três passagens. Na primeira, execute o exemplo sem modificações. Na segunda, preveja o resultado de uma alteração pequena e confira. Na terceira, feche o exemplo e escreva uma solução a partir do enunciado. Copiar ajuda a conhecer a forma; reconstruir e explicar mostra se você compreendeu. Ao encontrar uma palavra nova, volte à seção correspondente em vez de tentar decorar toda a plataforma de uma vez.</p>
+<ul><li><strong>Ao terminar este tema:</strong> criar, compilar e executar uma aplicação de console; explicar JDK e JVM; investigar uma falha simples; organizar duas classes e reproduzir sua execução.</li><li><strong>Pré-requisito para o tema 2:</strong> reconhecer o método principal e a ordem das instruções. Os detalhes de objetos serão retomados nos temas 7 a 10.</li><li><strong>Registro de estudo:</strong> guarde o enunciado, a saída que previu, o código e uma explicação do erro que corrigiu. Isso é mais útil do que guardar apenas uma captura de tela.</li></ul>
+<h2 id="secao-2">2. Para que serve estudar Java</h2>
+<p>Java é uma linguagem de programação de propósito geral. Com ela, você descreve dados e operações, define regras de decisão e organiza comportamentos em classes. Um programa de console pode calcular uma média ou consultar uma conta; uma aplicação maior pode receber requisições, armazenar informações e aplicar regras de negócio. Os fundamentos continuam presentes nos dois casos. Antes de usar bibliotecas de uma aplicação maior, precisamos entender o que cada instrução faz e como os valores mudam durante a execução.</p>
+<p>Java e JavaScript são linguagens diferentes. O código desta apostila usa classes, tipos e bibliotecas da plataforma Java. O site usa JavaScript para a navegação e para integrar o ambiente de execução ao navegador. Escrever <code>System.out.println</code> em um arquivo JavaScript não o transforma em Java. O Playground possui um compilador e uma máquina virtual próprios para executar os exemplos Java.</p>
+<h2 id="secao-3">3. História e referências que envelheceram</h2>
+<p>A linguagem começou a ser desenvolvida na Sun Microsystems no início da década de 1990, com participação de James Gosling. O projeto passou pelo nome Oak antes de se tornar Java. Sua apresentação pública ocorreu em 1995; o JDK 1.0 foi lançado em janeiro de 1996, conforme o <a href="https://docs.oracle.com/javase/tutorial/information/history.html">histórico dos tutoriais da Oracle</a>. Em 2010, a Oracle concluiu a aquisição da Sun.</p>
+<p>Applets eram pequenos programas Java executados com um plug-in de navegador. Esse mecanismo pertence à história da plataforma e não é necessário para estudar aqui. O Playground usa uma JVM em WebAssembly, carregada pelo navegador. Neste guia, Java 17 é a referência para a sintaxe; as bibliotecas disponíveis no editor são explicadas antes da execução. Recursos de versões posteriores precisam de um ambiente local compatível.</p>
+<h2 id="secao-4">4. JDK, JVM, ambiente de execução e IDE</h2>
+<p>A <strong>JVM</strong>, máquina virtual Java, executa instruções de bytecode. O <strong>JDK</strong> reúne ferramentas de desenvolvimento, como o compilador <code>javac</code>, o comando <code>java</code> e a ferramenta de documentação <code>javadoc</code>, além dos componentes necessários à execução. JRE é o nome usado para o ambiente de execução. A forma de distribuir esse ambiente varia entre versões e fornecedores; instalar uma IDE não comprova que o JDK usado pelo projeto foi configurado corretamente.</p>
+<p>Uma IDE, como NetBeans, IntelliJ IDEA ou Eclipse, oferece edição, navegação e depuração. O VS Code pode oferecer essas funções com extensões apropriadas. A IDE chama ferramentas Java e organiza projetos; ela não substitui as regras da linguagem. Se um exemplo não compila, confira a mensagem do compilador antes de atribuir o problema ao editor. O mesmo programa pode ser desenvolvido em editores diferentes.</p>
+<div class="table-responsive"><table class="table"><caption>Componentes do processo de desenvolvimento</caption><thead><tr><th>Componente</th><th>Responsabilidade</th><th>Exemplo de verificação</th></tr></thead><tbody><tr><td>JDK</td><td>Disponibilizar ferramentas para desenvolver.</td><td><code>javac -version</code></td></tr><tr><td>JVM</td><td>Executar bytecode compatível.</td><td><code>java -version</code></td></tr><tr><td>IDE</td><td>Ajudar a escrever e investigar o programa.</td><td>Conferir o JDK selecionado no projeto.</td></tr><tr><td>Biblioteca</td><td>Oferecer classes e operações reutilizáveis.</td><td>Consultar a API de <code>Scanner</code>.</td></tr></tbody></table></div>
+<h2 id="secao-5">5. Preparar uma pasta e trabalhar com segurança</h2>
+<p>Crie uma pasta de exercícios em um local onde você tenha permissão para gravar. Dentro dela, crie uma pasta por atividade, por exemplo <code>java-estudos/primeiro-programa</code>. Não coloque arquivos pessoais ou senhas nos exemplos. Evite trabalhar diretamente na pasta de instalação do Java: o JDK é uma ferramenta e seu projeto é outro conjunto de arquivos.</p>
+<p>No Windows, habilite a exibição das extensões de arquivos no Explorador. Um arquivo apresentado como <code>Main.java</code> pode, na verdade, ser <code>Main.java.txt</code> se a extensão estiver oculta. Use um editor de texto ou de código e salve como UTF-8. Um processador de textos pode introduzir formatação e aspas tipográficas que o compilador não reconhece como delimitadores.</p>
+<div class="table-responsive"><table class="table"><caption>Comandos de navegação: escolha a coluna do seu terminal</caption><thead><tr><th>Tarefa</th><th>PowerShell</th><th>Linux ou macOS</th></tr></thead><tbody><tr><td>Ver a pasta atual</td><td><code>Get-Location</code></td><td><code>pwd</code></td></tr><tr><td>Listar arquivos</td><td><code>Get-ChildItem</code></td><td><code>ls</code></td></tr><tr><td>Criar pasta</td><td><code>New-Item -ItemType Directory primeiro-programa</code></td><td><code>mkdir primeiro-programa</code></td></tr><tr><td>Entrar na pasta</td><td><code>Set-Location primeiro-programa</code></td><td><code>cd primeiro-programa</code></td></tr></tbody></table></div>
+<p>Um caminho com espaços precisa de aspas ao ser passado como argumento: <code>Set-Location "C:\Meus Estudos\primeiro-programa"</code>. Execute a compilação na pasta que contém o fonte ou informe seu caminho. Se aparecer “file not found”, confira a localização antes de reinstalar o Java. Um terminal aberto antes da instalação pode ainda estar usando o PATH antigo: abra outro terminal.</p>
+<h2 id="secao-6">6. Instalar e conferir um JDK no computador</h2>
+<p>Para programar fora do navegador, escolha uma distribuição do JDK para seu sistema operacional e arquitetura. OpenJDK é um projeto de implementação da plataforma; distribuições como Eclipse Temurin e Oracle JDK fornecem pacotes instaláveis. Versão, atualizações e licença da distribuição são decisões distintas. Para acompanhar o guia, configure Java 17. A <a href="extra.html#extraFerramentas">seção de instalação e ferramentas</a> reúne os links de download. Uma versão posterior instalada na máquina não muda automaticamente a configuração do projeto.</p>
+<p>Depois da instalação, abra um terminal novo e execute os dois comandos abaixo. O primeiro identifica o ambiente chamado para executar; o segundo identifica o compilador. Se apenas <code>java</code> funciona, confira se foi instalado um JDK completo e se seu diretório <code>bin</code> está no <code>PATH</code>. Quando há várias instalações, os comandos podem apontar para diretórios diferentes. Confira também a configuração do JDK dentro da IDE.</p>
+<pre><code>java -version
+javac -version</code></pre>
+<p><code>JAVA_HOME</code>, quando uma ferramenta o exige, deve apontar para a pasta do JDK, sem acrescentar <code>bin</code>. Já o <code>PATH</code> inclui a pasta de executáveis. No PowerShell, <code>Get-Command java</code> e <code>Get-Command javac</code> mostram os comandos resolvidos; <code>$env:JAVA_HOME</code> consulta a variável. No Linux e macOS, <code>command -v java</code>, <code>command -v javac</code> e <code>echo "$JAVA_HOME"</code> cumprem essa investigação. Evite copiar um caminho de outra máquina: o nome exato do diretório depende da instalação.</p>
+<p>Use o primeiro programa deste tema como teste da instalação. Compile em UTF-8 e execute a classe a partir da mesma pasta. Alterar o texto e executar sem recompilar pode mostrar a versão antiga do <code>.class</code>. Se o resultado parecer ignorar sua edição, confira o arquivo salvo, o diretório atual e a etapa de compilação antes de modificar o programa.</p>
+<h2 id="secao-7">7. Do arquivo fonte ao resultado</h2>
+<p>Um arquivo <code>Main.java</code> contém texto que segue a sintaxe Java. O compilador analisa esse texto, verifica tipos e produz um ou mais arquivos <code>.class</code>. A JVM carrega essas classes e executa o programa. Implementações podem interpretar bytecode e compilar trechos durante a execução, usando JIT. Portanto, compilar o arquivo e executar a classe são etapas diferentes, mesmo quando o botão da IDE faz ambas.</p>
+<p>A portabilidade depende de uma JVM compatível e dos recursos usados. Um arquivo compilado para uma versão mais nova pode não executar em uma JVM antiga. Caminhos de arquivo, bibliotecas nativas e dependências externas também interferem. Definir uma versão de referência e evitar caminhos específicos do computador facilita executar o mesmo exercício em computadores diferentes.</p>
+<h2 id="secao-8">8. Seu primeiro programa completo</h2>
+<pre><code>public class Main {
+    public static void main(String[] args) {
+        System.out.println("Olá, Java!");
+        System.out.println(5 + 10);
+    }
+}</code></pre>
+<p>Salve esse texto como <code>Main.java</code>. <code>public class Main</code> declara a classe pública. As chaves delimitam a classe e o corpo do método. O método <code>public static void main(String[] args)</code> é o ponto de entrada usado nesta apostila. <code>static</code> permite chamá-lo sem criar um objeto de <code>Main</code>; <code>void</code> indica ausência de valor de retorno; <code>args</code> recebe argumentos de linha de comando. O nome desse parâmetro pode mudar, mas manter <code>args</code> facilita reconhecer a convenção.</p>
+<p>A primeira instrução imprime um texto e termina a linha. A segunda calcula a soma e imprime <code>15</code>. As aspas duplas delimitam o texto e não aparecem na saída. A instrução de chamada termina com ponto e vírgula; a declaração do método e os blocos não recebem um ponto e vírgula depois de cada chave. O nome do arquivo deve coincidir com a classe pública, inclusive nas maiúsculas.</p>
+<h2 id="secao-9">9. Ler o primeiro programa, palavra por palavra</h2>
+<p>Pense na classe como uma unidade de organização do código. O bloco externo de <code>Main</code> contém métodos. Um método reúne instruções para uma tarefa. O método <code>main</code> desta versão é o ponto de entrada da aplicação de console. Quando a JVM o inicia, as instruções do seu corpo são executadas em ordem, exceto quando o fluxo é alterado por chamadas, decisões, repetições ou falhas.</p>
+<dl><dt><code>public</code></dt><dd>Define uma forma de acesso. No método principal convencional, permite que o inicializador o encontre como ponto de entrada público.</dd><dt><code>class Main</code></dt><dd>Declara o tipo chamado Main. O nome tem maiúscula por convenção e precisa coincidir com Main.java quando a classe pública é compilada com javac.</dd><dt><code>static</code></dt><dd>Associa o método à classe; para iniciá-lo, não precisamos escrever <code>new Main()</code>.</dd><dt><code>void</code></dt><dd>O método não devolve um valor ao chamador. Isso não impede imprimir informações.</dd><dt><code>String[] args</code></dt><dd>É o parâmetro que recebe um array de textos da linha de comando. Ele pode conter zero elementos.</dd><dt><code>System.out.println(...)</code></dt><dd>Chama a operação de impressão do fluxo de saída padrão. O argumento dentro dos parênteses é a informação a imprimir.</dd></dl>
+<p><code>java.lang</code> é importado implicitamente; por isso, os exemplos usam <code>String</code> e <code>System</code> sem um import explícito. Isso não significa que todas as classes da biblioteca padrão estejam disponíveis por nome curto. Para <code>Scanner</code>, por exemplo, precisamos de import ou do nome qualificado.</p>
+<p>Indentação não muda o significado do bloco, mas permite enxergar sua estrutura. Use uma instrução por linha, quatro espaços por nível e nomes legíveis. O ponto e vírgula encerra muitas instruções; ele não deve ser colocado mecanicamente após toda linha. Comentários <code>//</code> terminam no fim da linha, enquanto <code>/* ... */</code> pode ocupar várias linhas. Comentários de bloco não se aninham.</p>
+<h2 id="secao-10">10. Compilar e executar no computador</h2>
+<pre><code>javac -encoding UTF-8 Main.java
+java Main</code></pre>
+<p>Execute os comandos no diretório do arquivo. O primeiro compila; o segundo informa o nome da classe, sem <code>.java</code> ou <code>.class</code>. Se a instalação não reconhecer <code>javac</code>, verifique o JDK e a variável <code>PATH</code>. Se a IDE e o terminal usam versões diferentes, o comportamento do projeto pode divergir. Para os exemplos desta apostila, use um JDK compatível com Java 17; recursos de versões posteriores precisam de estudo e configuração próprios.</p>
+<p>No Playground, o arquivo principal também se chama <code>Main.java</code>. É possível colocar classes auxiliares sem <code>public</code> no mesmo arquivo. Projetos com pacotes, vários arquivos e dependências são discutidos no estudo, mas os exercícios do editor usam um único arquivo e a biblioteca padrão disponível no ambiente. Baixe o código para continuar na sua IDE quando o projeto crescer.</p>
+<h2 id="secao-11">11. Um laboratório de saída, escapes e argumentos</h2>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t1-saida" data-java-program>public class Main {
+    public static void main(String[] args) {
+        System.out.print("Olá, ");
+        System.out.println("Java!");
+        System.out.println("Curso: \"Java do zero\"");
+        System.out.println("Pasta: C:\\estudos");
+        System.out.println("Total: " + (5 + 10));
+        System.out.println("Argumentos: " + args.length);
+        if (args.length &gt; 0) {
+            System.out.println("Primeiro: " + args[0]);
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t1-saida">Olá, Java!
+Curso: "Java do zero"
+Pasta: C:\estudos
+Total: 15
+Argumentos: 0</samp></pre></figure>
+<p>Execute primeiro sem argumentos: <code>java Main</code>. Depois execute <code>java Main Ana</code>. As últimas linhas passam a ser <code>Argumentos: 1</code> e <code>Primeiro: Ana</code>. Para passar um texto com espaços como um único argumento, use <code>java Main "Ana Silva"</code>. Digitar Ana depois que o programa começou não altera o array: argumentos são recebidos no início. Ler enquanto o programa executa é outra operação, estudada com Scanner no tema 2.</p>
+<p>A condição <code>args.length &gt; 0</code> protege o acesso à primeira posição. Você ainda não precisa dominar arrays: basta reconhecer que tentar ler uma posição ausente produz uma falha. A barra invertida de <code>
+</code> introduz uma sequência de escape dentro do literal, enquanto <code>\</code> representa uma barra no texto. Uma barra em uma mensagem não cria uma pasta no computador.</p>
+<h2 id="secao-12">12. Compilação reproduzível e compatibilidade</h2>
+<p>Separe os arquivos produzidos em uma pasta chamada <code>out</code>. O comando abaixo pede ao compilador de um JDK 17 ou posterior que use a linguagem e a API públicas da versão 17 e gere classes para esse destino. Ele não instala dependências, não converte bibliotecas externas para Java 17 e não garante compatibilidade com recursos nativos de qualquer sistema.</p>
+<pre tabindex="0"><code>javac --release 17 -encoding UTF-8 -d out Main.java
+java -cp out Main</code></pre>
+<p><code>-d out</code> define o diretório de saída e <code>-cp out</code> informa onde o inicializador deve procurar classes. Não escreva <code>java out/Main.class</code>: no modo de execução de classes, o argumento é um nome de classe. <code>--release 17</code> pode não existir em um compilador antigo demais. Confira <code>javac -version</code> antes de usar as opções.</p>
+<p>Também é possível executar um fonte simples com <code>java Main.java</code> em JDKs compatíveis com esse modo. Nesse caso, o inicializador compila o fonte para execução; isso difere de usar <code>java Main</code> sobre uma classe já compilada. Para entender e diagnosticar o processo, pratique primeiro as duas etapas explícitas. As opções estão nos manuais oficiais de <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/man/javac.html">javac</a> e <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/man/java.html">java</a>.</p>
+<p>Uma máquina que tem um JDK mais recente pode compilar para 17, mas uma biblioteca que você adicionou pode exigir uma versão maior. Compatibilidade envolve fonte, bytecode, APIs e dependências. Registre a versão usada no projeto e confira a configuração do compilador na IDE. Para esta trilha, usar 17 é uma decisão didática estável; não é uma afirmação de que seja a versão mais recente.</p>
+<h2 id="secao-13">13. Pacotes, importações e dois arquivos de verdade</h2>
+<p>Quando o projeto cresce, um pacote organiza nomes. <code>package estudo;</code> define que o nome completo da classe é <code>estudo.Main</code>. Uma pasta compatível com esse nome ajuda ferramentas e pessoas a localizá-la. Um import permite escrever um nome curto de outro pacote, mas não copia código, não executa uma classe e não instala uma biblioteca.</p>
+<pre tabindex="0"><code>projeto/
+  src/
+    estudo/
+      Main.java
+      Mensagens.java
+  out/</code></pre>
+<p>Salve os dois arquivos seguintes nos caminhos mostrados. É um laboratório para JDK local: o Playground usa um único Main.java sem pacote.</p>
+<figure><figcaption>src/estudo/Mensagens.java</figcaption><pre tabindex="0"><code id="t1-pacote-mensagens">package estudo;
+
+public class Mensagens {
+    public static String boasVindas(String nome) {
+        return "Olá, " + nome + "!";
+    }
+}</code></pre></figure>
+<figure><figcaption>src/estudo/Main.java</figcaption><pre tabindex="0"><code id="t1-pacote-main">package estudo;
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(Mensagens.boasVindas("Ana"));
+    }
+}</code></pre></figure>
+<pre tabindex="0"><code>javac --release 17 -encoding UTF-8 -d out src/estudo/Main.java src/estudo/Mensagens.java
+java -cp out estudo.Main</code></pre>
+<p>A saída é <code>Olá, Ana!</code>. As classes estão no mesmo pacote, então não precisamos importar Mensagens em Main. No segundo arquivo, <code>return</code> devolve um texto; em Main, esse retorno é entregue a println. O fluxo vai de main para boasVindas e volta com o resultado. Métodos, parâmetros e acesso serão aprofundados nos temas 7 a 10.</p>
+<p>No classpath, forneça a pasta que contém <code>estudo</code>, isto é, <code>out</code>, e não <code>out/estudo</code>. Para listar várias entradas de classpath, o separador é <code>;</code> no Windows e <code>:</code> no Linux/macOS. Em PowerShell, coloque uma lista com ponto e vírgula entre aspas para que o terminal a passe como um único argumento.</p>
+<h2 id="secao-14">14. Distribuir um JAR e executá-lo em outra pasta</h2>
+<p>Um arquivo JAR reúne classes e recursos. Para o projeto de duas classes acima, execute na pasta projeto:</p>
+<pre tabindex="0"><code>jar --create --file estudo.jar --main-class estudo.Main -C out .
+java -jar estudo.jar</code></pre>
+<p><code>--main-class</code> registra o ponto de entrada no manifesto. <code>-C out .</code> inclui o conteúdo do diretório out com seus caminhos relativos. A saída deve continuar sendo <code>Olá, Ana!</code>. Copie o JAR para uma pasta vazia e execute-o de lá: isso ajuda a perceber dependências acidentais de arquivos que só existiam na pasta do projeto.</p>
+<p>Esse JAR não inclui uma instalação completa de Java nem empacota automaticamente bibliotecas externas. Quem o executa precisa de um runtime compatível e dos recursos exigidos pelo programa. Ferramentas como jlink e jpackage atendem outras necessidades de distribuição, estudadas no tema 19. Não acrescente essas ferramentas ao primeiro exercício antes de saber explicar o que o JAR contém. Consulte o <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/man/jar.html">manual de jar</a> ao alterar o empacotamento.</p>
+<h2 id="secao-15">15. Carregamento, memória e coleta de lixo</h2>
+<p>Ao executar um programa, a JVM carrega definições de classes conforme necessário e prepara as estruturas usadas pelos métodos. O caminho de classes ajuda a localizar código; uma importação no fonte apenas resolve nomes e não baixa bibliotecas. Cada chamada de método usa um quadro de execução com seus dados locais. Instâncias e arrays pertencem ao heap no modelo da JVM. Para entender o compartilhamento de objetos, desenhe variáveis e referências, sem supor que cada atribuição cria uma cópia.</p>
+<p>O coletor de lixo pode recuperar memória de objetos que deixaram de ser alcançáveis. Atribuir <code>null</code> a uma variável não apaga o objeto imediatamente, e outra referência pode mantê-lo acessível. Também pode haver retenção indesejada de objetos em listas que nunca são limpas. Arquivos e conexões exigem fechamento próprio; recuperar memória não substitui esse cuidado. A <a href="https://docs.oracle.com/javase/specs/jvms/se17/html/jvms-2.html">especificação da JVM</a> distingue o modelo de execução das escolhas de implementação.</p>
+<p>HotSpot, uma implementação da JVM, pode usar compilação JIT para otimizar trechos durante a execução. Não existe um número universal de chamadas que garanta essa compilação nem uma promessa geral de desempenho em relação a outra linguagem. O comportamento depende da implementação, do programa e da carga. Da mesma forma, coletores como G1 e ZGC têm objetivos e custos diferentes; escolher um nome de coletor não garante uma latência específica. Para os primeiros exercícios, concentre-se em acompanhar referências, chamadas de métodos e o estado de cada objeto.</p>
+<h2 id="secao-16">16. O que a JVM garante e o que depende do ambiente</h2>
+<p>Um modelo útil é: fonte → compilador → bytecode → carregamento → execução. A especificação define comportamentos observáveis; uma implementação pode otimizar a forma de produzi-los. Não use esse desenho como um mapa literal de endereços físicos. Uma otimização pode eliminar uma alocação sem mudar o resultado que o programa precisa apresentar.</p>
+<p>Na perspectiva do programa, atribuir uma referência a outra variável não clona o objeto. Alterações por uma referência podem ser visíveis por outra. O coletor de lixo pode recuperar memória de objetos que deixaram de ser alcançáveis, enquanto o ciclo de vida de um arquivo ou conexão precisa de gerenciamento explícito. “Java tem GC” não significa que uma lista crescente sem limite seja segura.</p>
+<p>O programa também interage com um sistema operacional: permissões, caminhos, fuso horário e codificação podem mudar o resultado. Prefira a API de caminhos a montar separadores manualmente e informe codificações ao ler e gravar arquivos. Esses assuntos aparecem com exemplos no tema 12. Para medir desempenho, use uma carga representativa e ferramentas apropriadas; uma execução curta do primeiro programa mistura inicialização com o trabalho que você queria medir.</p>
+<h2 id="secao-17">17. Ferramentas que acompanham o desenvolvimento</h2>
+<p>Além de <code>javac</code> e <code>java</code>, o JDK oferece ferramentas para investigar e distribuir programas. <code>javap -c Main</code> permite observar instruções do bytecode compilado; <code>javadoc</code> gera documentação a partir de declarações e comentários apropriados; <code>jar</code> reúne classes e recursos em um arquivo de distribuição. Um JAR não se torna executável apenas por reunir arquivos: o modo de inicialização e as dependências precisam estar definidos.</p>
+<p><code>jshell</code> é um ambiente interativo do JDK para avaliar expressões e pequenas declarações. Ele ajuda a conferir uma divisão inteira ou um método de texto sem montar um projeto completo. Um resultado no JShell não prova que um arquivo com importações ausentes, escopo diferente ou outro ponto de entrada irá compilar. O Playground deste site trabalha com <code>Main.java</code>, não com uma sessão de JShell. Consulte as <a href="https://dev.java/learn/jvm/core-tools/">ferramentas do JDK no Dev.java</a> para relacionar cada comando à sua tarefa.</p>
+<h2 id="secao-18">18. Ler mensagens de erro</h2>
+<p>Um erro de compilação impede gerar ou executar a versão atual, por exemplo uma variável não declarada ou uma chave ausente. Um erro de execução acontece depois que o programa começa, como acessar uma posição inexistente de um array. Um erro de lógica produz um resultado incompatível com a regra, mesmo que não apareça mensagem de falha. Calcular média sem parênteses pode ser um erro de lógica; usar um nome inexistente pode ser erro de compilação.</p>
+<p>Leia primeiro o arquivo, a linha e a descrição do erro inicial. Uma chave ausente pode provocar várias mensagens posteriores. Corrija a causa e compile novamente. Métodos chamados <code>media</code> ou <code>main2</code> são métodos comuns: eles só participam da execução se forem chamados. O ponto de entrada dos programas deste guia é <code>main</code>.</p>
+<h2 id="secao-19">19. Investigar erros com um procedimento que você pode repetir</h2>
+<p>Não troque várias linhas de uma vez para “ver se funciona”. Reproduza a falha, leia a primeira mensagem, proponha uma causa e mude apenas o necessário. Rode novamente com a mesma entrada. Se o erro mudou, volte a verificar sua hipótese. Guarde uma cópia funcionando antes de um experimento maior.</p>
+<div class="table-responsive"><table class="table"><caption>Diagnóstico dos primeiros problemas</caption><thead><tr><th>Sintoma</th><th>O que investigar</th><th>Como conferir</th></tr></thead><tbody>
+<tr><td>javac não é reconhecido</td><td>JDK ausente ou executável fora do PATH.</td><td>Localize javac e reabra o terminal após ajustar a instalação.</td></tr>
+<tr><td>file not found: Main.java</td><td>Pasta atual, nome e extensão real.</td><td>Liste os arquivos antes de compilar.</td></tr>
+<tr><td>class Main is public...</td><td>Nome do arquivo diferente da classe.</td><td>Use Main.java, respeitando a capitalização.</td></tr>
+<tr><td>cannot find symbol</td><td>Nome incorreto, declaração ou import ausente.</td><td>Leia qual símbolo e em qual linha; compare a grafia.</td></tr>
+<tr><td>Could not find or load main class</td><td>Nome qualificado, pacote e classpath.</td><td>Localize o .class e confira a raiz passada a -cp.</td></tr>
+<tr><td>Main method not found</td><td>Ponto de entrada convencional ausente.</td><td>Confira public static void main(String[] args) na classe executada.</td></tr>
+<tr><td>UnsupportedClassVersionError</td><td>Bytecode mais novo que o runtime.</td><td>Compare java -version e javac -version e compile para o destino desejado.</td></tr>
+<tr><td>Saída antiga após editar</td><td>Fonte não salvo, compilação falhou ou outro .class executado.</td><td>Compile em out e execute com -cp out.</td></tr>
+</tbody></table></div>
+<p>Uma stack trace apresenta o tipo da falha e os métodos percorridos até ela. Procure o primeiro quadro pertencente ao seu código, por exemplo <code>at Main.main(Main.java:8)</code>. A linha 8 é onde a falha se manifestou, não necessariamente onde o dado incorreto surgiu. Acompanhe o valor até sua origem. Mensagens exatas variam conforme ferramenta, versão e idioma; aprenda a reconhecer a informação, não a decorar toda a frase.</p>
+<p>Na IDE, coloque um breakpoint em uma instrução executável. Use “Step over” para executar uma linha sem entrar no método chamado e “Step into” para investigar uma chamada. Observe valores locais e a pilha de chamadas. Se não parar, confira se o programa foi iniciado em modo de depuração e se está executando a classe que você alterou. Retire impressões temporárias de diagnóstico quando terminar.</p>
+<h2 id="secao-20">20. Do primeiro arquivo ao trabalho profissional: como seguir a trilha</h2>
+<p>Proficiência exige aplicar conceitos a problemas novos e manter software depois da primeira execução correta. Use esta trilha como percurso: fundamentos nos temas 1 a 6, modelagem e orientação a objetos nos temas 7 a 10, coleções, persistência, concorrência e testes nos temas 11 a 14. Depois escolha uma plataforma: desktop, Android ou backend. Você não precisa estudar todas ao mesmo tempo para praticar bem uma delas.</p>
+<p>Em cada projeto, comece por uma regra pequena, escreva critérios de aceitação e registre o comportamento esperado para dados válidos, inválidos e limites. Acrescente controle de versão, documentação para execução e testes repetíveis. Os laboratórios do <a href="extra.html">Extra</a> ajudam nessa transição; baixar um projeto e rodá-lo é o início, explicar e modificar suas decisões é a prática seguinte.</p>
+<p>Antes de avançar, seja capaz de explicar sem consultar: qual arquivo você edita; qual comando compila; qual nome a JVM executa; de onde vêm as classes; e como outra pessoa reproduziria o resultado. Saber a resposta para uma dúvida específica é útil. Saber investigá-la quando o ambiente muda é uma habilidade profissional.</p>
+<h2 id="secao-21">21. Prática e revisão</h2>
+<p>Execute o primeiro programa, altere a mensagem e imprima seu nome em outra linha. Antes de executar, escreva qual saída espera. Em seguida, remova propositalmente um ponto e vírgula e observe a mensagem do compilador. Restaure o código e troque <code>main</code> por outro nome para distinguir compilação de inicialização. Ao revisar sua solução, mostre o arquivo fonte, o papel do compilador e o ponto em que a JVM começa.</p>
+<p><a href="playground.html?ex=ola">Abrir a atividade de primeiro programa</a>. Referências complementares: <a href="https://dev.java/learn/">primeiros passos no Dev.java</a> e <a href="https://openjdk.org/jeps/289">contexto da descontinuação de applets</a>.</p>
+<p id="extraActivities1">Outras atividades deste tema: <a href="playground.html?ex=escapes">Saída, aspas e barras</a>.</p>
+<h2 id="secao-22">22. Prática guiada, soluções e critérios para avançar</h2>
+<p>Faça os exercícios sem abrir a resposta. Compare a saída e explique por que ela ocorre. Os erros deliberados devem ser experimentados em uma cópia do programa; restaure o arquivo antes do próximo exercício.</p>
+<ol><li><strong>Apresentação:</strong> escreva Main.java para imprimir três linhas: seu nome fictício, “Estudando Java” e a soma de 12 com 8. A última linha deve ser 20, e não 128.</li><li><strong>Argumentos:</strong> adapte o laboratório de saída para informar “Sem nome” quando não houver argumentos e saudar o primeiro argumento quando houver. Teste sem argumento, com Ana e com “Ana Silva”.</li><li><strong>Diagnóstico:</strong> remova um ponto e vírgula, depois altere Main para main apenas no nome do arquivo. Registre se a falha acontece na compilação ou na inicialização e restaure cada alteração separadamente.</li><li><strong>Distribuição:</strong> reproduza o laboratório de duas classes, gere o JAR e execute-o em outra pasta. A saída precisa ser a mesma.</li><li><strong>Explique:</strong> por que modificar Main.java e chamar apenas java Main pode mostrar uma mensagem antiga?</li></ol>
+<details><summary>Conferir solução: apresentação</summary><figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t1-apresentacao" data-java-program>public class Main {
+    public static void main(String[] args) {
+        System.out.println("Ana");
+        System.out.println("Estudando Java");
+        System.out.println(12 + 8);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t1-apresentacao">Ana
+Estudando Java
+20</samp></pre></figure><p>Sem texto antes dos valores, + faz a soma numérica. Se usar “Soma: ”, coloque os parênteses ao redor da operação.</p></details>
+<details><summary>Conferir solução: argumentos e diagnóstico</summary><figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t1-argumentos" data-java-program>public class Main {
+    public static void main(String[] args) {
+        if (args.length == 0) {
+            System.out.println("Sem nome");
+        } else {
+            System.out.println("Olá, " + args[0] + "!");
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t1-argumentos">Sem nome</samp></pre></figure><p>Com <code>java Main Ana</code>, a saída é <code>Olá, Ana!</code>. Com o argumento entre aspas, <code>Olá, Ana Silva!</code>. O ponto e vírgula ausente impede compilar. No javac, um arquivo main.java com public class Main tem nome incompatível. Apenas executar uma classe antiga não recompila o fonte: é preciso compilar a alteração salva.</p></details>
+<details><summary>Autoavaliação comentada</summary><dl><dt>Uma IDE e uma JVM são a mesma coisa?</dt><dd>Não. A IDE auxilia o desenvolvimento; a JVM executa bytecode.</dd><dt>Importar Scanner instala uma biblioteca?</dt><dd>Não. O import resolve o nome; Scanner já faz parte da biblioteca padrão.</dd><dt>É necessário um plug-in Java no navegador?</dt><dd>Não. O Playground integra seu próprio runtime, e o JDK local é outro ambiente.</dd><dt>O coletor de lixo fecha qualquer arquivo?</dt><dd>Não. Recursos externos exigem controle de ciclo de vida.</dd><dt>Compilar sem erros garante a regra correta?</dt><dd>Não. Uma fórmula incorreta pode compilar e executar normalmente; confira a saída esperada.</dd></dl></details>
+<p><strong>Você pode avançar quando:</strong> reproduzir um programa do zero, diferenciar compilação e execução, encontrar a causa de uma falha simples e explicar como repetir o resultado em outra pasta. Se ainda depender de copiar os comandos sem entender a pasta e a classe, refaça o laboratório. Continue com <a href="tema-02.html">lógica, tipos e dados de entrada</a>.</p><h2 id="fontes">Fontes e próximos passos</h2><p>Base preservada da apostila <a href="assets/materiais/07DesenvolvimentodeAplicaes.pdf">Desenvolvimento de aplicações</a>, páginas 5 a 25. A ampliação inclui laboratórios próprios e referências oficiais nos assuntos correspondentes. Para consultar outras versões, confira a versão indicada na documentação.</p><ul><li><a href="https://dev.java/learn/first-steps/">Dev.java · primeiros passos</a></li><li><a href="https://docs.oracle.com/en/java/javase/17/docs/api/index.html">Biblioteca padrão · Java 17</a></li><li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/index.html">Especificação da linguagem · Java 17</a></li><li><a href="extra.html">Materiais, projetos e laboratórios da trilha</a></li></ul>
+</article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="cont.html#temas">Ver todos os temas</a><a class="btn btn-primary" href="tema-02.html">Próximo · Tema 2</a></nav></div></div></main>
+<footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <p class="mb-1">
+            <a href="index.html">Início</a> ·
+            <a href="cont.html">Conteúdo</a> ·
+            <a href="playground.html">Playground</a> ·
+            <a href="quiz.html">Quiz</a> ·
+            <a href="faq.html">FAQ</a> · <a href="extra.html">Extra</a>
+        </p>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+
+
+
+</body>
+</html>

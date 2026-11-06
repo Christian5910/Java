@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>06 · Vetores, matrizes e coleções · Java</title>
+<meta name="description" content="Organize vários valores com arrays, matrizes e coleções, preservando limites, ordem, cópias e regras de acesso.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 6 de 30</span></nav><header class="lesson-header"><h1>06 · Vetores, matrizes e coleções</h1><p class="lead">Organize vários valores com arrays, matrizes e coleções, preservando limites, ordem, cópias e regras de acesso.</p><p class="text-muted">Java 17 como referência · Teoria, laboratórios e exercícios comentados</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-21">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Organizar dados exige escolher o que cada posição significa</a></li><li><a href="#secao-2">Armazenar vários valores relacionados</a></li><li><a href="#secao-3">Criar, inicializar e acessar</a></li><li><a href="#secao-4">Percorrer com for e for-each</a></li><li><a href="#secao-5">Soma, média e menor valor</a></li><li><a href="#secao-6">Compartilhar, copiar e ordenar</a></li><li><a href="#secao-7">Matrizes são arrays de arrays</a></li><li><a href="#secao-8">Quando uma lista é mais adequada</a></li><li><a href="#secao-9">Generics e os tipos aceitos por uma coleção</a></li><li><a href="#secao-10">Escolher entre List, Set e Map</a></li><li><a href="#secao-11">Prática e casos de borda</a></li><li><a href="#secao-12">Array vazio, referência nula e posição não preenchida</a></li><li><a href="#secao-13">For-each não substitui qualquer percurso por índice</a></li><li><a href="#secao-14">Soma, média e extremos com contrato explícito</a></li><li><a href="#secao-15">Buscar preservando o significado de não encontrado</a></li><li><a href="#secao-16">Ordenar, copiar e comparar são operações diferentes</a></li><li><a href="#secao-17">Matrizes irregulares e cópia de linhas</a></li><li><a href="#secao-18">List, Set e Map: escolha pelo comportamento que precisa preservar</a></li><li><a href="#secao-19">Generics, boxing e a armadilha de remover por posição</a></li><li><a href="#secao-20">Iteração, remoção e propriedade dos dados</a></li><li><a href="#secao-21">Prática orientada, soluções e revisão dos contratos</a></li><li><a href="#fontes">Fontes e continuidade</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. Organizar dados exige escolher o que cada posição significa</h2>
+<p>Quando um programa precisa guardar várias notas, criar nota1, nota2 e nota3 resolve apenas um tamanho fixo muito pequeno. Um array permite aplicar o mesmo algoritmo a várias posições, mas não decide por você o que cada posição representa. Antes de implementar, descreva se a ordem importa, se valores repetidos são permitidos, se pode haver ausência e qual operação será mais comum.</p><p>Um índice não é automaticamente um identificador permanente. Se você ordenar alunos, a posição de cada um pode mudar; se precisa encontrá-los por matrícula, a busca exige outra relação. Não trate o índice visual de uma lista como identidade do registro. Esse cuidado começa aqui e reaparece em coleções, arquivos e bancos de dados.</p><p>Para acompanhar este tema, você precisa dos laços e das condições anteriores. Ao final, deverá percorrer arrays sem ultrapassar limites, distinguir compartilhamento de cópia, trabalhar com linhas de comprimentos diferentes e escolher entre List, Set e Map por seu contrato. Os programas usam dados pequenos para que você consiga conferir cada transformação manualmente.</p>
+<h2 id="secao-2">2. Armazenar vários valores relacionados</h2>
+<p>Um array agrupa elementos de um mesmo tipo e oferece acesso por índice. Em vez de criar <code>nota1</code>, <code>nota2</code> e muitas variáveis semelhantes, podemos usar <code>double[] notas</code>. Cada posição guarda um valor do tipo declarado. O array tem comprimento fixo depois de criado; a variável que o referencia pode receber outro array, mas isso não redimensiona o objeto anterior.</p>
+<p>Arrays são objetos. Declarar <code>int[] numeros;</code> cria uma variável por referência, ainda sem um array utilizável se ela for local e não tiver sido inicializada. <code>new int[3]</code> cria um array com três posições. A definição de Java não exige que o estudante raciocine sobre endereços físicos contíguos para usá-lo; os acessos são feitos pelos índices e pelos limites da linguagem.</p>
+<h2 id="secao-3">3. Criar, inicializar e acessar</h2>
+<pre><code>int[] numeros = new int[3];
+numeros[0] = 10;
+numeros[1] = 20;
+numeros[2] = 30;
+System.out.println(numeros[1]); // 20
+
+double[] notas = {6.0, 7.0, 8.0};
+System.out.println(notas.length); // 3</code></pre>
+<p>O índice inicial é zero. Em um array de comprimento 3, os índices válidos são 0, 1 e 2. <code>numeros[3]</code> provoca <code>ArrayIndexOutOfBoundsException</code>. Índices negativos também são inválidos. <code>length</code> é um campo do array e não leva parênteses; <code>length()</code> é um método de <code>String</code>. Use <code>vetor.length</code> para arrays e <code>texto.length()</code> para strings.</p>
+<p>Quando o array é criado, elementos numéricos recebem zero, booleanos recebem falso, caracteres recebem <code>'\u0000'</code> e referências recebem <code>null</code>. Um array de <code>String</code> recém-criado contém referências nulas, não textos vazios. Um array de comprimento zero é válido, mas não tem uma posição zero. Antes de usar o primeiro elemento como ponto de partida para um menor valor, confira se existe ao menos um elemento.</p>
+<h2 id="secao-4">4. Percorrer com for e for-each</h2>
+<pre><code>int[] numeros = {10, 20, 30};
+for (int i = 0; i &lt; numeros.length; i++) {
+    System.out.println("Posição " + i + ": " + numeros[i]);
+}
+for (int numero : numeros) {
+    System.out.println(numero);
+}</code></pre>
+<p>O primeiro laço oferece o índice, útil para alterar posições ou relacionar dois arrays. O segundo percorre os valores e facilita a leitura quando o índice não é necessário. A variável <code>numero</code> recebe o valor da posição atual. Reatribuir essa variável primitiva não altera o elemento do array. Para dobrar todos os inteiros, use <code>numeros[i] *= 2</code> em um laço com índices.</p>
+<p>Quando os elementos são referências a objetos, o for-each copia a referência para a variável de iteração. Um método chamado nesse objeto pode mudar seu estado; reatribuir a variável de iteração para outro objeto não substitui a posição do array. Essa diferença retoma a distinção entre mudar o objeto e mudar a referência.</p>
+<h2 id="secao-5">5. Soma, média e menor valor</h2>
+<pre><code>double[] notas = {6.0, 7.0, 8.0};
+double soma = 0;
+for (double nota : notas) {
+    soma += nota;
+}
+if (notas.length == 0) {
+    System.out.println("Sem notas");
+} else {
+    double media = soma / notas.length;
+    System.out.printf(java.util.Locale.US, "Média: %.2f%n", media);
+}</code></pre>
+<p>O acumulador fica antes do laço e o cálculo da média fica depois de somar todos os elementos. A verificação do comprimento evita uma divisão sem significado para uma coleção vazia. Se precisar do menor inteiro, inicialize o candidato com o primeiro elemento e compare os seguintes. Começar o menor em zero daria um resultado incorreto para um conjunto formado apenas por números positivos.</p>
+<p>O algoritmo de busca também deve informar o caso em que não encontra um valor. Você pode iniciar a posição com -1 e substituí-la quando encontrar. Isso evita confundir o índice zero com ausência. Defina se deseja a primeira ocorrência ou todas as ocorrências: usar <code>break</code> após encontrar a primeira encerra a busca.</p>
+<h2 id="secao-6">6. Compartilhar, copiar e ordenar</h2>
+<pre><code>int[] original = {3, 1, 2};
+int[] mesmaReferencia = original;
+mesmaReferencia[0] = 9;
+System.out.println(original[0]); // 9
+
+int[] copia = java.util.Arrays.copyOf(original, original.length);
+java.util.Arrays.sort(copia);
+System.out.println(java.util.Arrays.toString(copia));</code></pre>
+<p>A atribuição de um array para outra variável copia a referência. As duas variáveis passam a acessar o mesmo objeto. <code>Arrays.copyOf</code> cria outro array; para elementos por referência, a cópia continua apontando para os mesmos objetos internos, uma cópia superficial. <code>Arrays.sort</code> altera a ordem do array fornecido. Se a ordem original precisa ser mantida, ordene uma cópia.</p>
+<p><code>Arrays.toString</code> gera uma apresentação dos elementos de um array unidimensional. Imprimir diretamente uma referência de array com <code>println</code> não produz, em geral, a listagem dos elementos esperada pelo iniciante. Para arrays aninhados, <code>Arrays.deepToString</code> oferece uma representação das estruturas internas. Comparação de conteúdo também exige uma operação apropriada, como <code>Arrays.equals</code>, em vez de comparar referências com <code>==</code>.</p>
+<h2 id="secao-7">7. Matrizes são arrays de arrays</h2>
+<pre><code>int[][] matriz = {
+    {1, 2, 3},
+    {4, 5, 6}
+};
+for (int linha = 0; linha &lt; matriz.length; linha++) {
+    for (int coluna = 0; coluna &lt; matriz[linha].length; coluna++) {
+        System.out.print(matriz[linha][coluna] + " ");
+    }
+    System.out.println();
+}</code></pre>
+<p><code>matriz.length</code> informa a quantidade de linhas, e <code>matriz[linha].length</code> informa o comprimento da linha atual. Java permite linhas de comprimentos diferentes. Portanto, usar sempre o comprimento da primeira linha só é seguro quando o programa garante uma estrutura retangular. Uma linha também pode ser nula em estruturas parcialmente inicializadas; é preciso inicializá-la antes de acessar seus elementos.</p>
+<p>No exemplo, <code>matriz[1][2]</code> vale 6. Para somar uma coluna, percorra as linhas e confirme que a coluna existe em todas elas. Para somar a diagonal principal de uma matriz quadrada, os índices de linha e coluna coincidem. Desenhar a tabela e escrever os índices nas bordas ajuda a traduzir o raciocínio para os dois acessos entre colchetes.</p>
+<h2 id="secao-8">8. Quando uma lista é mais adequada</h2>
+<p><code>ArrayList</code> é um complemento de estudo para coleções cuja quantidade de itens varia. <code>ArrayList&lt;String&gt;</code> pode receber novos nomes com <code>add</code>, consultar com <code>get</code> e informar o tamanho com <code>size()</code>. Os índices continuam começando em zero. Uma lista de inteiros usa <code>Integer</code>, não <code>int</code>, no parâmetro genérico. Arrays continuam úteis quando o tamanho e o acesso indexado já representam bem o problema.</p>
+<p>Uma lista também pode reunir contas para que o programa procure uma delas pelo número. Isso conecta estruturas de dados à organização em classes, estudada a seguir. Comece com uma busca por laço e teste um número existente e outro inexistente. Escolha outra estrutura quando a forma de consulta justificar a mudança.</p>
+<h2 id="secao-9">9. Generics e os tipos aceitos por uma coleção</h2>
+<p>Em <code>List&lt;String&gt;</code>, o parâmetro genérico informa que a lista recebe referências compatíveis com <code>String</code>. Tentar adicionar um inteiro produz um erro de compilação e evita descobrir esse engano apenas na leitura. Tipos primitivos não são parâmetros genéricos: uma lista de números inteiros usa <code>Integer</code>. A conversão automática entre <code>int</code> e <code>Integer</code> é chamada de boxing ou unboxing, conforme a direção.</p>
+<p>Essa conveniência não elimina a possibilidade de <code>null</code>. Desempacotar um <code>Integer</code> nulo para <code>int</code> causa <code>NullPointerException</code>. Também não torna <code>List&lt;Integer&gt;</code> um subtipo de <code>List&lt;Number&gt;</code>: permitir essa atribuição abriria espaço para inserir outros números na lista original de inteiros. Evite os tipos crus, como <code>List</code> sem parâmetro, porque eles perdem verificações úteis. Os <a href="https://docs.oracle.com/javase/tutorial/java/generics/">fundamentos de generics</a> explicam como os parâmetros relacionam entradas e saídas de uma API.</p>
+<h2 id="secao-10">10. Escolher entre List, Set e Map</h2>
+<p>Depois dos arrays, escolha uma coleção pela operação necessária. <code>List</code> representa uma sequência com posições e pode conter repetições. <code>Set</code> representa elementos sem duplicação segundo sua regra de igualdade. <code>Map</code> associa uma chave a um valor; inserir novamente a mesma chave substitui o valor associado. <code>Map</code> faz parte do framework de coleções, mas não estende <code>Collection</code>.</p>
+<div class="table-responsive"><table class="table"><caption>Estruturas para um cadastro de estudo</caption><thead><tr><th>Necessidade</th><th>Tipo</th><th>Cuidado</th></tr></thead><tbody><tr><td>Preservar a sequência de nomes, inclusive repetidos.</td><td><code>List&lt;String&gt;</code></td><td>Posições mudam quando itens são inseridos ou removidos.</td></tr><tr><td>Registrar nomes distintos.</td><td><code>Set&lt;String&gt;</code></td><td>A implementação define se há uma ordem de iteração.</td></tr><tr><td>Consultar uma nota pelo nome.</td><td><code>Map&lt;String, Integer&gt;</code></td><td>Nomes iguais compartilham a mesma chave nesse modelo.</td></tr></tbody></table></div>
+<p><code>ArrayList</code> permite acesso por índice e cresce conforme necessário. <code>HashSet</code> e <code>HashMap</code> não prometem a ordem de inserção; para demonstrar resultados nessa ordem, o exemplo usa <code>LinkedHashSet</code> e <code>LinkedHashMap</code>. <code>TreeSet</code> e <code>TreeMap</code> trabalham com ordenação segundo comparação. Uma <code>LinkedList</code> não torna toda inserção automaticamente barata: localizar uma posição também tem custo. Comece pela estrutura cuja regra é clara e só investigue desempenho com uma necessidade concreta.</p>
+<pre><code id="research-collections">import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+public class Main {
+    public static void main(String[] args) {
+        List&lt;String&gt; presencas = new ArrayList&lt;&gt;();
+        presencas.add("Ana");
+        presencas.add("Bruno");
+        presencas.add("Ana");
+        Set&lt;String&gt; pessoas = new LinkedHashSet&lt;&gt;(presencas);
+        Map&lt;String, Integer&gt; notas = new LinkedHashMap&lt;&gt;();
+        notas.put("Ana", 7);
+        notas.put("Bruno", 8);
+        notas.put("Ana", 9);
+        System.out.println(presencas);
+        System.out.println(pessoas);
+        System.out.println(notas);
+        System.out.println(notas.containsKey("Carla"));
+    }
+}</code></pre><p><a href="playground.html?ex=colecoes-cadastro">Praticar este programa no Playground</a></p>
+<p>O programa apresenta <code>[Ana, Bruno, Ana]</code>, depois <code>[Ana, Bruno]</code>, depois <code>{Ana=9, Bruno=8}</code> e, por último, <code>false</code>. Compare a repetição mantida pela lista com a unicidade do conjunto e a substituição no mapa. Uma chave ausente pode fazer <code>get</code> devolver <code>null</code>; não trate isso como nota zero sem que o contrato defina essa equivalência. Use <code>containsKey</code> quando precisar distinguir ausência. Consulte os contratos de <a href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html">List</a>, <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Set.html">Set</a> e <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Map.html">Map</a>.</p>
+
+<p>Strings com o mesmo conteúdo são consideradas iguais por <code>equals</code> e possuem códigos de hash compatíveis. Essa regra permite procurar um nome textual em um <code>HashMap</code> mesmo usando outra instância de string com os mesmos caracteres. Para classes próprias usadas como chaves, igualdade e <code>hashCode</code> devem ter contratos compatíveis. Evite alterar campos que participam da igualdade enquanto o objeto estiver em uma estrutura de hash: a busca pode deixar de localizar a chave como esperado.</p>
+<p>Uma chave de cadastro também precisa de uma regra de normalização explícita. Se “Ana” e “ana” representam a mesma pessoa no exercício, normalize as entradas de modo consistente antes de gravar e consultar, ou adote outra chave estável. Não aplique essa transformação por hábito em senhas, textos de exibição ou dados cujo significado depende da grafia original. O <a href="playground.html?ex=normalizar-texto">exercício de normalização</a> permite observar essas escolhas antes de usar um mapa.</p>
+<h2 id="secao-11">11. Prática e casos de borda</h2>
+<p>Calcule soma e média de notas, encontre o menor elemento e busque a posição de um número. Teste array vazio, array com um elemento e valores repetidos. Em uma matriz, some cada linha e confira a diferença entre número de linhas e número de colunas. Faça uma cópia, altere apenas a cópia e explique por que uma atribuição simples teria outro efeito.</p>
+<p><a href="playground.html?ex=arrays">Abrir arrays</a>, <a href="playground.html?ex=matriz">percorrer uma matriz</a> e <a href="playground.html?ex=lista">experimentar uma lista</a>. Ao revisar, verifique se cada índice é menor que o comprimento da estrutura que está sendo acessada.</p>
+<p id="extraActivities6">Outras atividades deste tema: <a href="playground.html?ex=busca">Primeira e última ocorrência</a> · <a href="playground.html?ex=copia-array">Ordenar uma cópia</a> · <a href="playground.html?ex=matriz-transposta">Transpor uma matriz</a>.</p><h2 id="secao-12">12. Array vazio, referência nula e posição não preenchida</h2>
+<p>Um array vazio existe e tem comprimento zero. Uma referência nula não aponta para array algum. Um array de referências recém-criado pode existir com todas as posições nulas. Esses três estados levam a verificações diferentes: length é válido no vazio, mas não em null; uma posição dentro dos limites ainda pode não conter um objeto.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t6-estados" data-java-program>public class Main {
+    public static void main(String[] args) {
+        int[] vazio = new int[0];
+        String[] nomes = new String[2];
+        System.out.println("Vazio: " + vazio.length);
+        System.out.println("Primeiro nome ausente: " + (nomes[0] == null));
+        nomes[0] = "Ana";
+        for (int i = 0; i &lt; nomes.length; i++) {
+            System.out.println(i + ": " + (nomes[i] == null ? "Sem nome" : nomes[i]));
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t6-estados">Vazio: 0
+Primeiro nome ausente: true
+0: Ana
+1: Sem nome</samp></pre></figure><p>Não inicie menor valor por notas[0] antes de conferir que há ao menos uma posição. A condição índice menor que length também não protege contra um índice negativo; se ele vier de uma entrada externa, confira os dois limites. O contrato do método deve dizer se null é uma entrada recusada ou uma representação aceita de ausência.</p><p>Capacidade e quantidade utilizada podem ser diferentes. Um array de tamanho 100 reservado para um cadastro não contém automaticamente 100 pessoas cadastradas. Se você mantiver esse modelo manualmente, precisará controlar a quantidade usada. Quando o tamanho lógico varia, uma lista frequentemente representa melhor a necessidade.</p>
+<h2 id="secao-13">13. For-each não substitui qualquer percurso por índice</h2>
+<p>For-each facilita visitar os valores quando a posição não participa da operação. A variável do laço recebe um valor de cada elemento; atribuir outro valor a essa variável não substitui a posição do array. Se o objetivo é dobrar todos os inteiros armazenados, escreva uma atribuição à posição correspondente.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t6-percurso" data-java-program>import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        int[] valores = {1, 2, 3};
+        for (int valor : valores) {
+            valor = valor * 2;
+        }
+        System.out.println(Arrays.toString(valores));
+        for (int i = 0; i &lt; valores.length; i++) {
+            valores[i] = valores[i] * 2;
+        }
+        System.out.println(Arrays.toString(valores));
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t6-percurso">[1, 2, 3]
+[2, 4, 6]</samp></pre></figure><p>Com objetos mutáveis, o valor copiado pelo for-each é uma referência. Chamar um método que altera esse objeto pode modificar o estado observado por outras referências, mesmo sem substituir a posição. Isso não contradiz a passagem por valor: o valor copiado é a referência, e o objeto continua compartilhado.</p><p>Escolha o percurso pelo trabalho necessário: use índice para posição, vizinhos ou substituição; use for-each quando cada valor é suficiente. Evite acrescentar um contador paralelo a todo for-each, pois isso tende a esconder uma necessidade que um for tradicional já expressaria diretamente.</p>
+<h2 id="secao-14">14. Soma, média e extremos com contrato explícito</h2>
+<p>Uma rotina de estatísticas precisa definir o resultado para uma sequência vazia e quais números aceita. Neste laboratório, o array não pode ser nulo, precisa ter ao menos um elemento e deve conter somente valores finitos. A soma também deve continuar finita. Uma média com NaN não é uma forma adequada de comunicar que uma nota estava ausente.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t6-estatisticas" data-java-program>import java.util.Locale;
+
+public class Main {
+    static void resumir(double[] valores) {
+        if (valores == null || valores.length == 0) {
+            throw new IllegalArgumentException("Sem valores");
+        }
+        double soma = 0;
+        double menor = valores[0];
+        double maior = valores[0];
+        for (double valor : valores) {
+            if (!Double.isFinite(valor)) {
+                throw new IllegalArgumentException("Valor não finito");
+            }
+            soma += valor;
+            menor = Math.min(menor, valor);
+            maior = Math.max(maior, valor);
+        }
+        if (!Double.isFinite(soma)) {
+            throw new IllegalArgumentException("Soma não finita");
+        }
+        System.out.printf(Locale.US, "Média: %.2f%n", soma / valores.length);
+        System.out.println("Menor: " + menor + " | Maior: " + maior);
+    }
+    public static void main(String[] args) {
+        resumir(new double[]{6, 7, 8});
+        try {
+            resumir(new double[0]);
+        } catch (IllegalArgumentException erro) {
+            System.out.println(erro.getMessage());
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t6-estatisticas">Média: 7.00
+Menor: 6.0 | Maior: 8.0
+Sem valores</samp></pre></figure><p>Começar menor em zero seria incorreto para dados todos positivos: zero poderia aparecer como mínimo sem pertencer à entrada. Usar o primeiro elemento após validar o tamanho estabelece um candidato real. Faça também um teste com todos os valores negativos para detectar uma inicialização indevida do maior.</p><p>Este cálculo é adequado ao laboratório, mas não promete precisão perfeita para qualquer conjunto de doubles. Somar números de magnitudes muito diferentes pode perder informação por arredondamento. Quando a aplicação exigir outra precisão, escolha um algoritmo numérico e uma representação adequados ao domínio, em vez de supor que mais casas na impressão resolvem o cálculo.</p>
+<h2 id="secao-15">15. Buscar preservando o significado de não encontrado</h2>
+<p>Uma busca linear visita elementos até encontrar o que procura ou chegar ao fim. Se precisa apenas da primeira ocorrência, pode encerrar ao encontrá-la. Se precisa da última, deve continuar e atualizar o candidato. O valor -1 é uma sentinela útil para índice ausente porque nenhum índice válido é negativo.</p><p>Não use zero como ausência: a primeira posição também tem índice zero. Não transforme automaticamente um retorno -1 em um acesso ao array. O chamador precisa interpretar a sentinela antes de usar o resultado. Em um método, documente se procura a primeira ocorrência, qualquer ocorrência ou todas as ocorrências.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t6-busca" data-java-program>public class Main {
+    static int primeiraPosicao(int[] valores, int procurado) {
+        if (valores == null) throw new IllegalArgumentException("Array ausente");
+        for (int i = 0; i &lt; valores.length; i++) {
+            if (valores[i] == procurado) return i;
+        }
+        return -1;
+    }
+    public static void main(String[] args) {
+        int[] valores = {4, 7, 4, 9};
+        System.out.println(primeiraPosicao(valores, 4));
+        System.out.println(primeiraPosicao(valores, 9));
+        System.out.println(primeiraPosicao(valores, 5));
+        System.out.println(primeiraPosicao(new int[0], 4));
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t6-busca">0
+3
+-1
+-1</samp></pre></figure><p>Para n elementos, a busca linear pode precisar visitar todos. Uma busca binária exige uma organização ordenada compatível com a comparação. Aplicá-la a uma sequência arbitrária não é uma otimização válida. Além disso, ordenar antes pode mudar a posição original que o usuário pretendia consultar. Considere todo o contrato, não apenas a quantidade de comparações.</p>
+<h2 id="secao-16">16. Ordenar, copiar e comparar são operações diferentes</h2>
+<p>Atribuir b = a compartilha o mesmo array. Copiar com Arrays.copyOf cria outra estrutura. Ordenar com Arrays.sort modifica a estrutura recebida. Para mostrar um relatório ordenado sem perder a sequência original, copie e ordene a cópia. Arrays.equals compara o conteúdo dos elementos; == compara se as referências apontam para o mesmo array.</p><p>Arrays.copyOf pode copiar para um tamanho diferente, completando posições adicionais com valores padrão ou descartando posições finais. Não use essa mudança de tamanho como uma política implícita de descarte de dados. Quando reduzir uma coleção de registros, o contrato deve dizer quais elementos serão preservados e se a perda é aceitável.</p><p>Em arrays de objetos, a cópia é superficial: as posições novas guardam referências para os mesmos elementos. Em matrizes, copiar apenas o array externo ainda compartilha as linhas. Independência da estrutura não implica independência de todos os objetos alcançáveis a partir dela. O próximo laboratório torna essa diferença visível sem depender de um desenho de endereços físicos.</p>
+<h2 id="secao-17">17. Matrizes irregulares e cópia de linhas</h2>
+<p>Um int[][] é um array cujos elementos referenciam outros arrays. As linhas podem ter comprimentos diferentes e até ser nulas. Se o contrato permitir essa forma, percorra cada linha por seu próprio length e decida explicitamente o que uma linha nula representa. Se o método exigir uma matriz retangular, valide essa exigência antes de calcular com um único número de colunas.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t6-matriz-copia" data-java-program>import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        int[][] original = {{1, 2}, {3}};
+        int[][] superficial = original.clone();
+        int[][] independente = new int[original.length][];
+        for (int i = 0; i &lt; original.length; i++) {
+            independente[i] = original[i].clone();
+        }
+        superficial[0][0] = 9;
+        independente[1][0] = 7;
+        System.out.println(Arrays.deepToString(original));
+        System.out.println(Arrays.deepToString(independente));
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t6-matriz-copia">[[9, 2], [3]]
+[[1, 2], [7]]</samp></pre></figure><p>O valor 9 aparece no original porque a primeira linha continua compartilhada na cópia superficial. Já o 7 fica apenas na matriz com linhas copiadas. Este laboratório usa somente linhas presentes e inteiros; uma rotina geral precisaria definir como tratar linhas nulas e objetos mutáveis dentro delas.</p><p>Para transpor uma matriz retangular m por n, crie uma matriz n por m e atribua destino[coluna][linha] a partir de origem[linha][coluna]. Confira as dimensões antes do acesso à primeira linha, especialmente no caso vazio. Uma matriz irregular não tem uma transposição retangular única sem uma regra de preenchimento ou de recusa.</p>
+<h2 id="secao-18">18. List, Set e Map: escolha pelo comportamento que precisa preservar</h2>
+<p>List mantém uma sequência de elementos e permite repetições; Set representa unicidade segundo as regras de igualdade da implementação; Map associa chaves a valores. Esses contratos descrevem papéis distintos. Um Map não é uma lista com índices especiais, e uma lista não elimina duplicados automaticamente.</p><p>A ordem de iteração depende da implementação. LinkedHashSet e LinkedHashMap ajudam os exemplos a produzir uma ordem de inserção previsível. Não presuma que HashSet ou HashMap manterão essa mesma ordem. Para ordenação por chave, outra estrutura ou outra etapa de ordenação pode ser apropriada. Escreva qual ordem o relatório exige.</p><p>Em Map, put com uma chave existente substitui o valor associado àquela chave. Se o problema exige recusar duplicados, verifique e trate essa regra em vez de usar put e perder a informação anterior sem perceber. A ausência de uma chave também precisa ser distinguida de um valor nulo quando a implementação permitir ambos.</p><p>Nos exemplos, prefira declarar a variável pelo contrato, como List&lt;String&gt;, e criar a implementação que você escolheu. Isso mantém clara a necessidade sem acrescentar uma camada própria de abstração. O tema 11 aprofunda igualdade, hashCode e coleções; aqui, a meta é escolher uma estrutura coerente e usá-la com segurança.</p>
+<h2 id="secao-19">19. Generics, boxing e a armadilha de remover por posição</h2>
+<p>Uma List&lt;Integer&gt; armazena referências para objetos Integer; generics não recebem diretamente o tipo primitivo int. A linguagem pode fazer boxing ao inserir um inteiro e unboxing ao usá-lo como número. Isso é conveniente, mas uma referência Integer nula pode falhar ao ser desembrulhada. Não trate uma lista de referências como um array primitivo com outra grafia.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t6-remover" data-java-program>import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        List&lt;Integer&gt; valores = new ArrayList&lt;&gt;(Arrays.asList(10, 20, 10));
+        valores.remove(1);
+        System.out.println(valores);
+        valores.remove(Integer.valueOf(10));
+        System.out.println(valores);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t6-remover">[10, 10]
+[10]</samp></pre></figure><p>Remove com int escolhe a sobrecarga por índice; com Integer, escolhe a remoção por objeto e retira a primeira ocorrência equivalente. Usar remove(10) esperando retirar o número dez pode causar um erro de índice. Leia a assinatura selecionada pela ferramenta ou pela documentação da API, principalmente quando uma classe possui várias sobrecargas.</p><p>Arrays.asList oferece uma lista de tamanho fixo apoiada no array: certas alterações de elementos são possíveis, mas adicionar e remover elementos não são. Criar um novo ArrayList a partir dela fornece uma estrutura cujo tamanho pode variar. Também há coleções não modificáveis e cópias que não são necessariamente profundas. Conheça a promessa específica da fábrica ou do construtor escolhido.</p>
+<h2 id="secao-20">20. Iteração, remoção e propriedade dos dados</h2>
+<p>Alterar estruturalmente uma lista durante um for-each pode invalidar a iteração. Não dependa de uma tentativa que funcionou por acaso com poucos itens. Para remover segundo uma condição, removeIf pode expressar a operação; para um percurso com remoção explícita, use o mecanismo apropriado do iterador. A implementação e o contexto de concorrência impõem limites adicionais.</p><p>Uma coleção não modificável por uma referência pode continuar observando alterações de uma estrutura subjacente ou conter elementos mutáveis. Uma cópia independente da lista também pode compartilhar os mesmos objetos. Ao devolver dados de uma classe, diga se o chamador recebe uma visão, uma cópia da estrutura ou uma cópia dos elementos. Não chame tudo de “imutável”.</p><p>Para os exercícios de notas e nomes, escolher elementos imutáveis como String simplifica a discussão. Em um cadastro com objetos mutáveis, retome o contrato de igualdade e os limites da cópia. Esses cuidados evitam que uma função aparentemente de consulta altere silenciosamente o estado que outra parte do programa possui.</p>
+<h2 id="secao-21">21. Prática orientada, soluções e revisão dos contratos</h2>
+<ol><li><strong>Estatísticas:</strong> declare as notas 6, 7 e 8 e calcule média, menor e maior. Não inicialize os extremos em zero. Teste depois um array vazio e explique a decisão de recusa.</li><li><strong>Busca:</strong> procure 4, 9 e 5 em {4, 7, 4, 9}. Imprima a primeira posição ou -1. Não acesse o array pelo retorno sem conferir se encontrou.</li><li><strong>Cópia:</strong> declare {3, 1, 2}, copie antes de ordenar e mostre as duas sequências. Depois faça uma atribuição simples em uma cópia do exercício para observar o compartilhamento.</li><li><strong>Matriz:</strong> use {{1, 2, 3}, {4, 5}} e calcule uma soma por linha. O resultado deve ser 6 na primeira e 9 na segunda. Use o tamanho de cada linha.</li><li><strong>Lista de inteiros:</strong> retire o valor 10 de [10, 20, 10] sem remover pela posição 10. Explique qual sobrecarga será chamada.</li></ol><details><summary>Possível solução: somas por linha</summary><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t6-soma-linhas" data-java-program>public class Main {
+    public static void main(String[] args) {
+        int[][] matriz = {{1, 2, 3}, {4, 5}};
+        for (int linha = 0; linha &lt; matriz.length; linha++) {
+            int soma = 0;
+            for (int valor : matriz[linha]) soma += valor;
+            System.out.println("Linha " + linha + ": " + soma);
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t6-soma-linhas">Linha 0: 6
+Linha 1: 9</samp></pre></figure><p>A soma fica dentro do laço externo porque cada linha precisa de um acumulador novo. Para uma soma total da matriz, a posição da inicialização seria diferente. O lugar da variável expressa o período durante o qual o estado precisa sobreviver.</p></details><details><summary>Conferir busca, cópia e remoção</summary><p>As posições são 0, 3 e -1. A sequência original deve continuar [3, 1, 2], enquanto a cópia ordenada fica [1, 2, 3]. A remoção por objeto usa Integer.valueOf(10) e retira uma ocorrência. Se quiser remover todas, esse é outro contrato e pede outra operação.</p></details><p>Avance quando conseguir explicar limites, ausência, ordem, compartilhamento e mutabilidade de cada estrutura usada. O próximo tema concentra dados e operações em classes; essas escolhas continuarão importantes dentro dos objetos.</p><h2 id="fontes">Fontes e continuidade</h2><p class="text-muted">Referência para consulta: <a href="assets/materiais/07DesenvolvimentodeAplicaes.pdf">Desenvolvimento de aplicações</a>, páginas 62 a 67. A explicação e os exemplos estão completos abaixo.</p><p>A base original foi preservada; os laboratórios ampliados acrescentam contratos, casos de fronteira e exercícios comentados. Use a versão da documentação correspondente ao ambiente configurado.</p><ul><li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-14.html">Java 17 · blocos, condições e repetições</a></li><li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-10.html">Java 17 · arrays</a></li><li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-8.html">Java 17 · classes, métodos e construtores</a></li><li><a href="https://docs.oracle.com/en/java/javase/17/docs/api/index.html">Biblioteca padrão Java 17</a></li><li><a href="extra.html">Projetos, laboratórios e referências adicionais</a></li></ul></article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-05.html">Anterior · Tema 5</a><a class="btn btn-primary" href="tema-07.html">Próximo · Tema 7</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <p class="mb-1">
+            <a href="index.html">Início</a> ·
+            <a href="cont.html">Conteúdo</a> ·
+            <a href="playground.html">Playground</a> ·
+            <a href="quiz.html">Quiz</a> ·
+            <a href="faq.html">FAQ</a> · <a href="extra.html">Extra</a>
+        </p>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+
+
+
+</body>
+</html>

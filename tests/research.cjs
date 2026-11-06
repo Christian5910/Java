@@ -2,7 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
 const { execFileSync } = require('node:child_process');
-const html = fs.readFileSync(path.join(__dirname, '../cont.html'), 'utf8');
+const html = ['cont.html',...Array.from({length:8},(_,i)=>`tema-0${i+1}.html`)].map(file=>fs.readFileSync(path.join(__dirname,'..',file),'utf8')).join('\n');
 const decode = text => text.replace(/&(?:amp|lt|gt|quot|#39);/g, entity => ({'&amp;':'&','&lt;':'<','&gt;':'>','&quot;':'"','&#39;':"'"})[entity]);
 const normalize = text => text.replace(/\r/g, '').trim();
 const expected = {

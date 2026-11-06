@@ -958,7 +958,7 @@ function showResultScreen() {
     const review = Array.from({length:10}, (_,i) => {
         const indexes = QUIZ_DATA.map((q,j) => q.theme === i+1 ? j : -1).filter(j => j >= 0);
         const correct = indexes.filter(j => answerStatus[j] === true).length;
-        return '<li>Tema '+(i+1)+': '+correct+' / '+indexes.length+' · <a href="cont.html#modal'+(i+1)+'">Revisar conteúdo</a></li>';
+        return '<li>Tema '+(i+1)+': '+correct+' / '+indexes.length+' · <a href="'+(i < 8 ? 'tema-0'+(i+1)+'.html' : 'cont.html#modal'+(i+1))+'">Revisar conteúdo</a></li>';
     }).join('');
     const answers = QUIZ_DATA.map((q,i) => '<details class="mb-3"><summary>'+ (i+1)+'. '+escapeHtml(q.text)+' ('+(answerStatus[i] ? 'Correta' : 'Revisar')+')</summary><p>Sua resposta: '+escapeHtml(q.options[userAnswers[i]])+'</p><p>Resposta correta: '+escapeHtml(q.options[q.correct])+'</p><p>'+escapeHtml(q.explanation)+'</p></details>').join('');
     contentDiv.innerHTML = '<div class="result-container"><h2 tabindex="-1" id="resultTitle">Resultado do quiz</h2><div class="final-score-text">'+score+' / '+QUIZ_DATA.length+'</div><p>'+Math.round(score/QUIZ_DATA.length*100)+'% de acertos. Use os temas abaixo para orientar a revisão.</p><ul class="text-start">'+review+'</ul><h3 class="h5 mt-4 text-start">Gabarito comentado</h3><div class="text-start">'+answers+'</div><button type="button" class="restart-quiz" id="restartQuizBtn">Tentar novamente</button></div>';

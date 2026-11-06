@@ -130,15 +130,40 @@ function selectExercise(id, savePrevious = true) {
   byId('activityGoal').textContent = current.goal;
   byId('activityChallenge').textContent = current.challenge;
   byId('activityHint').textContent = current.hint;
+  const guided = current.theme <= 8;
+  byId('activityInstructions').hidden = !guided;
+  byId('instructionList').replaceChildren();
+  for (const instruction of current.instructions || []) {
+    const item = document.createElement('li');
+    item.textContent = instruction;
+    byId('instructionList').append(item);
+  }
+  byId('activityChecks').textContent = current.checks || '';
+  byId('activityInputExample').textContent = current.input;
+  byId('activityInputBlock').hidden = !guided || !current.input;
+  byId('solutionTitle').textContent = guided ? 'Possível solução para o problema' : 'Ver saída do código inicial';
+  byId('sampleSolutionBlock').hidden = !guided;
+  byId('sampleSolution').textContent = guided ? current.source : '';
+  byId('sampleDescription').textContent = guided
+    ? 'Tente escrever sua solução antes de consultar. Este código é uma possibilidade; abrir esta seção não preenche nem substitui seu editor.'
+    : 'Esta referência corresponde ao exemplo inicial. Mudar o código ou a entrada pode mudar a saída; coincidir com ela não verifica todas as regras de uma solução.';
+  byId('resetExample').textContent = guided ? 'Limpar meu código' : 'Restaurar exemplo';
+  byId('editorHelpText').textContent = guided
+    ? 'Escreva o programa completo, incluindo public class Main e o método main. Na primeira visita, o editor começa sem código.'
+    : 'Mantenha public class Main e o método main.';
   byId('sampleOutput').textContent = current.expected;
-  byId('topicLink').href = 'cont.html#modal' + current.theme;
+  byId('topicLink').href = (guided ? 'tema-0' + current.theme + '.html' : 'cont.html#modal' + current.theme);
   document.querySelectorAll('.activity-details').forEach(el => el.open = false);
   const draft = drafts[current.id];
-  editor.value = typeof draft?.source === 'string' ? draft.source : current.source;
+  editor.value = typeof draft?.source === 'string' ? draft.source : guided ? '' : current.source;
   input.value = typeof draft?.input === 'string' ? draft.input : current.input;
   output.textContent = 'Execute o programa para ver a saída.';
   byId('compileOutput').textContent = 'As mensagens de compilação aparecerão aqui.';
-  status.textContent = 'Edite Main.java, preencha a entrada quando necessário e execute.';
+  status.textContent = guided
+    ? typeof draft?.source === 'string' && draft.source
+      ? 'Seu rascunho anterior foi recuperado. Continue escrevendo ou use Limpar meu código para recomeçar.'
+      : 'Leia os passos, escreva seu programa em Main.java e execute para conferir.'
+    : 'Edite Main.java, preencha a entrada quando necessário e execute.';
   byId('outputState').textContent = 'Este código ainda não foi executado nesta visita.';
   lastRun = null;
   history.replaceState(null, '', '?ex=' + encodeURIComponent(current.id));
@@ -232,6 +257,13 @@ byId('exerciseTheme').addEventListener('change', () => {
   updateActivityNavigation();
 });
 byId('resetExample').addEventListener('click', () => {
+  if (current.theme <= 8) {
+    if ((editor.value || input.value) && !confirm('Limpar o código e a entrada desta atividade? Exporte seu trabalho antes, se quiser guardar uma cópia.')) return;
+    drafts[current.id] = { source: '', input: '' };
+    selectExercise(current.id, false);
+    editor.focus();
+    return;
+  }
   if (editor.value !== current.source || input.value !== current.input) {
     if (!confirm('Restaurar o exemplo e substituir o rascunho desta atividade? Baixe seu código antes, se quiser guardá-lo.')) return;
   }

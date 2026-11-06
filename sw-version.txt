@@ -1,4 +1,4 @@
-java-1.5.0
+java-1.6.0
 ./
 index.html
 cont.html
@@ -50,3 +50,12 @@ assets/extras/laboratorio-android.zip
 assets/extras/laboratorio-spring.zip
 assets/extras/roteiro-avancado.html
 assets/extras/fontes-avancadas.txt
+tema-01.html
+tema-02.html
+assets/css/lessons.css
+tema-03.html
+tema-04.html
+tema-05.html
+tema-06.html
+tema-07.html
+tema-08.html

@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>03 · Strings e manipulação de textos · Java</title><link rel="icon" href="assets/icon-192.png"><link rel="stylesheet" href="assets/vendor/bootstrap.min.css"><link rel="stylesheet" href="assets/vendor/bootstrap-icons.css"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="assets/css/lessons.css"></head><body><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 3</span></nav><header class="lesson-header"><h1>03 · Strings e manipulação de textos</h1><p class="lead">Entenda como comparar, recortar, transformar e validar textos — dos primeiros literais aos cuidados com Unicode e codificação.</p><p class="text-muted">Java 17 como referência · Teoria, laboratórios e exercícios comentados</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-21">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Um roteiro para estudar textos com segurança</a></li><li><a href="#secao-2">Texto é um objeto String</a></li><li><a href="#secao-3">Comparar conteúdo e comparar referências</a></li><li><a href="#secao-4">Índices e limites</a></li><li><a href="#secao-5">Procurar e transformar</a></li><li><a href="#secao-6">Concatenar, converter e montar mensagens</a></li><li><a href="#secao-7">Login didático e cuidado com a regra</a></li><li><a href="#secao-8">Construir texto a partir de caracteres e bytes</a></li><li><a href="#secao-9">Exercícios para verificar compreensão</a></li><li><a href="#secao-10">Vazio, espaço em branco e ausência são estados diferentes</a></li><li><a href="#secao-11">Igualdade, literais compartilhados e imutabilidade na prática</a></li><li><a href="#secao-12">Definir o intervalo antes de recortar</a></li><li><a href="#secao-13">UTF-16, pontos de código e o que significa contar caracteres</a></li><li><a href="#secao-14">Normalização Unicode e diferenças de maiúsculas</a></li><li><a href="#secao-15">Texto literal e expressão regular não são a mesma linguagem</a></li><li><a href="#secao-16">Separar campos sem perder o último valor vazio</a></li><li><a href="#secao-17">Conversão de texto: validade sintática e validade da regra</a></li><li><a href="#secao-18">Construir mensagens sem misturar apresentação e dado</a></li><li><a href="#secao-19">Bytes, UTF-8 e tratamento de dados malformados</a></li><li><a href="#secao-20">Laboratório integrado: receber e apresentar um nome</a></li><li><a href="#secao-21">Prática progressiva com enunciados completos</a></li><li><a href="#secao-22">Revisão para avançar e usar o conhecimento em um projeto</a></li><li><a href="#fontes">Fontes e continuidade</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. Um roteiro para estudar textos com segurança</h2>
+<p>Você já sabe declarar variáveis e ler entradas. Agora precisa transformar o que recebeu em texto útil: distinguir um nome vazio de um nome ausente, comparar conteúdo, procurar uma palavra sem acessar um índice inválido e converter dados sem perder acentos. Esse conhecimento aparece em cadastros, mensagens, arquivos e APIs. Um detalhe aparentemente pequeno, como comparar referências em vez de conteúdo, pode mudar a decisão de um programa inteiro.</p><p>Estude este capítulo com um objetivo por exemplo. Primeiro escreva o que espera que apareça. Em seguida, execute o programa e explique qualquer diferença. Por último, mude uma entrada: nome vazio, espaços nas extremidades, letras em outra caixa ou um símbolo fora do alfabeto básico. Trabalhar com esses casos desde cedo evita criar soluções que só funcionam com a palavra “Java”.</p><ul><li><strong>Você vai praticar:</strong> igualdade, imutabilidade, índices, busca, transformação, conversão, Unicode, expressões regulares e codificação.</li><li><strong>Pré-requisito:</strong> os temas 1 e 2, principalmente tipos, Scanner e o método main.</li><li><strong>Ambiente:</strong> Java 17 como referência. Os laboratórios com strip, isBlank ou repeat exigem JDK 11 ou posterior; o compilador atual do Playground disponibiliza APIs de Java 8 e não inclui esses métodos.</li></ul><p>Uma aplicação profissional precisa definir quais textos aceita e quais transformações preservam seu significado. Você não precisa antecipar todas as línguas em cada exercício, mas precisa conhecer os limites de uma regra simples. O caso de uso vem antes de escolher um método.</p>
+<h2 id="secao-2">2. Texto é um objeto String</h2>
+<p>Uma <code>String</code> representa uma sequência de unidades de código UTF-16. É usada em nomes, mensagens, operações do menu e credenciais dos exercícios. Aspas duplas criam um literal de texto, como <code>"Java"</code>; aspas simples delimitam um <code>char</code>, como <code>'J'</code>. Uma string pode estar vazia: <code>""</code>. Isso difere de <code>null</code>, que representa a ausência de uma referência a objeto. Chamar um método de instância através de uma referência nula pode causar <code>NullPointerException</code>.</p>
+<p>A variável pode receber outro texto, mas o objeto <code>String</code> é imutável. Depois de criar uma string, seu conteúdo não é modificado por operações como <code>replace</code> ou <code>toUpperCase</code>. Esses métodos retornam um resultado que precisa ser usado. Em <code>nome.toUpperCase();</code>, o retorno é descartado; <code>nome = nome.toUpperCase();</code> reatribui a variável. Entender esse comportamento evita procurar um erro de exibição quando o problema é um retorno ignorado.</p>
+<h2 id="secao-3">3. Comparar conteúdo e comparar referências</h2>
+<p><code>==</code> compara valores primitivos e, quando aplicado a referências, verifica se elas apontam para o mesmo objeto. <code>equals</code>, na classe <code>String</code>, compara o conteúdo. Duas strings com as mesmas letras podem ser objetos distintos. Alguns literais compartilham uma instância, e isso pode fazer um teste com <code>==</code> parecer correto por acaso. Para validar o nome de usuário de um exercício, use comparação de conteúdo.</p>
+<pre><code>String a = "Java";
+String b = new String("Java");
+System.out.println(a == b);       // false
+System.out.println(a.equals(b));  // true
+System.out.println("JAVA".equalsIgnoreCase(a)); // true</code></pre>
+<p><code>equalsIgnoreCase</code> ignora diferenças entre maiúsculas e minúsculas conforme o comportamento da API. Não remova a diferença entre maiúsculas e minúsculas de uma senha sem que a regra do sistema determine isso. Para um valor que pode ser nulo, <code>"admin".equals(usuario)</code> evita chamar um método sobre a variável nula. <code>Objects.equals(a, b)</code> também compara referências possivelmente nulas de forma apropriada.</p>
+<h2 id="secao-4">4. Índices e limites</h2>
+<p><code>length()</code> devolve o comprimento em unidades UTF-16. O primeiro índice é zero e o último é <code>length() - 1</code>. Em <code>"Java"</code>, os índices 0, 1, 2 e 3 correspondem a J, a, v e a. <code>charAt(2)</code> retorna <code>'v'</code>. O índice 4 está fora desse texto. Antes de acessar a posição zero de uma entrada, verifique se ela está vazia.</p>
+<p>Alguns caracteres, como determinados emojis, ocupam duas unidades UTF-16. Por isso, <code>length()</code> não é uma contagem universal de símbolos visíveis e <code>charAt</code> pode devolver somente parte da representação de um caractere. Os exemplos básicos usam palavras para que a relação entre índice e posição seja fácil de acompanhar. Ao tratar texto internacional em aplicações, considere pontos de código e a finalidade da contagem.</p>
+<pre><code>String linguagem = "Java";
+System.out.println(linguagem.length());       // 4
+System.out.println(linguagem.charAt(0));      // J
+System.out.println(linguagem.substring(1, 3)); // av
+System.out.println(linguagem.substring(2));   // va</code></pre>
+<p><code>substring(inicio, fim)</code> inclui o índice inicial e exclui o final. Para obter <code>"av"</code>, usamos as posições 1 e 2 e passamos 3 como limite. Índices negativos, início maior que o fim ou fim além do comprimento provocam erro. Anote as posições sobre o texto durante a revisão: isso torna visível o motivo de uma extração retornar uma letra a mais ou a menos.</p>
+<h2 id="secao-5">5. Procurar e transformar</h2>
+<p><code>indexOf</code> devolve a posição da primeira ocorrência ou <code>-1</code> quando não encontra; <code>lastIndexOf</code> procura a última. A posição zero é um resultado válido. Portanto, <code>texto.indexOf("Java") &gt; 0</code> deixa de reconhecer a ocorrência no início; use <code>&gt;= 0</code> ou <code>contains</code> quando a pergunta for apenas sobre existência. <code>startsWith</code> e <code>endsWith</code> verificam prefixo e sufixo.</p>
+<p><code>trim()</code> remove, nas extremidades, caracteres abrangidos por sua regra de corte, não os espaços internos. <code>replace('a', 'o')</code> devolve uma string com as substituições. <code>toLowerCase</code> e <code>toUpperCase</code> convertem a caixa; a configuração regional pode importar. Para normalizar identificadores técnicos em uma regra independente da região, forneça <code>Locale.ROOT</code>. Preservar acentos e grafias de nomes de pessoas costuma ser mais apropriado do que aplicar uma transformação geral.</p>
+<pre><code>String entrada = "  Java para o grupo  ";
+String limpa = entrada.trim();
+System.out.println(limpa);
+System.out.println(limpa.contains("Java"));
+System.out.println(limpa.indexOf("grupo"));
+System.out.println(limpa.replace("grupo", "estudo"));</code></pre>
+<p><code>compareTo</code> oferece uma ordenação lexicográfica baseada na representação das strings. Um resultado negativo indica que a primeira vem antes, zero indica igualdade de conteúdo e um positivo indica que vem depois. A magnitude não deve ser interpretada como distância entre palavras. Ordenação linguística de nomes, considerando regras de um idioma, exige uma ferramenta apropriada, como <code>Collator</code>.</p>
+<h2 id="secao-6">6. Concatenar, converter e montar mensagens</h2>
+<p><code>+</code> concatena quando a expressão passa a envolver texto. <code>concat</code> também pode juntar strings. Para pequenas mensagens, <code>"Olá, " + nome</code> é legível. Em uma montagem repetida de texto, <code>StringBuilder</code> permite acumular partes em um objeto mutável e obter a string final com <code>toString()</code>. O motivo para escolhê-lo deve acompanhar o trabalho realizado, em vez de acrescentá-lo a toda mensagem simples.</p>
+<pre><code>StringBuilder resultado = new StringBuilder();
+for (int i = 1; i &lt;= 3; i++) {
+    resultado.append("Item ").append(i).append('\n');
+}
+System.out.print(resultado.toString());</code></pre>
+<p>Converter um número em texto e converter texto em número são operações diferentes. <code>String.valueOf(42)</code> produz uma representação textual. <code>Integer.parseInt("42")</code> produz um inteiro. Se o texto for <code>"quarenta"</code>, a conversão inteira falha. <code>Double.parseDouble</code> espera a sintaxe numérica da API, com ponto decimal; ele não aplica automaticamente o mesmo tratamento regional de um <code>Scanner</code> configurado para português.</p>
+<h2 id="secao-7">7. Login didático e cuidado com a regra</h2>
+<pre><code>static boolean validarLogin(String usuario, String senha) {
+    return "admin".equals(usuario) &amp;&amp; "12345".equals(senha);
+}</code></pre>
+<p>Esse método devolve um booleano e permite estudar parâmetros, comparação de texto e <code>&amp;&amp;</code>. A própria condição pode ser retornada, sem uma cadeia de <code>if</code> que apenas devolva verdadeiro ou falso. Se o usuário autorizado é <code>admin</code>, uma tentativa com <code>Luna</code> deve ser recusada. A comparação precisa seguir a regra declarada pelo método.</p>
+<p>Credenciais fixas no código são usadas aqui apenas para o exercício. A atividade não fornece autenticação de produção, persistência segura ou proteção de contas reais. Use dados fictícios no Playground. A comparação pode ajudar a entender o fluxo, mas não substitui uma arquitetura de autenticação apropriada em uma aplicação publicada.</p>
+<h2 id="secao-8">8. Construir texto a partir de caracteres e bytes</h2>
+<p>Além dos literais, os construtores de String aceitam fontes de dados como arrays de caracteres e bytes. <code>new String(new char[]{'J', 'a', 'v', 'a'})</code> produz o texto Java. Há sobrecargas que recebem posição inicial e quantidade de elementos: esse segundo número é um comprimento, diferente do limite final excluído usado em <code>substring</code>. Confira qual convenção o método ou construtor escolhido utiliza antes de adaptar os índices.</p>
+<pre><code>char[] letras = {'J', 'a', 'v', 'a'};
+String palavra = new String(letras);
+byte[] bytes = palavra.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+String reconstruida = new String(bytes, java.nio.charset.StandardCharsets.UTF_8);
+System.out.println(reconstruida); // Java</code></pre>
+<p>Caracteres e bytes não são a mesma unidade. Uma codificação, como UTF-8, define como o texto é representado em bytes. Ao ler ou gravar dados, informe a mesma codificação nos dois sentidos; escolher configurações incompatíveis pode corromper a apresentação de acentos. O construtor que recebe apenas bytes usa a codificação padrão do ambiente, o que pode produzir diferenças entre computadores. O exemplo informa UTF-8 explicitamente para evitar essa dependência.</p>
+<h2 id="secao-9">9. Exercícios para verificar compreensão</h2>
+<p>Receba um nome, remova espaços das extremidades e imprima a primeira letra somente quando houver texto. Compare duas entradas com <code>equals</code> e explique o caso de caixa diferente. Para <code>"programacao"</code>, marque os índices e extraia <code>"grama"</code> antes de executar. Depois procure um termo inexistente e verifique por que o retorno -1 precisa ser tratado antes de virar um índice.</p>
+<p>Revise os exemplos da apostila com atenção às aspas tipográficas e à posição das chaves: copiar um código diagramado pode trazer caracteres que não são delimitadores Java. No Playground, <a href="playground.html?ex=textos">a atividade de textos</a> oferece código executável; <a href="playground.html?ex=login">o login didático</a> relaciona strings a métodos e decisões.</p>
+<p id="extraActivities3">Outras atividades deste tema: <a href="playground.html?ex=normalizar-texto">Normalizar uma entrada</a> · <a href="playground.html?ex=contar-vogais">Percorrer um texto</a>.</p><h2 id="secao-10">10. Vazio, espaço em branco e ausência são estados diferentes</h2>
+<p>Use três perguntas separadas ao receber um campo: ele existe? Existe algum conteúdo? O conteúdo atende à regra? Uma referência null não aponta para String alguma. Uma string vazia existe e tem comprimento zero. Um texto com três espaços também existe e tem comprimento maior que zero. Para um nome obrigatório, os três casos podem ser recusados, mas por motivos diferentes.</p><p>A ordem da validação importa. Em <code>nome == null || nome.trim().isEmpty()</code>, o curto-circuito impede chamar trim quando nome é null. Inverter a expressão retiraria essa proteção. O método trim não deve ser tratado como uma limpeza universal de Unicode; no JDK 11+, strip e isBlank usam outra definição de espaço. Mesmo essa definição não cobre toda convenção possível de separação de texto.</p>
+<figure><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="amostra-estados" data-java-program>public class Main {
+    public static void main(String[] args) {
+        String ausente = null;
+        String vazio = "";
+        String espacos = "   ";
+        System.out.println(ausente == null);
+        System.out.println(vazio.isEmpty());
+        System.out.println(espacos.isEmpty());
+        System.out.println(espacos.trim().isEmpty());
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="amostra-estados">true
+true
+false
+true</samp></pre></figure>
+<p>Não use automaticamente <code>String.valueOf(valor)</code> para esconder uma ausência: com uma referência nula, o resultado pode ser o texto “null”, que ainda não é um nome válido. Da mesma maneira, a string literal “null” digitada por uma pessoa não é a referência null. O contrato do campo deve dizer qual estado representa ausência.</p>
+<h2 id="secao-11">11. Igualdade, literais compartilhados e imutabilidade na prática</h2>
+<p>Um literal pode compartilhar uma instância com outro literal equivalente. Essa característica pode fazer uma comparação com == passar em um teste pequeno e falhar quando o texto vem de Scanner ou de um arquivo. O contrato de comparação precisa ser igualdade de conteúdo, independentemente de onde o objeto foi criado. Evite usar new String apenas para “garantir uma cópia” de texto imutável; aqui ele serve para tornar a diferença observável.</p>
+<figure><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="amostra-igualdade" data-java-program>import java.util.Objects;
+
+public class Main {
+    public static void main(String[] args) {
+        String a = "Java";
+        String b = new String("Java");
+        String original = "  Java  ";
+        String limpa = original.trim();
+        System.out.println(a == b);
+        System.out.println(a.equals(b));
+        System.out.println(Objects.equals(null, a));
+        System.out.println("[" + original + "]");
+        System.out.println("[" + limpa + "]");
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="amostra-igualdade">false
+true
+false
+[  Java  ]
+[Java]</samp></pre></figure>
+<p>Os colchetes da saída deixam os espaços visíveis. O objeto original continua representando o mesmo texto; limpa recebe o resultado da operação. Reatribuir original também seria possível, mas isso mudaria a referência guardada pela variável, não o conteúdo de uma String já criada. Ao encadear transformações, use o resultado final e mantenha um nome claro para o dado que será apresentado.</p><p>Não use intern como correção para uma comparação errada. Isso acrescenta dependência de compartilhamento sem resolver a intenção. Para comparar o texto de duas referências possivelmente nulas, Objects.equals expressa essa intenção. Para uma operação que exige texto presente, valide a ausência e apresente o erro adequado.</p>
+<h2 id="secao-12">12. Definir o intervalo antes de recortar</h2>
+<p>Ao extrair um trecho, desenhe uma marca entre os caracteres. Em Java, a faixa de substring começa em uma dessas marcas e termina antes da marca final. Isso permite calcular o tamanho por fim menos início. Um trecho vazio com início igual ao fim é válido, inclusive na marca imediatamente depois do último char. Já um limite além dessa marca é inválido.</p><p>Para uma extração orientada por busca, trate primeiro o caso em que o separador não aparece. Imagine a entrada “nome=Ana”. O índice do sinal de igualdade é 4; o nome do campo ocupa [0,4), e o valor começa em 5. Se a entrada for “Ana”, indexOf devolve −1. Somar ou usar esse resultado como se o separador existisse cria um processamento diferente do pretendido.</p>
+<figure><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="amostra-recorte" data-java-program>public class Main {
+    public static void main(String[] args) {
+        String entrada = "nome=Ana";
+        int separador = entrada.indexOf('=');
+        if (separador &lt; 0) {
+            System.out.println("Formato esperado: campo=valor");
+            return;
+        }
+        String campo = entrada.substring(0, separador);
+        String valor = entrada.substring(separador + 1);
+        System.out.println("Campo: " + campo);
+        System.out.println("Valor: " + valor);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="amostra-recorte">Campo: nome
+Valor: Ana</samp></pre></figure>
+<p>Esse programa aceita apenas uma separação simples e permite valor vazio. Se a regra exigir campo e valor obrigatórios, valide ambos após o recorte. Se houver mais sinais de igualdade, defina se eles pertencem ao valor ou se devem ser recusados. Não transforme um formato pequeno em um parser geral sem definir primeiro sua gramática.</p>
+<h2 id="secao-13">13. UTF-16, pontos de código e o que significa contar caracteres</h2>
+<p>Na palavra Java, o número de letras, de unidades UTF-16 e de pontos de código coincide. Isso não vale para todo texto. Um emoji suplementar pode ocupar duas unidades UTF-16. Uma letra acentuada também pode ter uma forma composta ou uma sequência de letra e acento. Antes de limitar um campo a “dez caracteres”, diga que unidade a regra realmente pretende limitar.</p>
+<figure><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="amostra-unicode" data-java-program>public class Main {
+    public static void main(String[] args) {
+        String texto = "A\uD83D\uDE00B";
+        System.out.println(texto.length());
+        System.out.println(texto.codePointCount(0, texto.length()));
+        int inicio = texto.offsetByCodePoints(0, 1);
+        int fim = texto.offsetByCodePoints(inicio, 1);
+        String simbolo = texto.substring(inicio, fim);
+        System.out.println(simbolo.codePointAt(0));
+        System.out.println(Character.isSupplementaryCodePoint(simbolo.codePointAt(0)));
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="amostra-unicode">4
+3
+128512
+true</samp></pre></figure>
+<p>O laboratório usa escapes para que você consiga digitar o mesmo exemplo em qualquer editor. Os índices de substring continuam sendo índices UTF-16; offsetByCodePoints ajuda a encontrar a posição sem dividir o par substituto. Isso ainda não conta agrupamentos visuais complexos como emojis com modificadores ou sequências ligadas. Pontos de código e símbolos percebidos por uma pessoa são conceitos diferentes.</p><p>Quando a operação precisar percorrer pontos de código, uma estratégia é avançar pelo tamanho de cada ponto com Character.charCount. Quando precisar de segmentação visual ou linguística, investigue as ferramentas adequadas e teste os idiomas do produto. Não improvise o recorte de nomes internacionais com charAt(0) e suponha que ele sempre representa uma letra inteira. A <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Character.html">API de Character</a> explica a representação usada pela plataforma.</p>
+<h2 id="secao-14">14. Normalização Unicode e diferenças de maiúsculas</h2>
+<p>Dois textos podem parecer iguais e usar sequências Unicode diferentes. Ao comparar conteúdo recebido de fontes diferentes, uma regra pode escolher uma forma canônica, como NFC. Isso não é o mesmo que remover acentos: normalizar preserva equivalências específicas; transformar “José” em “Jose” é outra decisão, que pode apagar uma distinção importante.</p>
+<figure><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="amostra-normalizacao" data-java-program>import java.text.Normalizer;
+import java.util.Locale;
+
+public class Main {
+    public static void main(String[] args) {
+        String composto = "\u00E9";
+        String decomposto = "e\u0301";
+        System.out.println(composto.equals(decomposto));
+        String normalizado = Normalizer.normalize(decomposto, Normalizer.Form.NFC);
+        System.out.println(composto.equals(normalizado));
+        System.out.println("JAVA".toLowerCase(Locale.ROOT));
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="amostra-normalizacao">false
+true
+java</samp></pre></figure>
+<p>Para chaves técnicas cujo contrato seja independente do idioma, Locale.ROOT evita depender da região padrão da máquina em uma conversão de caixa. Para texto de uma interface em português, uma localização explícita pode fazer mais sentido. Escolher a região é parte do requisito. Não transforme senhas em minúsculas nem remova seus espaços sem uma regra de autenticação que defina esse comportamento.</p><p>Nem normalização nem equalsIgnoreCase são uma defesa geral contra nomes visualmente confundíveis. Se um identificador público precisa ser único, defina um conjunto aceito e uma política de comparação. Nomes de exibição podem preservar a escrita original enquanto uma chave de pesquisa usa um tratamento definido separadamente. A <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/text/Normalizer.html">documentação de Normalizer</a> descreve as formas suportadas.</p>
+<h2 id="secao-15">15. Texto literal e expressão regular não são a mesma linguagem</h2>
+<p>Uma expressão regular é um padrão de busca com regras próprias. Isso muda o significado de certos caracteres: o ponto representa uma categoria de correspondência, não necessariamente um ponto literal. Antes de escolher replaceAll, pergunte se você precisa de um padrão ou de uma substituição literal. Para trocar uma palavra exata por outra, replace costuma expressar melhor a intenção.</p>
+<pre tabindex="0"><code>String codigo = "a.b.c";
+System.out.println(codigo.replace(".", "-")); // a-b-c
+System.out.println(codigo.replaceAll(".", "-")); // -----
+System.out.println(codigo.replaceAll("\\.", "-")); // a-b-c</code></pre>
+<p>Na última linha, o fonte Java precisa representar uma barra invertida no texto entregue ao mecanismo de regex. Você está escrevendo em duas camadas: literal Java e padrão. Se o padrão vem de um texto que deve ser tratado literalmente, Pattern.quote é uma alternativa. Na substituição de uma regex, dólar e barra também têm significado; Matcher.quoteReplacement ajuda a preservar uma substituição literal.</p><p><code>matches</code> procura correspondência para a entrada inteira. <code>find</code>, em Matcher, localiza um trecho. Uma regra de código com duas letras ASCII maiúsculas e três dígitos pode usar <code>[A-Z]{2}[0-9]{3}</code>. Isso não é uma regra apropriada para nomes de pessoas: nomes têm convenções muito mais amplas. A <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/regex/Pattern.html">API de Pattern</a> deve acompanhar o padrão que você realmente pretende aceitar.</p>
+<h2 id="secao-16">16. Separar campos sem perder o último valor vazio</h2>
+<p>Split recebe uma expressão regular. Separar por ponto pede cuidado com seu significado no padrão. Além disso, o comportamento de descarte de campos vazios finais pode esconder um dado ausente. Se o formato “nome;cidade;email” precisa sempre ter três campos, preservar o último vazio permite identificar um email ausente em vez de confundir o tamanho do registro.</p>
+<figure><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="amostra-campos" data-java-program>public class Main {
+    public static void main(String[] args) {
+        String linha = "Ana;Recife;";
+        String[] padrao = linha.split(";");
+        String[] preservados = linha.split(";", -1);
+        System.out.println(padrao.length);
+        System.out.println(preservados.length);
+        System.out.println("[" + preservados[2] + "]");
+        System.out.println(String.join(" | ", preservados));
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="amostra-campos">2
+3
+[]
+Ana | Recife | </samp></pre></figure>
+<p>O limite negativo preserva campos vazios ao final. Depois, valide a quantidade de campos e a regra de cada posição. Esse exercício não implementa CSV completo: aspas, quebras de linha internas e separadores dentro de um campo exigem um formato e um parser adequados. Quando o dado vem de um sistema externo, prefira seu formato especificado a uma sequência de splits improvisados.</p><p>String.join reúne elementos usando um delimitador, mas não escapa delimitadores contidos nos próprios dados. Juntar e separar nem sempre são operações inversas. Teste um valor que contenha o separador escolhido antes de adotar esse formato para armazenamento.</p>
+<h2 id="secao-17">17. Conversão de texto: validade sintática e validade da regra</h2>
+<p>Um texto pode representar um inteiro válido e ainda ser uma quantidade proibida. <code>-3</code> pode ser convertido, mas não é uma quantidade aceitável de livros emprestados. “999999999999999999999” usa dígitos, porém não cabe em int. Uma validação robusta separa leitura, conversão, intervalo permitido e cálculo.</p><p>Não compare uma String numericamente por ordem lexicográfica. Na ordenação textual, “100” pode aparecer antes de “20”, porque a primeira posição já decide a comparação. Se o campo representa um número, interprete-o com a conversão adequada e trate a falha. Se representa um identificador, preserve o texto e seus zeros iniciais.</p>
+<figure><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="amostra-conversao" data-java-program>public class Main {
+    public static void main(String[] args) {
+        String entrada = " 42 ";
+        try {
+            int quantidade = Integer.parseInt(entrada.trim());
+            if (quantidade &lt; 0 || quantidade &gt; 100) {
+                System.out.println("Quantidade fora do intervalo de 0 a 100.");
+                return;
+            }
+            System.out.println("Quantidade: " + quantidade);
+        } catch (NumberFormatException erro) {
+            System.out.println("Digite um inteiro entre 0 e 100.");
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="amostra-conversao">Quantidade: 42</samp></pre></figure>
+<p>Teste novamente com “quarenta”, uma string vazia, um número fora do intervalo e um número maior que int. Não capture Exception apenas para esconder qualquer problema do programa; aqui, o erro esperado é NumberFormatException. Uma falha de entrada deve produzir uma orientação útil e não continuar usando um valor substituto silencioso.</p>
+<h2 id="secao-18">18. Construir mensagens sem misturar apresentação e dado</h2>
+<p>Uma mensagem de apresentação pode juntar nome, quantidade e unidade. O valor usado no cálculo não deve ser substituído cedo demais por um texto formatado. Conserve o número para operar e formate quando for mostrá-lo. Se o relatório usa uma região específica, informe-a em printf ou na ferramenta apropriada.</p><p>Para poucas partes, + é claro. Em uma montagem repetida, StringBuilder permite acrescentar partes sem exigir que você descreva uma nova String a cada iteração. O importante é saber quando o resultado é produzido e não compartilhar um builder mutável sem coordenação entre tarefas. StringBuilder não torna automaticamente uma operação concorrente segura.</p>
+<figure><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="amostra-relatorio" data-java-program>public class Main {
+    public static void main(String[] args) {
+        StringBuilder relatorio = new StringBuilder();
+        relatorio.append("Alunos").append('\n');
+        relatorio.append("Ana").append('\n');
+        relatorio.append("Bruno").append('\n');
+        String pronto = relatorio.toString();
+        System.out.print(pronto);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="amostra-relatorio">Alunos
+Ana
+Bruno</samp></pre></figure>
+<p>O texto pronto pode ser guardado ou apresentado. Se depois você modificar o builder, a String já obtida continua imutável. Para montar uma lista já disponível, String.join pode ser mais direto do que um laço. Não acrescente builder a toda concatenação curta por uma promessa genérica de desempenho: legibilidade e o trabalho real importam.</p><p>No JDK 17, text blocks ajudam a escrever textos de várias linhas, mas ainda exigem compreender escapes e a organização das linhas. Eles não executam automaticamente expressões embutidas no texto. Evite apresentar sintaxe de versões diferentes sem dizer qual compilador e qual API são necessários.</p>
+<h2 id="secao-19">19. Bytes, UTF-8 e tratamento de dados malformados</h2>
+<p>Quando texto atravessa um arquivo, uma rede ou um banco, ele pode ser representado por bytes. A codificação determina como interpretá-los. Usar UTF-8 para gravar e outra codificação para ler pode produzir uma apresentação errada mesmo que os bytes tenham sido transportados sem alteração. Declare o formato no contrato da integração.</p><p>Uma conversão simples de bytes pode substituir sequências malformadas por um caractere de substituição. Quando o contrato exigir recusar dados inválidos, use um decodificador configurado para reportar o problema. Essa escolha evita aceitar silenciosamente um texto diferente do que a origem pretendia fornecer.</p>
+<figure><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="amostra-utf8" data-java-program>import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
+
+public class Main {
+    public static void main(String[] args) {
+        String original = "Ação";
+        byte[] bytes = original.getBytes(StandardCharsets.UTF_8);
+        System.out.println(new String(bytes, StandardCharsets.UTF_8));
+        byte[] invalido = {(byte) 0xC3, (byte) 0x28};
+        try {
+            StandardCharsets.UTF_8.newDecoder()
+                    .onMalformedInput(CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(CodingErrorAction.REPORT)
+                    .decode(ByteBuffer.wrap(invalido));
+            System.out.println("Texto aceito");
+        } catch (CharacterCodingException erro) {
+            System.out.println("UTF-8 inválido");
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="amostra-utf8">Ação
+UTF-8 inválido</samp></pre></figure>
+<p>A primeira parte demonstra uma ida e volta com a mesma codificação. A segunda fornece uma sequência deliberadamente inválida para provar a regra de recusa. Esse laboratório não altera arquivos nem tenta consertar automaticamente o dado. Se precisar guardar o erro para investigação, tome cuidado com informações pessoais: registre o necessário para diagnosticar sem divulgar o conteúdo recebido.</p><p>Confira a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/nio/charset/CharsetDecoder.html">API de CharsetDecoder</a> ao decidir como uma integração tratará entradas malformadas. O mesmo raciocínio vale para saídas: documentar o formato evita depender da configuração de uma máquina específica.</p>
+<h2 id="secao-20">20. Laboratório integrado: receber e apresentar um nome</h2>
+<p>Crie um programa que leia uma linha como nome de exibição. A regra deste laboratório é: recusar entrada ausente ou composta apenas de espaços; remover espaços nas extremidades; preservar os espaços internos e as letras digitadas; exibir o nome tratado e a quantidade de pontos de código. Não converta o nome para caixa alta nem remova acentos. Este exercício trata texto, não certifica a identidade da pessoa.</p>
+<figure><figcaption>Programa completo · JDK local 11+; referência Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="amostra-nome" data-java-program>import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in);
+        if (!entrada.hasNextLine()) {
+            System.out.println("Nome ausente.");
+            return;
+        }
+        String nome = entrada.nextLine().strip();
+        if (nome.isBlank()) {
+            System.out.println("Informe um nome com conteúdo.");
+            return;
+        }
+        int pontos = nome.codePointCount(0, nome.length());
+        System.out.println("Nome: " + nome);
+        System.out.println("Pontos de código: " + pontos);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="amostra-nome">Nome: Ana Silva
+Pontos de código: 9</samp></pre></figure>
+<p>Use <code>  Ana Silva  </code> na entrada. Depois teste uma linha vazia, somente espaços e fim de entrada sem linhas. São três estados diferentes. Para testar no Playground atual, adapte strip para trim e isBlank para isEmpty, explicando que essa adaptação muda a abrangência de espaços reconhecidos. Não anuncie as duas versões como equivalentes para todo Unicode.</p><p>O limite de tamanho de um cadastro dependeria de outros requisitos, como armazenamento e interface; este laboratório não inventa esse limite. O objetivo é mostrar uma transformação pequena e explícita. Ao evoluir o programa, acrescente a regra de tamanho e seus testes antes de aplicar um corte que possa apagar parte do nome.</p>
+<div class="table-responsive"><table class="table"><caption>Casos de conferência do laboratório</caption><thead><tr><th>Entrada</th><th>Resultado</th><th>Regra exercitada</th></tr></thead><tbody><tr><td>Dois espaços, Ana Silva, dois espaços</td><td>Nome: Ana Silva; 9 pontos de código.</td><td>Limpeza apenas nas extremidades.</td></tr><tr><td>Uma linha vazia</td><td>Informe um nome com conteúdo.</td><td>Nome sem conteúdo.</td></tr><tr><td>Três espaços</td><td>Informe um nome com conteúdo.</td><td>Espaços não bastam.</td></tr><tr><td>Nenhuma linha</td><td>Nome ausente.</td><td>Entrada esgotada antes da leitura.</td></tr></tbody></table></div>
+<h2 id="secao-21">21. Prática progressiva com enunciados completos</h2>
+<p>Nos exercícios abaixo, comece escrevendo seu código. Consulte a solução somente depois de prever uma saída e tentar reproduzi-la. Cada programa deve ter public class Main e o método principal. Use JDK 17 para executar todos os exemplos sem as limitações de biblioteca do Playground.</p><ol><li><strong>Recorte:</strong> declare a string literal “programacao”. Numere suas posições de 0 a 10 no papel. Extraia apenas “grama” usando substring, sem substituir caracteres. Imprima o trecho em uma única linha. Faça uma segunda previsão para a mesma operação com o limite final diminuído em 1.</li><li><strong>Comparação:</strong> declare um literal “Java” e uma nova String com o mesmo conteúdo. Imprima primeiro a comparação por referência e depois a comparação por conteúdo. Explique por que as respostas diferem. Não use intern para alterar o resultado.</li><li><strong>Campo obrigatório:</strong> leia uma linha. Se não houver linha, informe “Nome ausente.”. Se houver somente espaços, informe “Informe um nome com conteúdo.”. Nos demais casos, imprima o nome sem espaços nas extremidades. Preserve os espaços internos. Teste os três caminhos separadamente.</li><li><strong>Registro simples:</strong> use “Ana;Recife;”. Separe por ponto e vírgula preservando o campo final vazio. Confira que existam três campos antes de acessar o terceiro. Imprima “Email ausente” para esse registro. O exercício não aceita campos com ponto e vírgula embutido.</li><li><strong>Conversão:</strong> adapte o programa de quantidade para aceitar apenas valores de 1 a 20, inclusive. Teste 1, 20, 0, 21, “abc” e uma string vazia. Para cada teste, escreva a mensagem esperada antes de executar.</li></ol>
+<details><summary>Possível solução: recortar grama</summary><figure><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="amostra-exercicio-recorte" data-java-program>public class Main {
+    public static void main(String[] args) {
+        String palavra = "programacao";
+        System.out.println(palavra.substring(3, 8));
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="amostra-exercicio-recorte">grama</samp></pre></figure><p>O índice inicial é 3; o final é 8 e não participa do trecho. Com fim 7, a saída é gram. Contar o tamanho esperado, cinco letras, ajuda a conferir 8 menos 3.</p></details>
+<details><summary>Possível solução: registro simples</summary><figure><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="amostra-exercicio-registro" data-java-program>public class Main {
+    public static void main(String[] args) {
+        String[] campos = "Ana;Recife;".split(";", -1);
+        if (campos.length != 3) {
+            System.out.println("Registro inválido");
+            return;
+        }
+        System.out.println(campos[2].isEmpty() ? "Email ausente" : campos[2]);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="amostra-exercicio-registro">Email ausente</samp></pre></figure><p>A validação do tamanho protege o acesso à posição 2. Preservar o campo final permite diferenciar ausência de conteúdo de um formato com quantidade errada de posições.</p></details>
+<details><summary>Conferir as demais respostas e os critérios</summary><p>A comparação do segundo exercício produz false e true, como no laboratório de igualdade. O exercício de nome pode usar a validação do laboratório integrado; a diferença é que você pode omitir a contagem. No exercício de quantidade, substitua a condição por quantidade &lt; 1 ou quantidade &gt; 20. Os valores 1 e 20 são aceitos; 0 e 21 são recusados por intervalo; abc e o texto vazio falham na conversão.</p><p>Considere a atividade compreendida quando conseguir explicar o comportamento sem citar apenas “porque o Java faz assim”. Identifique a unidade do índice, o tipo da comparação, a transformação executada e a regra que decide aceitar ou recusar uma entrada.</p></details>
+<h2 id="secao-22">22. Revisão para avançar e usar o conhecimento em um projeto</h2>
+<p>Antes de continuar, explique estas diferenças com um exemplo seu: null e string vazia; == e equals; índice UTF-16 e ponto de código; replace e replaceAll; texto e bytes; transformação e validação. Se você precisar executar para adivinhar todas as respostas, volte aos laboratórios e faça previsões menores.</p><p>Em um projeto de cadastro, comece definindo os campos e suas regras. Preserve um nome de exibição quando a regra pedir; normalize apenas a chave que realmente exige normalização; registre a codificação da integração; apresente erros que permitam corrigir a entrada. Uma sequência de métodos encadeados sem um contrato pode apagar dados importantes e parecer correta nos testes mais fáceis.</p><p>Para continuar, o tema 4 organiza decisões com if e switch. Os temas de arquivos e persistência retomam a travessia entre bytes e texto. O tema de coleções mostra por que igualdade e hashCode afetam a busca de chaves. Você não precisa antecipar todas essas implementações agora, mas pode reconhecer que os fundamentos deste capítulo reaparecem em cada camada.</p><h2 id="fontes">Fontes e continuidade</h2><p>A base do pop-up original foi preservada, incluindo exemplos e referências às páginas 41 a 47 da <a href="assets/materiais/07DesenvolvimentodeAplicaes.pdf">apostila principal</a>. Os laboratórios ampliados são próprios e usam as referências oficiais indicadas em cada assunto.</p><ul><li><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html">String · API Java 17</a></li><li><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Character.html">Character · unidades UTF-16 e pontos de código</a></li><li><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/text/Normalizer.html">Normalizer · formas Unicode</a></li><li><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/regex/Pattern.html">Pattern · expressões regulares</a></li></ul></article><nav class="lesson-pagination no-print" aria-label="Navegar entre temas"><a class="btn btn-outline-primary" href="tema-02.html">Anterior · Tema 2</a><a class="btn btn-primary" href="tema-04.html">Próximo · Tema 4</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <p class="mb-1">
+            <a href="index.html">Início</a> ·
+            <a href="cont.html">Conteúdo</a> ·
+            <a href="playground.html">Playground</a> ·
+            <a href="quiz.html">Quiz</a> ·
+            <a href="faq.html">FAQ</a> · <a href="extra.html">Extra</a>
+        </p>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+
+<script src="assets/js/pwa-register.js" defer></script><script src="assets/js/app.js" defer></script>
+
+
+
+</body>
+</html>

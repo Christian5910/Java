@@ -45,8 +45,8 @@ const screenshots = path.resolve(__dirname, '../../.work/site-shots');
         await page.goto(base+'cont.html#modal'+number);await page.locator('#modal'+number+'.show').waitFor();
         await inspect(page,device+'-theme-'+number);
       }
-      await page.goto(base+'cont.html#modal6');await page.locator('#modal6.show').waitFor();
-      assert.ok(!(await page.locator('#modal6').innerText()).includes('pesquisa'));
+      await page.goto(base+'tema-06.html');await page.locator('.lesson-article').waitFor();
+      assert.ok(!(await page.locator('.lesson-article').innerText()).includes('pesquisa'));
       await page.locator('#research-collections').scrollIntoViewIfNeeded();
       await inspect(page,device+'-reading');
       await page.goto(base+'extra.html');await inspect(page,device+'-extra');

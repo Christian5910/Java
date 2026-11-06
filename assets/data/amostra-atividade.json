@@ -1,0 +1,13 @@
+[
+  {
+    "id": "ola",
+    "theme": 1,
+    "title": "Primeiro programa: apresentação e soma",
+    "goal": "Escreva um programa Java do zero para apresentar um nome e calcular a soma de 5 com 10. Ao final, você deverá distinguir o que print escreve na linha atual do que println escreve e encerra com uma quebra de linha.",
+    "challenge": "Depois de obter a saída pedida, troque apenas o nome e os dois números da soma. Antes de executar novamente, escreva em um papel as duas linhas que espera ver. Em seguida, substitua o primeiro print por println e observe a linha adicional: explique qual chamada provocou essa mudança.",
+    "hint": "A classe pública deve se chamar Main. Dentro de main, use print para o início da saudação e println para o restante. Para somar números dentro de uma mensagem, coloque a operação entre parênteses: assim a soma acontece antes da concatenação com o texto.",
+    "source": "public class Main {\n    public static void main(String[] args) {\n        System.out.print(\"Olá, \");\n        System.out.println(\"Ana!\");\n        System.out.println(\"Soma: \" + (5 + 10));\n    }\n}\n",
+    "expected": "Olá, Ana!\nSoma: 15",
+    "input": ""
+  }
+]

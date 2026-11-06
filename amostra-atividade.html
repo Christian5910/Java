@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atividade do zero · Amostra Java</title><meta name="robots" content="noindex">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="assets/css/amostras.css">
+</head>
+<body>
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link" href="cont.html">Conteúdo</a>
+<a class="nav-link active fw-semibold" href="playground.html" aria-current="page">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<div class="sample-notice no-print"><div class="container"><strong>Amostra para avaliação.</strong> <a href="amostras.html">Ver os três exemplos</a> · <a href="cont.html">Voltar ao site atual</a></div></div><main id="conteudo" class="container py-5">
+<div class="text-center mb-4"><h1 class="h2 text-primary fw-bold">Atividade do zero</h1><p class="text-muted fs-5">Leia o enunciado, escreva sua solução no editor vazio e execute para conferir.</p></div>
+<div class="playground-intro mb-4"><p>Esta amostra contém uma atividade. O editor começa vazio na primeira visita e preserva o que você escrever ao voltar. A solução de referência só aparece quando você abre “Possível solução para o problema”. Os rascunhos desta amostra são separados dos rascunhos do site atual. A primeira execução precisa carregar a JVM pela internet.</p></div><hr>
+<a class="btn btn-outline-primary mb-4" href="#executionPanel">Ir ao editor para escrever minha solução</a><noscript><p>Ative JavaScript para editar e executar. A apostila está disponível na guia Conteúdo.</p></noscript>
+<div hidden><div class="row g-3 mb-2"><div class="col-md-4"><label class="form-label fw-semibold" for="exerciseTheme">Filtrar por tema</label><select class="form-select" id="exerciseTheme" aria-controls="exerciseSelect" disabled><option value="">Todos os temas</option><option value="1">1 · Ambiente e primeiro programa</option><option value="2">2 · Lógica, tipos e entrada</option><option value="3">3 · Textos</option><option value="4">4 · Decisões</option><option value="5">5 · Repetição</option><option value="6">6 · Arrays e matrizes</option><option value="7">7 · Classes e métodos</option><option value="8">8 · Construtores</option><option value="9">9 · Encapsulamento</option><option value="10">10 · Acesso e organização</option><option value="11">11 · Coleções, generics e contratos de dados</option><option value="12">12 · Arquivos, dados e persistência confiável</option><option value="13">13 · Concorrência e coordenação de tarefas</option><option value="14">14 · Arquitetura, testes e projeto integrador</option></select></div><div class="col-md-8"><label class="form-label fw-semibold" for="exerciseSelect">Escolha uma atividade</label><select class="form-select" id="exerciseSelect" disabled></select></div></div><p id="exerciseCount" class="small text-muted mb-4" role="status">Carregando o catálogo de atividades…</p>
+<nav class="activity-navigation" aria-label="Navegar entre atividades"><button type="button" id="previousActivity" class="btn btn-outline-primary" disabled>Atividade anterior</button><button type="button" id="nextActivity" class="btn btn-outline-primary" disabled>Próxima atividade</button><p id="activityPosition" class="small text-muted" role="status"></p></nav></div>
+<section class="activity-copy mb-4" aria-labelledby="activityTitle"><p class="text-muted mb-1" id="activityTopic"></p><h2 class="h4" id="activityTitle" tabindex="-1">Carregando atividades…</h2><p id="activityGoal"></p><h3 class="h6 fw-bold">O que você deve fazer</h3><ol class="sample-instructions"><li>Digite um programa completo no campo Main.java: declare <code>public class Main</code> e, dentro dela, o método <code>public static void main(String[] args)</code>. Inclua as chaves que delimitam a classe e o método.</li><li>Escolha um nome para a apresentação. Você pode usar um nome fictício; os exemplos de conferência usam Ana. Não é necessário ler o teclado: o nome deve estar escrito como texto no próprio programa.</li><li>Na primeira linha da saída, mostre <code>Olá, Ana!</code>, substituindo Ana pelo nome escolhido. Faça essa linha com duas chamadas: use <code>print</code> para escrever <code>Olá, </code>, incluindo o espaço depois da vírgula, e <code>println</code> para escrever o nome seguido de exclamação.</li><li>Na segunda linha, mostre <code>Soma: 15</code>. O programa deve calcular <code>5 + 10</code>; não escreva 15 como um texto pronto. Use parênteses para que a soma ocorra antes de juntar o resultado à mensagem.</li><li>Antes de executar, anote as duas linhas esperadas. Deixe “Entrada do programa” vazio, pois esta atividade não usa Scanner. Clique em “Compilar e executar” e compare a saída com a previsão.</li><li>Confira que a saudação não foi quebrada em duas linhas e que a soma aparece como 15, e não 510. Se surgir erro, leia a mensagem de compilação, corrija a linha indicada e execute novamente.</li></ol><h3 class="h6 fw-bold">Como saber se concluiu</h3><p>A saída precisa ter duas linhas, sem pedir informações de entrada: uma saudação com o nome escolhido e o resultado numérico da soma. Você deve conseguir explicar qual chamada termina cada linha. A conferência é feita por você; o botão de execução não atribui nota automaticamente.</p><h3 class="h6 fw-bold">Depois de concluir, pratique outra vez</h3><p id="activityChallenge"></p><a id="topicLink" href="cont.html">Revisar a explicação na apostila</a><details class="activity-details mt-2"><summary>Ver dica</summary><p id="activityHint"></p></details><details class="activity-details"><summary>Possível solução para o problema</summary><p class="mt-2">Tente resolver antes de consultar. Este é um caminho possível usando o nome fictício Ana; abrir a solução não preenche nem substitui seu editor.</p><pre class="activity-code" tabindex="0"><code id="sampleSolution"></code></pre><p class="fw-semibold">Saída desta solução</p><pre class="activity-code" id="sampleExpected" tabindex="0"></pre><p class="small text-muted">Seu nome pode ser diferente. Confira também as quebras de linha e a operação aritmética; o resultado visual sozinho não prova que a soma foi calculada.</p></details></section>
+<section id="executionPanel" aria-label="Editor e execução" aria-busy="false"><div class="playground-actions"><button id="runJava" class="btn btn-primary" type="button" disabled>Compilar e executar</button><button id="stopJava" class="btn btn-outline-primary" type="button" disabled>Interromper</button><button id="resetExample" class="btn btn-outline-primary" type="button" disabled>Limpar meu código</button></div><div class="playground-layout"><div class="playground-editor"><label for="javaCode" class="form-label fw-semibold">Main.java</label><textarea id="javaCode" class="form-control code-editor" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" maxlength="120000" aria-describedby="editorHelp"></textarea><p class="small text-muted mt-2" id="editorHelp">Escreva o programa completo, incluindo <code>public class Main</code> e o método <code>main</code>. O editor começa sem código. Ctrl+Enter ou ⌘+Enter executa. Tab continua disponível para navegar entre os controles.</p>
+<label for="javaInput" class="form-label fw-semibold">Entrada do programa (System.in)</label><textarea id="javaInput" aria-describedby="sampleInputHelp" class="form-control" rows="4" maxlength="20000" spellcheck="false" placeholder="Uma informação por linha, na ordem solicitada pelo código."></textarea><p class="small text-muted mt-2" id="sampleInputHelp">Deixe este campo vazio nesta atividade: o programa usa um nome e dois números escritos no próprio código.</p>
+</div>
+<div class="playground-output"><p id="runtimeStatus" class="runtime-status" role="status" aria-live="polite">Carregando atividades…</p><h2 class="h6 fw-bold">Saída e erros de execução</h2><p id="outputState" class="small text-muted" role="status">Este código ainda não foi executado nesta visita.</p><pre class="java-output" id="javaOutput" tabindex="0" aria-label="Saída do programa">Execute o programa para ver a saída.</pre><details class="mt-3" id="compilerDetails"><summary>Mensagens de compilação</summary><pre class="java-output" id="compileOutput">As mensagens aparecerão aqui.</pre></details><details class="mt-3"><summary>Como este ambiente funciona</summary><p>O compilador Eclipse ECJ gera bytecode com sintaxe Java 17, executado pelo CheerpJ no navegador. As assinaturas de biblioteca disponíveis para compilação são as de Java 8, suficientes para as atividades desta apostila. APIs posteriores, records, projetos com pacotes e dependências externas devem ser executados em um JDK local.</p><p>Cada etapa de compilação ou execução tem limite de 60 segundos. O carregamento inicial tem até 120 segundos, e a saída é limitada a 50 mil caracteres. Interromper reinicia a JVM e preserva o editor. Ao trocar de atividade, cada rascunho fica salvo separadamente neste navegador.</p><p>Execução com <a href="https://cheerpj.com/">CheerpJ, da Leaning Technologies</a>, e <a href="https://projects.eclipse.org/projects/eclipse.jdt">Eclipse JDT</a>. Os recursos da JVM são obtidos do CDN do CheerpJ. O site não envia seu código a um serviço remoto de compilação.</p></details></div></div></section>
+<section class="export-row" aria-label="Guardar atividade"><div><label for="exportFormat" class="form-label">Guardar código e resultado</label><select id="exportFormat" class="form-select"><option value="java">Código Java (.java)</option><option value="json">Registro completo (.json)</option><option value="txt">Registro em texto (.txt)</option><option value="html">Relatório (.html)</option><option value="pdf">Imprimir / salvar PDF</option></select></div><button class="btn btn-outline-primary" id="exportWork" type="button" disabled>Exportar atividade</button></section><p id="saveStatus" class="small text-muted mt-2" role="status">O rascunho será salvo neste navegador. Use exportar para guardar uma cópia.</p>
+</main>
+
+<footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <p class="mb-1">
+            <a href="index.html">Início</a> ·
+            <a href="cont.html">Conteúdo</a> ·
+            <a href="playground.html">Playground</a> ·
+            <a href="quiz.html">Quiz</a> ·
+            <a href="faq.html">FAQ</a> · <a href="extra.html">Extra</a>
+        </p>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+
+<script src="assets/js/app.js" defer></script>
+
+
+<div class="modal" id="offlineModal" tabindex="-1" aria-labelledby="offlineTitle" aria-describedby="offlineDescription" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+<div class="modal-header"><h2 class="modal-title h5" id="offlineTitle">Playground sem internet</h2><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar aviso"></button></div>
+<div class="modal-body" id="offlineDescription"><p>Você está offline. Compilar e executar Java fica indisponível até a conexão voltar, pois o ambiente precisa carregar recursos da JVM pela internet.</p><p>Você pode continuar lendo as atividades já carregadas, editar o código e exportar seus rascunhos. Eles continuam salvos neste navegador.</p><p class="mb-0">Ao se reconectar, o aviso fecha automaticamente. Execute novamente para testar seu código. A compilação acontece no próprio navegador.</p></div>
+<div class="modal-footer"><button type="button" class="btn btn-primary" data-bs-dismiss="modal">Continuar estudando</button></div>
+</div></div></div>
+<script src="assets/js/amostra-atividade.js" defer></script><pre id="printReport"></pre>
+</body>
+</html>

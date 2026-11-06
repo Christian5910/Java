@@ -1,8 +1,17 @@
 # Java · Guia de estudo
 
+## Amostras em avaliação
+
+`amostras.html` reúne as três demonstrações usadas para aprovação: agrupamento dos temas com cabeçalho e ícone à direita, capítulo `amostra-tema-03.html` ampliado e `amostra-atividade.html` com editor inicialmente vazio. O modelo foi aplicado oficialmente aos temas 1 a 8 em 29/10/2026; as amostras permanecem disponíveis como referência.
+
+O rascunho da atividade de demonstração usa `java_playground_amostra_v1`, separado de `java_playground_v1`. Abrir “Possível solução para o problema” não preenche o editor. “Limpar meu código” pede confirmação antes de descartar o rascunho da amostra. Estas páginas ainda não estão no manifesto de pré-cache offline.
+
+`node tests/samples.cjs` compila os 12 programas completos do capítulo e a solução da atividade para Java 17, confere saídas, limites de entrada e literais de caractere partidos em linhas. `node tests/samples-browser.cjs` usa Playwright/Edge para testar as amostras em 1440/390px; acrescente `--runtime` para compilar e executar a solução no CheerpJ real. O endereço padrão é `http://127.0.0.1:4189/`, ajustável por `JAVA_SITE_URL`. Capturas em `.work/sample-shots`.
+
 Site estático baseado nos materiais de Desenvolvimento de aplicações e nos exercícios fornecidos pelo grupo. A base visual foi preservada: Bootstrap local, paleta azul escura e laranja, navegação, agrupamentos com ícones e temas numerados.
 
-- `cont.html`: trinta temas, cerca de 49 mil palavras, exemplos e referências às páginas dos PDFs. Busca por assunto e impressão dos trinta temas completos.
+- `cont.html`: índice dos trinta temas, busca por assunto e impressão da apostila. Os temas 1 a 8 abrem páginas próprias; os temas 9 a 30 mantêm as janelas de leitura. Os pares de temas ficam em containers com título e ícone à direita; os antigos botões intermediários de categoria foram removidos.
+- `tema-01.html` a `tema-08.html`: capítulos ampliados com sumário, exemplos completos, exercícios resolvidos, referências e impressão individual. O conteúdo original foi preservado e aprofundado.
 - `playground.html`: 53 atividades com código Java editável, entrada para Scanner, desafios e saídas de referência.
 - `quiz.html`: 60 questões de nível médio/avançado, dicas, comentários, retomada e resultado por tema.
 - `faq.html`: 80 perguntas com busca.
@@ -78,6 +87,16 @@ A revisão evita reproduzir estatísticas sem fonte, garantias de desempenho, de
 - Símbolo Java: SVG fornecido na pasta `svg`, aplicado como logo e origem dos ícones do app. Java é uma marca da Oracle e/ou suas afiliadas. O material não declara afiliação oficial.
 
 ## Verificações
+
+`node tests/topics.cjs` compila os programas completos marcados dos temas 1 a 8 para Java 17, compara suas saídas e verifica entradas inválidas, valores de fronteira, argumentos, pacotes e JAR. Requer um JDK completo no PATH, incluindo `jar`.
+
+`node tests/topic-pages.cjs` usa Playwright e Edge para conferir os oito capítulos, transição 8/9, links antigos, busca, impressão, sumário, resoluções, telas de 1440/390 px e leitura offline. Aceita `JAVA_SITE_URL` (padrão: `http://127.0.0.1:4188/organizar/`). As capturas ficam em `.work/topic-shots` e `.work/first-eight/shots`.
+
+`node tests/first-eight-activities.cjs` verifica as 38 atividades dos temas 1 a 8, editor vazio na primeira visita, passos detalhados, solução que não preenche o editor, limpeza com confirmação e recuperação dos rascunhos antigos. Confere também que as 15 atividades posteriores continuam oferecendo o exemplo inicial. Usa `JAVA_SITE_URL`, com padrão `http://127.0.0.1:4189/`.
+
+Para busca e impressão reunidas, o índice carrega os oito capítulos por `fetch`, usando os HTMLs como fonte única. Use HTTP/HTTPS; a leitura direta de cada capítulo também funciona por `file://`, mas a reunião no índice requer servidor. Os capítulos e seu CSS estão no cache offline. Links antigos `cont.html#modal1` a `#modal8` são redirecionados para as páginas novas; `#cat1` a `#cat15` localizam o grupo correspondente.
+
+Nos temas 1 a 8, o código de referência permanece no catálogo e nos downloads, mas só aparece na interface ao abrir “Possível solução para o problema”. Os rascunhos existentes em `java_playground_v1` são preservados, mesmo quando coincidem com um exemplo antigo; não é possível distinguir com segurança um rascunho próprio de uma cópia não editada. “Limpar meu código” permite recomeçar e pede confirmação se houver código ou entrada. Novas visitas a uma atividade sem rascunho começam com código vazio. Os dados de entrada de referência continuam disponíveis para leitura e testes. Os temas posteriores mantêm o fluxo anterior.
 
 `node tests/static.cjs` verifica links e arquivos locais, capítulos, quiz, atividades, sintaxe dos scripts, cache e tamanhos dos ícones.
 

@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>04 · Decisões com if e switch · Java</title>
+<meta name="description" content="Aprenda a traduzir regras em condições, organizar intervalos e escolher operações com decisões que você consegue testar.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 4 de 30</span></nav><header class="lesson-header"><h1>04 · Decisões com if e switch</h1><p class="lead">Aprenda a traduzir regras em condições, organizar intervalos e escolher operações com decisões que você consegue testar.</p><p class="text-muted">Java 17 como referência · Teoria, laboratórios e exercícios comentados</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-19">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">O contrato de uma decisão: do enunciado à condição</a></li><li><a href="#secao-2">Condições precisam produzir booleanos</a></li><li><a href="#secao-3">Vários ifs e uma cadeia if/else if</a></li><li><a href="#secao-4">Condições compostas e negação</a></li><li><a href="#secao-5">Resolver o salário semanal</a></li><li><a href="#secao-6">Switch tradicional</a></li><li><a href="#secao-7">Switch com seta e expressão switch</a></li><li><a href="#secao-8">Enumerações para opções conhecidas</a></li><li><a href="#secao-9">Verificar a calculadora</a></li><li><a href="#secao-10">Tabela de decisão: torne visíveis as combinações</a></li><li><a href="#secao-11">Curto-circuito e a ordem de validação</a></li><li><a href="#secao-12">Intervalos: pertencimento, prioridade e fronteiras</a></li><li><a href="#secao-13">Blocos, escopo e a associação do else</a></li><li><a href="#secao-14">Guardas: rejeitar cedo e manter a regra visível</a></li><li><a href="#secao-15">Switch em Java 17: quando escolhe uma ação e quando produz um valor</a></li><li><a href="#secao-16">Laboratório completo: uma calculadora com entrada conferida</a></li><li><a href="#secao-17">Estado conhecido não é apenas um número de menu</a></li><li><a href="#secao-18">Revisar decisões com testes que distinguem regras</a></li><li><a href="#secao-19">Prática progressiva, resoluções e critérios de domínio</a></li><li><a href="#fontes">Fontes e continuidade</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. O contrato de uma decisão: do enunciado à condição</h2>
+<p>Uma decisão correta começa antes do if. Escreva quais entradas são aceitas, quais resultados podem sair e quais condições separam os resultados. Imagine uma inscrição que exige idade mínima e autorização. Ter idade suficiente não substitui a autorização se a regra exigir ambas. A estrutura sintática é curta; o trabalho está em traduzir as palavras sem trocar o sentido.</p><p>Ao estudar este capítulo, leia primeiro a regra em português. Separe validação de classificação: uma nota negativa não é uma nota baixa válida; uma entrada ilegível não é zero. Depois desenhe os caminhos e escolha entradas que percorram cada um deles. Só então escreva o programa. Essa ordem permite avaliar a solução sem depender de ela parecer funcionar com o primeiro exemplo.</p><p>Você precisará reconhecer boolean, comparações, Scanner e a diferença entre texto e número. Ao terminar, deverá escrever condições compostas, organizar intervalos sem sobreposição indevida, escolher entre if e switch e verificar os limites da regra. Os exemplos usam Java 17 sem recursos preview; uma sintaxe encontrada em documentação de outra versão precisa ser conferida antes de ser copiada.</p>
+<h2 id="secao-2">2. Condições precisam produzir booleanos</h2>
+<p>Uma estrutura condicional escolhe quais instruções executar. O <code>if</code> avalia uma expressão booleana e executa o bloco quando ela é verdadeira. Um <code>else</code> fornece o caminho alternativo. Em Java, um número como <code>1</code> não é usado diretamente como verdadeiro: a condição deve ter tipo <code>boolean</code>. Para comparar idade com um limite, escreva <code>idade &gt;= 18</code>.</p>
+<p>Use chaves mesmo quando o bloco contém uma única instrução. Assim, acrescentar outra operação não muda silenciosamente o alcance da condição. Um ponto e vírgula logo depois de <code>if (condicao)</code> cria uma instrução vazia e pode deixar o bloco seguinte sem a proteção pretendida. A indentação ajuda a leitura, mas são as chaves e a sintaxe que determinam o fluxo.</p>
+<pre><code>double media = 7.0;
+if (media &gt;= 7.0) {
+    System.out.println("Aprovado");
+} else {
+    System.out.println("Recuperação");
+}</code></pre>
+<p>Para esse enunciado, o valor exatamente igual a 7 já está aprovado. Trocar <code>&gt;=</code> por <code>&gt;</code> altera a regra no limite. Um teste com 9 não revelaria o problema; testar 6.9, 7.0 e 7.1 permite separar os dois comportamentos. O resultado esperado deve vir da regra, antes de observar o que o código faz.</p>
+<h2 id="secao-3">3. Vários ifs e uma cadeia if/else if</h2>
+<p>Vários <code>if</code> independentes podem executar vários blocos. Em uma cadeia <code>if / else if / else</code>, o primeiro caminho verdadeiro encerra a escolha. Essa diferença aparece na classificação de notas: se você deseja uma única categoria, organize condições sem sobreposição indevida. Se deseja registrar avisos independentes, como atraso e documentação incompleta, vários testes separados podem ser adequados.</p>
+<pre><code>if (media &lt; 0 || media &gt; 10) {
+    System.out.println("Nota inválida");
+} else if (media &gt;= 7) {
+    System.out.println("Aprovado");
+} else if (media &gt;= 5) {
+    System.out.println("Recuperação");
+} else {
+    System.out.println("Revisar conteúdo");
+}</code></pre>
+<p>Os limites intermediários desse exemplo são uma regra de exercício, não uma política universal de avaliação. Quando o segundo <code>else if</code> é alcançado, já sabemos que a média é menor que 7; por isso, <code>media &gt;= 5</code> cobre o intervalo de 5 incluído a 7 excluído. Se você testar <code>media &gt;= 5</code> antes de <code>media &gt;= 7</code>, valores altos entrarão na primeira condição e a segunda categoria não será alcançada.</p>
+<h2 id="secao-4">4. Condições compostas e negação</h2>
+<p>Uma regra pode exigir aprovação por nota e presença: <code>media &gt;= 7 &amp;&amp; presenca &gt;= 75</code>. Usar <code>||</code> permitiria aprovação quando apenas uma exigência fosse atendida, o que é outra regra. Parênteses ajudam a separar condições compostas. Prefira uma expressão que o leitor consiga relacionar ao enunciado, mesmo que a linguagem permita retirar alguns parênteses.</p>
+<p>A negação de “usuário correto e senha correta” é “usuário incorreto ou senha incorreta”. Essa relação permite escrever a condição de recusa de um login. As leis de De Morgan ajudam a conferir: <code>!(a &amp;&amp; b)</code> equivale a <code>!a || !b</code>, e <code>!(a || b)</code> equivale a <code>!a &amp;&amp; !b</code>. Experimente as quatro combinações booleanas para verificar sem depender de memorização.</p>
+<h2 id="secao-5">5. Resolver o salário semanal</h2>
+<p>Considere este enunciado: abaixo de 40 horas, o pagamento é de R$ 15 por hora; a partir de 40 horas, são R$ 600 mais R$ 21 por hora excedente. Em 40 horas, o resultado é R$ 600. Horas negativas devem ser rejeitadas. Os valores são dados de um exercício de função por partes e não representam regras trabalhistas gerais.</p>
+<pre><code>double horas = 45;
+if (horas &lt; 0) {
+    System.out.println("Horas inválidas");
+} else {
+    double salario;
+    if (horas &lt;= 40) {
+        salario = horas * 15;
+    } else {
+        salario = 600 + (horas - 40) * 21;
+    }
+    System.out.printf(java.util.Locale.US, "Salário: R$ %.2f%n", salario);
+}</code></pre>
+<p>Para 45 horas, as cinco horas excedentes acrescentam R$ 105 à base, chegando a R$ 705. Teste -1, 0, 39, 40 e 41. Se uma condição para horas acima de 71 vier depois de um ramo que já aceita todas as horas acima de 40, ela nunca será alcançada. Uma faixa específica deve ser verificada antes de uma faixa que a contenha, ou as condições precisam descrever intervalos sem sobreposição.</p>
+<h2 id="secao-6">6. Switch tradicional</h2>
+<p><code>switch</code> seleciona caminhos conforme o valor de uma expressão. Ele é conveniente em menus com opções conhecidas. Na forma tradicional, cada <code>case</code> marca um ponto de entrada. <code>break</code> encerra o switch; sem ele, a execução pode continuar pelos casos seguintes, comportamento chamado fall-through. <code>default</code> trata valores que não combinaram com os rótulos.</p>
+<pre><code>int opcao = 2;
+switch (opcao) {
+    case 1:
+        System.out.println("Consultar saldo");
+        break;
+    case 2:
+        System.out.println("Depositar");
+        break;
+    default:
+        System.out.println("Opção inválida");
+}</code></pre>
+<p>Na referência Java 17, esse tipo de switch aceita, entre outros, <code>int</code>, <code>char</code>, <code>String</code> e enums; não aceita diretamente <code>double</code> como seletor. Os casos precisam respeitar o tipo e as regras de constantes. Para testar intervalos de valor, como faixas de nota, <code>if / else if</code> costuma expressar melhor a regra. As extensões de switch de versões posteriores não são pressupostas nesta apostila.</p>
+<h2 id="secao-7">7. Switch com seta e expressão switch</h2>
+<p>A forma moderna usa <code>case ... -&gt;</code>. Essa sintaxe está disponível na versão de referência e evita o fall-through da forma com dois-pontos. Um switch também pode produzir um valor. Nesse caso, todos os caminhos possíveis precisam ser cobertos; em um seletor inteiro, <code>default</code> normalmente cumpre essa função. Não misture as duas formas de rótulo no mesmo bloco de switch.</p>
+<pre><code>int opcao = 1;
+String estacao = switch (opcao) {
+    case 1 -&gt; "Primavera";
+    case 2 -&gt; "Verão";
+    case 3 -&gt; "Outono";
+    case 4 -&gt; "Inverno";
+    default -&gt; "Estação desconhecida";
+};
+System.out.println(estacao);</code></pre>
+<p>Os números de 1 a 4 identificam opções do exercício, não meses do ano nem um calendário climático. Se um ramo de uma expressão switch precisa de várias instruções, use um bloco e <code>yield</code> para fornecer seu resultado. <code>return</code> sai do método inteiro; <code>yield</code> fornece o valor da expressão switch. Para uma decisão curta de dois valores, o ternário <code>condicao ? valorSeVerdadeiro : valorSeFalso</code> pode ser suficiente.</p>
+<h2 id="secao-8">8. Enumerações para opções conhecidas</h2>
+<p>Um <code>enum</code> representa um conjunto definido de constantes com um tipo próprio. Ele ajuda quando estados ou opções têm significado no programa, como uma tarefa <code>PENDENTE</code> ou <code>CONCLUIDA</code>. Usar esse tipo evita espalhar números sem explicação e reduz erros de grafia em comparações de texto. A entrada de um usuário ainda precisa ser validada antes de virar um estado do domínio.</p>
+<pre><code id="research-enum">enum Situacao {
+    PENDENTE, EM_ANDAMENTO, CONCLUIDA
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Situacao atual = Situacao.EM_ANDAMENTO;
+        String mensagem = switch (atual) {
+            case PENDENTE -&gt; "Ainda não começou";
+            case EM_ANDAMENTO -&gt; "Estudo em andamento";
+            case CONCLUIDA -&gt; "Estudo concluído";
+        };
+        System.out.println(mensagem);
+    }
+}</code></pre><p><a href="playground.html?ex=estados-enum">Praticar este programa no Playground</a></p>
+<p>A saída é <code>Estudo em andamento</code>. Troque a constante e preveja a nova mensagem. Os casos cobrem todas as constantes desse tipo; não há leitura de entrada no exemplo. <code>Situacao.valueOf("CONCLUIDA")</code> exige o nome exato e lança uma exceção se ele não existir. Um texto arbitrário não vira enum automaticamente. Evite gravar <code>ordinal()</code> como um código de negócio permanente, pois reorganizar as constantes muda suas posições. Para testar, copie o programa para o <a href="playground.html?ex=estacoes">editor de decisões</a> e exporte o rascunho anterior se quiser preservá-lo.</p>
+<h2 id="secao-9">9. Verificar a calculadora</h2>
+<p>Uma calculadora deve separar leitura, escolha da operação e cálculo. Cada caso precisa aplicar o operador correto. Um método que promete devolver um valor deve fazê-lo em todos os caminhos que terminam normalmente, ou lançar uma exceção apropriada. Mantenha uma única instância de <code>Scanner</code> para coordenar as leituras. Primeiro confira a compilação; depois teste cada operação e a divisão por zero.</p>
+<p>Ao testar divisão, inclua divisor zero. Ao testar o menu, inclua um texto de operação desconhecido. Se o programa pede confirmação, defina claramente o significado de continuar ou encerrar: um booleano chamado <code>continuar</code> deve retornar verdadeiro quando a repetição deve continuar. <a href="playground.html?ex=salario">Pratique o salário</a> e <a href="playground.html?ex=calculadora">a calculadora com switch</a>, alterando uma entrada de cada vez.</p>
+<p id="extraActivities4">Outras atividades deste tema: <a href="playground.html?ex=aprovacao-presenca">Nota e presença</a> · <a href="playground.html?ex=estacoes">Escolha de estação com switch</a>.</p><h2 id="secao-10">10. Tabela de decisão: torne visíveis as combinações</h2>
+<p>Uma tabela de decisão lista condições e ações. Para uma regra com nota suficiente e presença suficiente, existem quatro combinações booleanas. Testar somente uma aprovação e uma reprovação deixa combinações sem conferir. Escreva: nota suficiente e presença suficiente aprovam; se uma das exigências faltar, o resultado deve recusar. Se a condição implementada usar ou em vez de e, as duas combinações intermediárias revelarão o defeito.</p><div class="table-responsive"><table class="table"><caption>Regra didática: média mínima 7 e presença mínima 75%</caption><thead><tr><th>Nota suficiente</th><th>Presença suficiente</th><th>Resultado</th><th>Exemplo</th></tr></thead><tbody><tr><td>Sim</td><td>Sim</td><td>Critérios atendidos</td><td>7 e 75</td></tr><tr><td>Sim</td><td>Não</td><td>Critérios não atendidos</td><td>9 e 74</td></tr><tr><td>Não</td><td>Sim</td><td>Critérios não atendidos</td><td>6 e 90</td></tr><tr><td>Não</td><td>Não</td><td>Critérios não atendidos</td><td>4 e 50</td></tr></tbody></table></div><p>Essa tabela pressupõe entradas válidas. Acrescente outra etapa para média fora de 0 a 10, presença fora de 0 a 100 e valores não finitos. Não misture uma entrada inválida com um resultado negativo da regra. Um aviso específico permite corrigir a informação; uma simples reprovação poderia esconder um cadastro incorreto.</p><p>Quando houver mais condições, a tabela cresce. Não use esse crescimento como motivo para abandonar a regra: procure condições dependentes e estados impossíveis, documente-os e reduza apenas o que o domínio permite. Para regras pequenas, quatro ou oito linhas no papel frequentemente revelam um erro antes da primeira compilação.</p>
+<h2 id="secao-11">11. Curto-circuito e a ordem de validação</h2>
+<p>Em uma condição composta, a ordem pode impedir uma operação inválida. A expressão nome != null &amp;&amp; !nome.isEmpty() só consulta o tamanho se houver uma referência. Uma consulta a uma posição de array pode ser protegida por índice não negativo e menor que length. A proteção precisa aparecer antes do acesso, pois Java avalia os operandos da esquerda para a direita.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t4-curto" data-java-program>public class Main {
+    public static void main(String[] args) {
+        String nome = null;
+        boolean nomeValido = nome != null &amp;&amp; !nome.trim().isEmpty();
+        int[] valores = {10, 20};
+        int indice = 2;
+        boolean encontrado = indice &gt;= 0 &amp;&amp; indice &lt; valores.length
+                &amp;&amp; valores[indice] == 20;
+        System.out.println("Nome válido: " + nomeValido);
+        System.out.println("Encontrado: " + encontrado);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t4-curto">Nome válido: false
+Encontrado: false</samp></pre></figure><p>Não substitua &amp;&amp; por &amp; apenas por achar a grafia menor. Com booleanos, a segunda forma avalia os dois lados e pode atingir o acesso que você pretendia evitar. Também não dependa de uma chamada de gravação no lado direito: por curto-circuito, ela pode não acontecer. Prefira calcular a regra sem efeitos externos e executar a ação no bloco correspondente.</p><p>A negação deve respeitar o mesmo cuidado. “Não está entre 0 e 10” significa valor menor que 0 ou maior que 10. Escrever menor que 0 e maior que 10 cria uma condição impossível para um número comum. Confira esse tipo de erro usando exemplos concretos nos dois lados do intervalo.</p>
+<h2 id="secao-12">12. Intervalos: pertencimento, prioridade e fronteiras</h2>
+<p>Considere três categorias de um exercício: abaixo de 5, de 5 até antes de 7 e de 7 em diante. Você pode verificar os limites em ordem crescente com comparações menores que. Pode também começar pela faixa mais alta e descer. O que não funciona é testar primeiro uma faixa abrangente que já aceita tudo o que um ramo posterior pretendia separar.</p><p>Os pontos exatos merecem testes próprios. Para cada fronteira, experimente imediatamente abaixo, exatamente nela e imediatamente acima, respeitando o domínio. Para idade inteira, 17, 18 e 19 são casos úteis. Para uma nota decimal, 6.99, 7 e 7.01 ajudam a perceber a inclusão do limite. A precisão do tipo não define por você como uma política de arredondamento deve funcionar.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t4-faixas" data-java-program>public class Main {
+    static String classificar(double nota) {
+        if (!Double.isFinite(nota) || nota &lt; 0 || nota &gt; 10) {
+            return "Inválida";
+        }
+        if (nota &lt; 5) return "Revisar";
+        if (nota &lt; 7) return "Recuperação";
+        return "Aprovado";
+    }
+    public static void main(String[] args) {
+        double[] casos = {-1, 0, 4.99, 5, 6.99, 7, 10, 11, Double.NaN};
+        for (double nota : casos) {
+            System.out.println(classificar(nota));
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t4-faixas">Inválida
+Revisar
+Revisar
+Recuperação
+Recuperação
+Aprovado
+Aprovado
+Inválida
+Inválida</samp></pre></figure><p>Os retornos antecipados tornam cada exclusão visível. Ao chegar à última linha, o método já excluiu entradas inválidas e as duas faixas anteriores. Não há necessidade de repetir todas as comparações. O teste percorre cada limite relevante e demonstra por que NaN precisa de validação explícita: comparações ordenadas não o colocam automaticamente fora de um intervalo.</p>
+<h2 id="secao-13">13. Blocos, escopo e a associação do else</h2>
+<p>O else pertence ao if compatível mais próximo que ainda não tenha else. Uma indentação bonita não muda essa associação. Use chaves para mostrar o grupo de instruções e evitar que uma alteração posterior acrescente uma linha fora da condição. Um ponto e vírgula depois da condição cria uma instrução vazia; o bloco seguinte pode executar sempre, apesar da indentação.</p><p>Uma variável criada dentro de um bloco pertence àquele escopo. Se precisar produzir um resultado para usar depois, declare-o antes e atribua em todos os caminhos válidos ou escreva um método que devolva o resultado. Não inicialize um resultado com zero apenas para calar o compilador quando zero não é uma resposta válida para todos os caminhos.</p><p>Na revisão, pergunte o que acontece quando cada condição é falsa. Muitos erros ficam escondidos porque o autor só seguiu a leitura pelo caminho verdadeiro. Retire temporariamente os textos das mensagens e desenhe apenas as chaves e setas. Isso expõe a estrutura que realmente será executada, sem depender da apresentação visual do editor.</p>
+<h2 id="secao-14">14. Guardas: rejeitar cedo e manter a regra visível</h2>
+<p>Uma guarda verifica um requisito e encerra o caminho quando ele falha. Em um método de cálculo, validar argumentos no início evita colocar toda a operação dentro de vários níveis de if. Isso não significa colocar return em qualquer lugar: cada encerramento deve corresponder a um motivo claro e impedir que um resultado parcial seja usado como completo.</p><p>Há também uma escolha de interface. Um programa de console pode imprimir um aviso e retornar de main. Um método reutilizável costuma devolver um resultado documentado ou lançar uma exceção de contrato. Se ele imprimir e ainda devolver zero para uma entrada inválida, quem chamou pode confundir falha com um cálculo legítimo. Você verá exceções em mais detalhes adiante; agora reconheça que a estratégia de falha precisa ser explícita.</p><p>A clareza não depende apenas da quantidade de linhas. Uma condição muito longa com vários efeitos pode ser menor no arquivo e mais difícil de revisar. Dê nomes intermediários quando eles expliquem conceitos reais, como notaValida e presencaSuficiente. Evite nomes que apenas repitam uma parte arbitrária da sintaxe.</p>
+<h2 id="secao-15">15. Switch em Java 17: quando escolhe uma ação e quando produz um valor</h2>
+<p>Um switch statement escolhe instruções. Uma expressão switch produz um valor que será usado em uma atribuição, retorno ou outra expressão. Na forma com seta, não há a passagem automática para o próximo case. Quando o ramo precisa de várias instruções para calcular seu resultado, um bloco pode usar yield. Isso é diferente de return, que encerra o método.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t4-switch" data-java-program>public class Main {
+    public static void main(String[] args) {
+        int opcao = 2;
+        int unidades = switch (opcao) {
+            case 1 -&gt; 1;
+            case 2 -&gt; {
+                int pacotes = 3;
+                yield pacotes * 2;
+            }
+            default -&gt; 0;
+        };
+        System.out.println("Unidades: " + unidades);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t4-switch">Unidades: 6</samp></pre></figure><p>O default deste exercício representa uma escolha desconhecida que produz zero unidades, por decisão do enunciado. Em uma operação real em que zero pudesse ser confundido com sucesso, prefira uma falha explícita ou uma apresentação diferente. Não copie a política de fallback sem copiar também o significado que a justifica.</p><p>Um seletor String nulo não é atendido pelo default de um switch comum de Java 17: valide a referência antes. Os tipos admitidos e as formas de case dependem da versão. Não use neste capítulo um exemplo moderno com case null como se ele fosse automaticamente compatível com o compilador configurado para 17. A versão é parte do contrato executável.</p>
+<h2 id="secao-16">16. Laboratório completo: uma calculadora com entrada conferida</h2>
+<p>O contrato é pequeno: receber dois números finitos e uma operação entre +, -, * e /; recusar divisor zero; não apresentar infinito como resposta calculada. A entrada usa ponto decimal e pode ser fornecida em linhas separadas. O programa encerra após uma operação. Um menu repetido pertence ao próximo tema.</p><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t4-calculadora" data-java-program>import java.util.Locale;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in).useLocale(Locale.US);
+        if (!entrada.hasNextDouble()) {
+            System.out.println("Primeiro número ausente ou inválido");
+            return;
+        }
+        double a = entrada.nextDouble();
+        if (!entrada.hasNextDouble()) {
+            System.out.println("Segundo número ausente ou inválido");
+            return;
+        }
+        double b = entrada.nextDouble();
+        if (!entrada.hasNext()) {
+            System.out.println("Operação ausente");
+            return;
+        }
+        String operacao = entrada.next();
+        if (!Double.isFinite(a) || !Double.isFinite(b)) {
+            System.out.println("Números devem ser finitos");
+            return;
+        }
+        double resultado;
+        switch (operacao) {
+            case "+" -&gt; resultado = a + b;
+            case "-" -&gt; resultado = a - b;
+            case "*" -&gt; resultado = a * b;
+            case "/" -&gt; {
+                if (b == 0) {
+                    System.out.println("Divisão por zero");
+                    return;
+                }
+                resultado = a / b;
+            }
+            default -&gt; {
+                System.out.println("Operação desconhecida");
+                return;
+            }
+        }
+        if (!Double.isFinite(resultado)) {
+            System.out.println("Resultado não finito");
+            return;
+        }
+        System.out.println("Resultado: " + resultado);
+    }
+}</code></pre><p>Entrada de teste:</p><pre tabindex="0"><samp data-input-for="t4-calculadora">10
+4
+/
+</samp></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t4-calculadora">Resultado: 2.5</samp></pre></figure><p>Teste depois 10, 0 e /; 10, 4 e ?; apenas um número; texto no lugar do segundo número; e dois números grandes cuja multiplicação exceda a faixa de double. Entradas finitas não garantem resultado finito. A conferência final evita apresentar esse resultado como se atendesse ao contrato.</p>
+<h2 id="secao-17">17. Estado conhecido não é apenas um número de menu</h2>
+<p>Um enum é útil quando as opções pertencem ao domínio, como estado de uma tarefa. O menu pode apresentar 1 e 2, mas o restante do programa pode trabalhar com nomes como PENDENTE e CONCLUIDA. Faça a conversão da entrada em um ponto controlado. Isso evita espalhar números cujo significado cada método precisa adivinhar.</p><p>Não confunda o número exibido ao usuário com ordinal. Ordinal é a posição da constante na declaração; mover uma constante altera essa posição. Se um arquivo ou protocolo exige códigos permanentes, declare e valide esses códigos explicitamente. Uma expressão switch sobre um enum também exige manutenção quando o conjunto de estados muda: percorra os usos e os testes, não apenas a declaração.</p><p>Nem toda divergência de texto deve ser normalizada. Um comando de menu pode aceitar maiúsculas e espaços externos; uma senha pode exigir comparação exata. Primeiro defina a regra de entrada, depois transforme. Conservar um texto de exibição separado de uma chave técnica ajuda a preservar o que a pessoa informou.</p>
+<h2 id="secao-18">18. Revisar decisões com testes que distinguem regras</h2>
+<p>Um teste útil deve separar uma implementação correta de uma versão plausível, mas errada. Se a aprovação começa em 7, um teste com 9 não distingue maior que de maior ou igual. Se duas condições precisam ser satisfeitas, um caso com ambas verdadeiras não distingue e de ou. Escolha ao menos uma entrada em que as duas implementações dariam respostas diferentes.</p><p>Escreva os resultados esperados a partir do contrato, antes de observar a saída atual. Copiar a saída do programa para o teste pode preservar o próprio erro que você tentava descobrir. Para números, calcule uma referência por outro caminho. Para classificações, marque a faixa correspondente na tabela de decisão.</p><p>Ao corrigir um ramo, rode novamente os casos dos ramos vizinhos. Uma troca na ordem dos ifs pode resolver uma categoria e capturar indevidamente outra. Registre em poucas linhas qual defeito cada caso evita. Você não precisa criar uma ferramenta complexa para isso: uma pequena lista de entradas e saídas já torna a revisão repetível.</p>
+<h2 id="secao-19">19. Prática progressiva, resoluções e critérios de domínio</h2>
+<ol><li><strong>Classificação:</strong> implemente classificar com as três faixas apresentadas. Use um array contendo 4.99, 5, 6.99, 7 e 10 e imprima uma resposta por elemento. Acrescente -1 e NaN e confira que sejam recusados antes da classificação.</li><li><strong>Presença:</strong> receba média e presença, nessa ordem. Aceite apenas média finita entre 0 e 10 e presença finita entre 0 e 100. Imprima Dados inválidos para entradas fora do contrato. Para as demais, exija média mínima 7 e presença mínima 75. Teste as quatro combinações da tabela.</li><li><strong>Calculadora:</strong> escreva o laboratório sem consultar a solução. Teste cada operação e os caminhos de recusa. Registre por que default não deve fazer uma soma como substituto para operação desconhecida.</li><li><strong>Diagnóstico:</strong> crie uma cópia da classificação e troque nota &lt; 5 por nota &lt;= 5. Qual entrada revela a diferença? Depois restaure. Faça o mesmo com o limite de aprovação.</li></ol><details><summary>Possível solução: nota e presença</summary><figure><figcaption>Programa completo · Main.java · Java 17</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t4-presenca" data-java-program>public class Main {
+    static String avaliar(double media, double presenca) {
+        if (!Double.isFinite(media) || !Double.isFinite(presenca)
+                || media &lt; 0 || media &gt; 10 || presenca &lt; 0 || presenca &gt; 100) {
+            return "Dados inválidos";
+        }
+        return media &gt;= 7 &amp;&amp; presenca &gt;= 75
+                ? "Critérios atendidos" : "Critérios não atendidos";
+    }
+    public static void main(String[] args) {
+        System.out.println(avaliar(7, 75));
+        System.out.println(avaliar(9, 74));
+        System.out.println(avaliar(Double.NaN, 80));
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0"><samp data-output-for="t4-presenca">Critérios atendidos
+Critérios não atendidos
+Dados inválidos</samp></pre></figure><p>Para a versão com entrada, leia os valores com Scanner e passe-os ao método. Separar a decisão da leitura permite testar o contrato sem reproduzir todo o console em cada chamada.</p></details><details><summary>Conferir as fronteiras e explicar a escolha</summary><p>As notas 4.99, 5, 6.99, 7 e 10 resultam em Revisar, Recuperação, Recuperação, Aprovado e Aprovado. A nota 5 distingue &lt; de &lt;= na primeira faixa. A nota 7 distingue o início da aprovação. Não existe escolha universal para essas fronteiras: neste exercício elas vêm do enunciado.</p></details><p>Avance quando conseguir justificar cada caminho e encontrar um teste que o percorra. Se estiver decorando a forma do if sem relacioná-la à regra, volte à tabela. O próximo capítulo repete operações; as condições estudadas aqui serão a forma de controlar quando parar.</p><h2 id="fontes">Fontes e continuidade</h2><p class="text-muted">Referência para consulta: <a href="assets/materiais/07DesenvolvimentodeAplicaes.pdf">Desenvolvimento de aplicações</a>, páginas 48 a 54. A explicação e os exemplos estão completos abaixo.</p><p>A base original foi preservada; os laboratórios ampliados acrescentam contratos, casos de fronteira e exercícios comentados. Use a versão da documentação correspondente ao ambiente configurado.</p><ul><li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-14.html">Java 17 · blocos, condições e repetições</a></li><li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-10.html">Java 17 · arrays</a></li><li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-8.html">Java 17 · classes, métodos e construtores</a></li><li><a href="https://docs.oracle.com/en/java/javase/17/docs/api/index.html">Biblioteca padrão Java 17</a></li><li><a href="extra.html">Projetos, laboratórios e referências adicionais</a></li></ul></article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-03.html">Anterior · Tema 3</a><a class="btn btn-primary" href="tema-05.html">Próximo · Tema 5</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <p class="mb-1">
+            <a href="index.html">Início</a> ·
+            <a href="cont.html">Conteúdo</a> ·
+            <a href="playground.html">Playground</a> ·
+            <a href="quiz.html">Quiz</a> ·
+            <a href="faq.html">FAQ</a> · <a href="extra.html">Extra</a>
+        </p>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+
+
+
+</body>
+</html>

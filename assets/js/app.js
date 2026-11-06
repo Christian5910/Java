@@ -17,6 +17,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const openTopic = () => {
+    const group = location.pathname.endsWith('/cont.html') && location.hash.match(/^#cat([1-9]|1[0-5])$/);
+    if (group) {
+      document.getElementById('grupo' + group[1])?.scrollIntoView();
+      return;
+    }
+    const chapter = location.pathname.endsWith('/cont.html') && location.hash.match(/^#modal([1-8])$/);
+    if (chapter) {
+      location.replace('tema-0' + chapter[1] + '.html');
+      return;
+    }
     if (!/^#(?:modal(?:[1-9]|[12][0-9]|30)|extra[A-Za-z]+)$/.test(location.hash)) return;
     const dialog = document.querySelector(location.hash);
     if (dialog && window.bootstrap) bootstrap.Modal.getOrCreateInstance(dialog).show();
@@ -24,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
   openTopic();
   window.addEventListener('hashchange', openTopic);
   const normalize = value => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-  document.getElementById('topicSearch')?.addEventListener('input', event => {
+  const searchTopics = event => {
     const term = normalize(event.target.value.trim());
     let count = 0;
     document.querySelectorAll('.topic-item').forEach(item => {
@@ -32,9 +42,13 @@ document.addEventListener('DOMContentLoaded', () => {
       item.hidden = !normalize(text).includes(term);
       if (!item.hidden) count++;
     });
+    document.querySelectorAll('[data-topic-group]').forEach(group => {
+      group.hidden = ![...group.querySelectorAll('.topic-item')].some(item => !item.hidden);
+    });
     const isExtra = location.pathname.endsWith('/extra.html');
     document.getElementById('searchCount').textContent = count === 1 ? (isExtra ? '1 seção encontrada.' : '1 tema encontrado.') : count ? count + (isExtra ? ' seções encontradas.' : ' temas encontrados.') : (isExtra ? 'Nenhuma seção encontrada. Tente outro termo.' : 'Nenhum tema encontrado. Tente outro termo.');
-  });
+  };
+  document.getElementById('topicSearch')?.addEventListener('input', searchTopics);
   document.getElementById('faqSearch')?.addEventListener('input', event => {
     const term = normalize(event.target.value.trim());
     let count = 0;
@@ -74,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     origin.textContent = 'Versão online: ' + location.href.split('#')[0].split('?')[0];
     const heading = document.createElement('h2'); heading.textContent = 'Roteiro de leitura';
     const contents = document.createElement('ol'); contents.className = 'print-toc';
-    document.querySelectorAll('main .modal:not([id^="cat"]) .modal-title').forEach(item => {
+    document.querySelectorAll('main .modal:not([id^="cat"]) .modal-title, main .print-chapter .chapter-title').forEach(item => {
       const entry = document.createElement('li');
       entry.textContent = item.textContent.replace(/^\d+\s*·\s*/, '');
       contents.append(entry);
@@ -82,6 +96,33 @@ document.addEventListener('DOMContentLoaded', () => {
     contents.classList.toggle('print-toc-long', contents.children.length > 18);
     cover.append(logo, title, introduction, origin, heading, contents);
     document.getElementById('conteudo').prepend(cover);
+  }
+  const chapters = [...document.querySelectorAll('[data-chapter-url]')];
+  if (chapters.length) {
+    const printButton = document.getElementById('printBook');
+    const status = document.getElementById('chapterLoadStatus');
+    // A página do tema é a única fonte para leitura, busca e impressão.
+    Promise.all(chapters.map(async chapter => {
+      const response = await fetch(chapter.dataset.chapterUrl);
+      if (!response.ok) throw new Error('Falha ao carregar ' + chapter.dataset.chapterUrl);
+      const source = new DOMParser().parseFromString(await response.text(), 'text/html');
+      const article = source.querySelector('.lesson-article');
+      if (!article) throw new Error('Conteúdo do tema não encontrado.');
+      // Prefixa âncoras locais para evitar IDs duplicados na apostila reunida.
+      article.querySelectorAll('[id]').forEach(element => { element.id = chapter.id + '-' + element.id; });
+      article.querySelectorAll('a[href^="#"]').forEach(link => { link.href = '#' + chapter.id + '-' + link.getAttribute('href').slice(1); });
+      chapter.append(article);
+      chapter.querySelector('p').remove();
+    })).then(() => {
+      printButton.disabled = false;
+      status.textContent = '30 temas disponíveis para busca e impressão. Os temas 1 a 8 abrem em páginas completas.';
+      annotatePrintLinks();
+      const input = document.getElementById('topicSearch');
+      searchTopics({target: input});
+    }).catch(error => {
+      status.textContent = 'Não foi possível reunir os temas 1 a 8 para busca e impressão completas. Recarregue a página por HTTP/HTTPS ou abra os temas pelos seus links.';
+      console.warn(status.textContent, error);
+    });
   }
   const printDetails = new Map();
   window.addEventListener('beforeprint', () => {

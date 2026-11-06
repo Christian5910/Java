@@ -22,6 +22,8 @@ for (const file of htmlFiles) {
   }
 }
 const content = read('cont.html');
+const chapters = Array.from({length:8},(_,i)=>read(`tema-0${i+1}.html`));
+const allContent = content + chapters.join('\n');
 const guide = read('assets/extras/roteiro-avancado.html');
 assert.equal([...guide.matchAll(/<section>/g)].length,16);
 for(const [,url] of guide.matchAll(/\b(?:src|href)="([^"]+)"/g)) {
@@ -32,12 +34,21 @@ for(const [,url] of guide.matchAll(/\b(?:src|href)="([^"]+)"/g)) {
   if(fragment) assert.ok(fs.readFileSync(absolute,'utf8').includes('id="'+fragment+'"'),'guide missing #'+fragment);
 }
 assert.equal([...content.matchAll(/id="modal\d+"/g)].length, 30);
-assert.equal([...content.matchAll(/class="study-text"/g)].length, 30);
+assert.equal([...content.matchAll(/class="study-text"/g)].length, 22);
+assert.equal([...content.matchAll(/data-chapter-url=/g)].length, 8);
+for (let n = 1; n <= 8; n++) {
+  assert.ok(content.includes(`href="tema-0${n}.html"`));
+  assert.ok(!content.includes(`data-bs-target="#modal${n}"`));
+  assert.ok(!content.includes(`class="modal fade" id="modal${n}"`));
+  assert.ok(chapters[n-1].includes('class="study-text lesson-article"'));
+  assert.ok(chapters[n-1].replace(/<[^>]*>/g, ' ').split(/\s+/).length > 3500);
+}
 assert.equal([...content.matchAll(/data-topic="\d+"/g)].length, 30);
-assert.equal([...content.matchAll(/id="cat\d+"/g)].length, 15);
+assert.equal([...content.matchAll(/id="cat\d+"/g)].length, 0);
+assert.equal([...content.matchAll(/data-topic-group/g)].length, 15);
 assert.equal([...read('extra.html').matchAll(/class="study-text"/g)].length, 20);
 assert.equal([...read('extra.html').matchAll(/class="col-md-6 topic-item"/g)].length, 20);
-assert.ok(content.replace(/<[^>]*>/g, ' ').split(/\s+/).length > 48000);
+assert.ok(allContent.replace(/<[^>]*>/g, ' ').split(/\s+/).length > 48000);
 assert.equal([...read('faq.html').matchAll(/class="accordion-item"/g)].length, 80);
 assert.ok(read('extra.html').replace(/<[^>]*>/g, ' ').split(/\s+/).length > 16500);
 const exercises = JSON.parse(read('assets/data/exercises.json'));
@@ -47,7 +58,8 @@ assert.equal(new Set(exercises.map(item => item.theme)).size, 14);
 for (const exercise of exercises) {
   assert.ok(exercise.source.includes('public class Main'));
   assert.ok(exercise.goal && exercise.challenge && exercise.hint && exercise.expected);
-  assert.ok(content.includes('playground.html?ex=' + exercise.id) || ['tipos'].includes(exercise.id), 'unlinked exercise ' + exercise.id);
+  if(exercise.theme<=8) assert.ok(exercise.instructions?.length>=6 && exercise.checks, 'detailed instructions '+exercise.id);
+  assert.ok(allContent.includes('playground.html?ex=' + exercise.id) || ['tipos'].includes(exercise.id), 'unlinked exercise ' + exercise.id);
 }
 const quizSource = read('assets/js/quiz.js');
 const prefix = quizSource.slice(0, quizSource.indexOf('const STORAGE_KEY'));
@@ -78,6 +90,11 @@ for (const size of [192,512]) {
 assert.ok(content.includes('<hr class="my-5"><section id="extra"'));
 assert.ok(!content.includes('researchTopic'));
 for (let n=1;n<=30;n++) {
+  if (n <= 8) {
+    const headings = [...chapters[n-1].matchAll(/<h2 id="secao-\d+">(\d+)\./g)].map(m => Number(m[1]));
+    assert.deepEqual(headings, headings.map((_,i) => i+1), 'linear standalone topic '+n);
+    continue;
+  }
   const body = content.split(`id="modal${n}"`)[1].split('<article class="study-text">')[1].split('</article>')[0];
   const headings = [...body.matchAll(/<h3>(\d+)\./g)].map(m=>Number(m[1]));
   assert.deepEqual(headings, headings.map((_,i)=>i+1), 'linear topic '+n);

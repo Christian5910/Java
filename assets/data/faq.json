@@ -3,7 +3,7 @@
     "Estudo e materiais",
     "Por onde começo?",
     "Comece pelo ambiente e pelo primeiro programa no Tema 1. No Tema 2, acompanhe tipos, operadores e leitura. Depois estude textos, decisões e laços antes de avançar para arrays e objetos. Você pode abrir um assunto específico ao encontrar uma dúvida no quiz.",
-    "cont.html#modal1"
+    "tema-01.html"
   ],
   [
     "Estudo e materiais",
@@ -51,19 +51,19 @@
     "Ambiente Java",
     "Qual é a diferença entre JDK, JVM e IDE?",
     "O JDK fornece ferramentas de desenvolvimento e componentes de execução. A JVM executa bytecode compatível. A IDE ajuda a editar, compilar, navegar e depurar. Ter uma IDE instalada não garante que ela esteja usando o JDK desejado. Confira a configuração do projeto.",
-    "cont.html#modal1"
+    "tema-01.html"
   ],
   [
     "Ambiente Java",
     "Java é JavaScript?",
     "São linguagens diferentes. Os exercícios usam a sintaxe e as bibliotecas de Java. JavaScript integra os controles deste site ao ambiente de execução. O navegador não interpreta o texto Java como JavaScript.",
-    "cont.html#modal1"
+    "tema-01.html"
   ],
   [
     "Ambiente Java",
     "Como executo Main.java no computador?",
     "Com um JDK configurado, abra o terminal no diretório do arquivo, compile com javac -encoding UTF-8 Main.java e execute com java Main. O nome da classe pública deve coincidir com Main.java. Se houver pacotes, use os nomes qualificados e o classpath apropriados.",
-    "cont.html#modal1"
+    "tema-01.html"
   ],
   [
     "Ambiente Java",
@@ -81,7 +81,7 @@
     "Ambiente Java",
     "Por que não há applets para executar os exemplos?",
     "Applets fazem parte do contexto histórico da apostila. Os antigos plug-ins Java de navegador não são a forma de executar os exercícios atuais. O Playground usa uma máquina virtual em WebAssembly, carregada pela página.",
-    "cont.html#modal1"
+    "tema-01.html"
   ],
   [
     "Playground e arquivos",
@@ -99,13 +99,13 @@
     "Playground e arquivos",
     "Como interpreto um erro de compilação?",
     "Abra Mensagens de compilação e comece pelo primeiro erro. Confira arquivo, linha, nomes e tipos. Uma chave ausente pode provocar mensagens posteriores. Corrija a causa e execute novamente. Uma compilação com falha não executa uma versão anterior do programa.",
-    "cont.html#modal1"
+    "tema-01.html"
   ],
   [
     "Playground e arquivos",
     "O que significa erro de execução?",
     "O código compilou e começou a rodar, mas encontrou uma falha, como posição inválida de array, entrada incompatível ou referência nula. A saída mostra a exceção e, quando disponível, a linha. Diferencie essa falha de uma saída incorreta sem exceção, que pode indicar erro de lógica.",
-    "cont.html#modal1"
+    "tema-01.html"
   ],
   [
     "Playground e arquivos",
@@ -171,7 +171,7 @@
     "Lógica e entrada",
     "Devo fechar Scanner em todo método?",
     "Não feche um Scanner compartilhado sobre System.in enquanto outras partes do programa ainda precisam ler. Fechá-lo fecha a entrada associada. Para recursos próprios, como um arquivo aberto naquele trecho, controle o fechamento com uma estrutura apropriada, frequentemente try-with-resources.",
-    "cont.html#modal2"
+    "tema-02.html"
   ],
   [
     "Lógica e entrada",
@@ -279,7 +279,7 @@
     "Lógica e entrada",
     "Um cast para int arredonda o número?",
     "Na conversão de um valor como 7.9 para int, a parte fracionária é descartada e o resultado é 7. Isso difere de Math.round(7.9), que devolve 8 como long nessa sobrecarga. Para valores negativos dentro da faixa, a conversão também segue em direção a zero: -7.9 se torna -7. Formatar a exibição com duas casas decimais é uma terceira operação e não troca o tipo da variável.",
-    "cont.html#modal2"
+    "tema-02.html"
   ],
   [
     "Lógica e entrada",

@@ -530,6 +530,18 @@ input, textarea { caret-color: #FFD7A1; }
 .study-text .table { min-width: 34rem; }
 .study-text .table-responsive { margin-block: 1.5rem; }
 .topic-search { max-width: 42rem; margin-inline: auto; }
+.topic-group { background: var(--color-surface); border: 1px solid var(--color-secondary-mid); border-radius: var(--radius); padding: 1.5rem; margin-block: 1.5rem; }
+.topic-group-heading { display: flex; justify-content: flex-end; align-items: center; gap: 1rem; text-align: right; margin-bottom: 1.5rem; }
+.topic-group-heading h2 { font-weight: 700; color: #FFD7A1; margin-bottom: 0.4rem; }
+.topic-group-heading .bi { font-size: 2rem; color: #FFD7A1; flex-shrink: 0; }
+.topic-group .btn-topic { background: var(--color-bg-soft); }
+#instructionList { max-width: 75ch; }
+#instructionList li { padding-left: 0.25rem; margin-block: 0.9rem; }
+@media (max-width: 550px) {
+  .topic-group { padding: 1rem; }
+  .topic-group-heading { gap: 0.75rem; }
+  .topic-group-heading p { font-size: 0.9rem; }
+}
 .extra-intro { max-width: 75ch; margin-inline: auto; line-height: 1.75; }
 .playground-intro { max-width: 75ch; margin-inline: auto; text-align: justify; line-height: 1.75; }
 .playground-layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 1.5rem; align-items: start; }
@@ -553,6 +565,7 @@ textarea.code-editor { font: 0.9rem/1.65 Consolas, 'Cascadia Code', monospace; m
 @media (max-width: 550px) { .playground-actions .btn, .activity-navigation .btn { flex: 1 1 auto; } .code-editor { font-size: 1rem; } }
 
 .print-only { display: none; }
+.print-chapter { display: none; }
 @page {
   size: A4;
   margin: 17mm 16mm 19mm;
@@ -566,7 +579,10 @@ textarea.code-editor { font: 0.9rem/1.65 Consolas, 'Cascadia Code', monospace; m
   .navbar, .site-footer, .back-to-top, .skip-link, .no-print, .modal-backdrop, .modal-header .btn-close, .modal-footer { display: none !important; }
   body.book-page { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   body.book-page main { padding: 0 !important; margin: 0; width: 100%; max-width: none; }
-  body.book-page main > :not(.modal):not(.print-cover):not(#materiais) { display: none !important; }
+  body.book-page main > :not(.modal):not(.print-chapter):not(.print-cover):not(#materiais) { display: none !important; }
+  body.book-page .print-chapter { display: block; break-before: page; }
+  body.book-page .chapter-title { font-size: 19pt; color: #1C2B4A; border-bottom: 2pt solid #D97706; padding-bottom: 4mm; }
+  body.book-page .lesson-article h2 { font-size: 14pt; color: #1C2B4A; margin: 7mm 0 3mm; break-after: avoid; }
   body.book-page .print-cover { display: block; break-after: page; padding-top: 8mm; }
   .print-cover img { display: block; margin-bottom: 8mm; }
   .print-cover h1 { font-size: 28pt; font-weight: 700; color: #1C2B4A; padding-bottom: 5mm; border-bottom: 3pt solid #D97706; }

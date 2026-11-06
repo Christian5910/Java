@@ -8,7 +8,16 @@
     "hint": "print mantém a linha atual; println termina a linha.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        System.out.print(\"Olá, \");\n        System.out.println(\"Java!\");\n        System.out.println(\"Soma: \" + (5 + 10));\n    }\n}\n",
     "expected": "Olá, Java!\nSoma: 15",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Escreva uma classe pública Main com o método public static void main(String[] args). Para esta primeira versão, a saudação deve aparecer como Olá, Java! em uma única linha.",
+      "Use duas chamadas para a saudação: print escreve Olá, seguido de vírgula e espaço; println escreve Java! e encerra a linha. Depois use println para apresentar Soma: seguido do resultado calculado de 5 + 10. Não escreva 15 como resposta fixa.",
+      "Agrupe a soma entre parênteses antes de concatená-la à mensagem. A saída de referência tem duas linhas: Olá, Java! e Soma: 15. Depois de concluir, substitua Java pelo seu nome ou por um nome fictício e preveja a nova saída.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "tipos",
@@ -19,7 +28,16 @@
     "hint": "O tipo da variável que recebe o resultado não muda uma divisão já calculada entre inteiros.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        int a = 10;\n        int b = 4;\n        double inteira = a / b;\n        double decimal = (double) a / b;\n        System.out.println(\"Inteira: \" + inteira);\n        System.out.println(\"Decimal: \" + decimal);\n        System.out.println(\"Resto: \" + (a % b));\n    }\n}\n",
     "expected": "Inteira: 2.0\nDecimal: 2.5\nResto: 2",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Declare dois inteiros, a igual a 10 e b igual a 4. Guarde a divisão a / b em uma variável double chamada inteira, sem converter os operandos antes da operação.",
+      "Calcule outra divisão convertendo a para double antes de dividir por b. Calcule também o resto inteiro com %. Imprima os três resultados com os rótulos Inteira:, Decimal: e Resto:, um por linha.",
+      "Espere 2.0, 2.5 e 2 para os dados iniciais. Explique por que o primeiro resultado perdeu a fração apesar de estar armazenado em double; a divisão inteira aconteceu antes da atribuição.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "media",
@@ -30,7 +48,16 @@
     "hint": "Some as três notas entre parênteses antes de dividir. Forneça o nome na primeira linha.",
     "source": "import java.util.Locale;\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner entrada = new Scanner(System.in).useLocale(Locale.US);\n        String nome = entrada.nextLine();\n        double n1 = entrada.nextDouble();\n        double n2 = entrada.nextDouble();\n        double n3 = entrada.nextDouble();\n        double media = (n1 + n2 + n3) / 3.0;\n        System.out.printf(Locale.US, \"%s: %.2f%n\", nome, media);\n        System.out.println(media >= 7 ? \"Aprovado\" : \"Recuperação\");\n    }\n}\n",
     "expected": "Ana: 7.00\nAprovado",
-    "input": "Ana\n6\n7\n8\n"
+    "input": "Ana\n6\n7\n8\n",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Crie um Scanner configurado com Locale.US. Leia primeiro o nome completo de uma pessoa em uma linha; depois leia três notas decimais. A entrada de conferência usa Ana e as notas 6, 7 e 8, nessa ordem.",
+      "Some as três notas antes da divisão e divida por 3.0. Apresente nome: média com duas casas decimais. Na linha seguinte, apresente Aprovado quando a média for maior ou igual a 7; para uma média menor, apresente Recuperação.",
+      "A referência básica deve produzir Ana: 7.00 e Aprovado. Depois acrescente validação para recusar notas não finitas ou fora de 0 a 10 antes de calcular. Não transforme uma nota inválida em zero silenciosamente.",
+      "Use inicialmente os dados de referência mostrados abaixo, na mesma ordem. Eles já ficam disponíveis no campo Entrada do programa; um dado por linha facilita conferir as leituras. Altere-os para os testes adicionais.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "entrada",
@@ -41,7 +68,16 @@
     "hint": "nextInt lê um token. nextLine lê o restante da linha atual.",
     "source": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner entrada = new Scanner(System.in);\n        int idade = entrada.nextInt();\n        entrada.nextLine(); // Consome o restante da linha da idade.\n        String nome = entrada.nextLine();\n        System.out.println(nome + \" tem \" + idade + \" anos.\");\n    }\n}\n",
     "expected": "Ana Silva tem 20 anos.",
-    "input": "20\nAna Silva\n"
+    "input": "20\nAna Silva\n",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Leia primeiro uma idade inteira com nextInt e depois um nome completo, com espaços, informado na linha seguinte. Use uma única instância de Scanner para coordenar as duas leituras.",
+      "Entre a leitura da idade e a do nome, consuma o restante da linha numérica com nextLine. Só depois faça outra chamada a nextLine para obter o nome completo.",
+      "Imprima nome tem idade anos. em uma única linha. Com a entrada 20 seguida de Ana Silva, o resultado deve ser Ana Silva tem 20 anos. Na etapa de investigação, retire apenas a chamada que consome o restante da primeira linha e explique o nome vazio antes de restaurá-la.",
+      "Use inicialmente os dados de referência mostrados abaixo, na mesma ordem. Eles já ficam disponíveis no campo Entrada do programa; um dado por linha facilita conferir as leituras. Altere-os para os testes adicionais.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "dado",
@@ -52,7 +88,16 @@
     "hint": "nextInt(6) devolve 0 a 5. O limite superior é excluído.",
     "source": "import java.util.Random;\n\npublic class Main {\n    public static void main(String[] args) {\n        Random gerador = new Random(42);\n        int dado = gerador.nextInt(6) + 1;\n        System.out.println(\"Dado: \" + dado);\n        System.out.println(\"Teto: \" + Math.ceil(-2.3));\n        System.out.println(\"Piso: \" + Math.floor(-2.3));\n    }\n}\n",
     "expected": "Dado: 3\nTeto: -2.0\nPiso: -3.0",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Crie um gerador java.util.Random com semente 42. Faça uma única chamada a nextInt(6) e acrescente 1 ao resultado para obter um inteiro de 1 a 6, inclusive.",
+      "Imprima o valor com o rótulo Dado:. Em duas linhas seguintes, mostre Math.ceil(-2.3) com o rótulo Teto: e Math.floor(-2.3) com o rótulo Piso:.",
+      "A referência deve mostrar Dado: 3, Teto: -2.0 e Piso: -3.0. Explique o deslocamento do intervalo e por que teto e piso não são simplesmente truncar a parte decimal. A semente fixa torna a mesma sequência de chamadas repetível.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "textos",
@@ -63,7 +108,16 @@
     "hint": "substring inclui o primeiro limite e exclui o segundo. equals compara conteúdo.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        String texto = \"Java\";\n        String outro = new String(\"Java\");\n        System.out.println(\"Mesma referência: \" + (texto == outro));\n        System.out.println(\"Mesmo conteúdo: \" + texto.equals(outro));\n        System.out.println(\"Trecho: \" + texto.substring(1, 3));\n        System.out.println(\"Índice: \" + texto.indexOf(\"z\"));\n    }\n}\n",
     "expected": "Mesma referência: false\nMesmo conteúdo: true\nTrecho: av\nÍndice: -1",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Declare texto como o literal Java e outro como new String(\"Java\"). Compare primeiro as referências com == e depois o conteúdo com equals. Imprima cada booleano com o rótulo correspondente.",
+      "Extraia somente av de Java usando substring com início incluído e fim excluído. Depois procure a letra z com indexOf e imprima seu retorno.",
+      "Espere false, true, av e -1, nessa ordem. O índice -1 informa ausência e não pode ser usado como uma posição válida para charAt ou para recortar o texto. Na etapa seguinte, acrescente uma condição que apresente uma mensagem quando a busca não encontrar.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "login",
@@ -74,7 +128,16 @@
     "hint": "As duas comparações precisam ser verdadeiras. Use apenas credenciais fictícias.",
     "source": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner entrada = new Scanner(System.in);\n        String usuario = entrada.nextLine();\n        String senha = entrada.nextLine();\n        boolean autorizado = validarLogin(usuario, senha);\n        System.out.println(autorizado ? \"Acesso permitido\" : \"Acesso negado\");\n    }\n\n    static boolean validarLogin(String usuario, String senha) {\n        return \"admin\".equals(usuario) && \"12345\".equals(senha);\n    }\n}\n",
     "expected": "Acesso permitido",
-    "input": "admin\n12345\n"
+    "input": "admin\n12345\n",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Leia duas linhas com uma única instância de Scanner: a primeira contém o usuário e a segunda contém a senha. Não remova espaços nem altere a caixa da senha automaticamente.",
+      "Escreva um método static boolean validarLogin(String usuario, String senha). Para este exercício fictício, aceite apenas usuário admin e senha 12345, comparando conteúdos com equals e exigindo as duas condições ao mesmo tempo.",
+      "No main, chame o método e apresente Acesso permitido ou Acesso negado. Confira ambos corretos, somente usuário correto, somente senha correta e ambos incorretos. Essas credenciais fixas são material didático e não fornecem autenticação de produção.",
+      "Use inicialmente os dados de referência mostrados abaixo, na mesma ordem. Eles já ficam disponíveis no campo Entrada do programa; um dado por linha facilita conferir as leituras. Altere-os para os testes adicionais.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "salario",
@@ -85,7 +148,16 @@
     "hint": "Valide antes de calcular. Em 40 horas, o valor é 600.",
     "source": "import java.util.Locale;\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner entrada = new Scanner(System.in).useLocale(Locale.US);\n        double horas = entrada.nextDouble();\n        if (!Double.isFinite(horas) || horas < 0) {\n            System.out.println(\"Horas inválidas\");\n            return;\n        }\n        double salario = horas <= 40 ? horas * 15 : 600 + (horas - 40) * 21;\n        System.out.printf(Locale.US, \"Salário: R$ %.2f%n\", salario);\n    }\n}\n",
     "expected": "Salário: R$ 705.00",
-    "input": "45\n"
+    "input": "45\n",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Leia um número de horas com Scanner e Locale.US. Recuse valor negativo ou não finito com a mensagem Horas inválidas e encerre o programa sem mostrar um salário.",
+      "Para até 40 horas, calcule horas multiplicadas por 15. Acima de 40, calcule 600 mais 21 por hora excedente, isto é, por horas menos 40. Essas são exclusivamente as regras fornecidas pelo exercício.",
+      "Apresente Salário: R$ seguido do resultado com duas casas e ponto decimal. Com 45 horas, espere 705.00. Confira também 0, 39, 40 e 41 horas: 0.00, 585.00, 600.00 e 621.00. Não use essa fórmula como uma regra trabalhista real.",
+      "Use inicialmente os dados de referência mostrados abaixo, na mesma ordem. Eles já ficam disponíveis no campo Entrada do programa; um dado por linha facilita conferir as leituras. Altere-os para os testes adicionais.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "calculadora",
@@ -96,7 +168,16 @@
     "hint": "Um retorno dentro de main encerra a execução atual. A divisão deve ser validada antes da conta.",
     "source": "import java.util.Locale;\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner entrada = new Scanner(System.in).useLocale(Locale.US);\n        double a = entrada.nextDouble();\n        double b = entrada.nextDouble();\n        String operacao = entrada.next();\n        if (!Double.isFinite(a) || !Double.isFinite(b)) {\n            System.out.println(\"Números inválidos\");\n            return;\n        }\n        double resultado;\n        switch (operacao) {\n            case \"+\" -> resultado = a + b;\n            case \"-\" -> resultado = a - b;\n            case \"*\" -> resultado = a * b;\n            case \"/\" -> {\n                if (b == 0) {\n                    System.out.println(\"Divisão por zero\");\n                    return;\n                }\n                resultado = a / b;\n            }\n            default -> {\n                System.out.println(\"Operação desconhecida\");\n                return;\n            }\n        }\n        System.out.println(\"Resultado: \" + resultado);\n    }\n}\n",
     "expected": "Resultado: 2.5",
-    "input": "10\n4\n/\n"
+    "input": "10\n4\n/\n",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Leia dois números decimais e, em seguida, um token de operação: +, -, * ou /. Use Locale.US e uma única instância de Scanner. Recuse números não finitos antes de escolher a operação.",
+      "Use um switch com seta para aplicar o operador correspondente. No ramo de divisão, recuse divisor zero com Divisão por zero. No default, apresente Operação desconhecida e encerre sem imprimir um resultado.",
+      "Para uma operação válida, mostre Resultado: seguido do valor. A entrada 10, 4 e / deve produzir Resultado: 2.5. Execute um caso de cada operador, um divisor zero e uma operação desconhecida; não faça default somar como se a escolha fosse válida.",
+      "Use inicialmente os dados de referência mostrados abaixo, na mesma ordem. Eles já ficam disponíveis no campo Entrada do programa; um dado por linha facilita conferir as leituras. Altere-os para os testes adicionais.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "tabuada",
@@ -107,7 +188,16 @@
     "hint": "O último multiplicador deve ser incluído na condição.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        int numero = 7;\n        for (int i = 1; i <= 10; i++) {\n            System.out.printf(\"%d x %d = %d%n\", numero, i, numero * i);\n        }\n    }\n}\n",
     "expected": "7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35\n7 x 6 = 42\n7 x 7 = 49\n7 x 8 = 56\n7 x 9 = 63\n7 x 10 = 70",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Defina o número da tabuada como 7 no próprio programa. Use um for com multiplicador de 1 a 10, incluindo os dois extremos.",
+      "Em cada passagem, calcule numero multiplicado por multiplicador e imprima uma linha no formato 7 x 1 = 7, adaptando o multiplicador e o produto. O cálculo deve acontecer dentro da repetição.",
+      "A saída tem dez linhas, começando por 7 x 1 = 7 e terminando por 7 x 10 = 70. Confira que não aparece multiplicação por zero e que a multiplicação por dez não foi excluída. Depois faça o desafio com 9 e multiplicadores pares.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "lacos",
@@ -118,7 +208,16 @@
     "hint": "No primeiro while, a condição inicial já é falsa.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        int valor = 3;\n        while (valor < 3) {\n            System.out.println(\"while: \" + valor);\n            valor++;\n        }\n        do {\n            System.out.println(\"do: \" + valor);\n            valor++;\n        } while (valor < 3);\n    }\n}\n",
     "expected": "do: 3",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Comece com valor igual a 3. Escreva um while que só execute enquanto valor for menor que 3; se executar, ele imprime while: valor e incrementa o contador.",
+      "Depois escreva um do/while sobre o mesmo valor, imprimindo do: valor e incrementando antes de conferir se continua menor que 3. Não reinicialize o valor entre as estruturas nesta versão inicial.",
+      "Preveja por que o while não escreve linha alguma e o do/while escreve apenas do: 3. Só depois altere a inicialização e a organização para fazer cada estrutura imprimir 0, 1 e 2 no desafio.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "menu",
@@ -129,7 +228,16 @@
     "hint": "break dentro de switch encerraria apenas o switch. Aqui a condição do while controla o menu.",
     "source": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner entrada = new Scanner(System.in);\n        boolean continuar = true;\n        while (continuar && entrada.hasNextInt()) {\n            int opcao = entrada.nextInt();\n            switch (opcao) {\n                case 1 -> System.out.println(\"Consulta realizada\");\n                case 0 -> continuar = false;\n                default -> System.out.println(\"Opção inválida\");\n            }\n        }\n        System.out.println(\"Menu encerrado\");\n    }\n}\n",
     "expected": "Consulta realizada\nOpção inválida\nConsulta realizada\nMenu encerrado",
-    "input": "1\n9\n1\n0\n"
+    "input": "1\n9\n1\n0\n",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Leia opções inteiras de um Scanner enquanto o menu estiver ativo e houver um próximo inteiro. A opção 1 representa uma consulta; a opção 0 encerra; qualquer outro inteiro é uma opção inválida.",
+      "Use uma variável booleana de continuidade e um switch. Para 1, imprima Consulta realizada. Para outro inteiro diferente de 0, imprima Opção inválida. Para 0, altere a continuidade sem processá-lo como consulta.",
+      "Ao terminar o laço, imprima Menu encerrado uma única vez. A entrada 1, 9, 1 e 0 deve produzir duas consultas, o aviso da opção 9 entre elas e a mensagem final. Nesta referência, um token não inteiro também encerra a leitura; não há recuperação desse token.",
+      "Use inicialmente os dados de referência mostrados abaixo, na mesma ordem. Eles já ficam disponíveis no campo Entrada do programa; um dado por linha facilita conferir as leituras. Altere-os para os testes adicionais.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "arrays",
@@ -140,7 +248,16 @@
     "hint": "O menor inicial vem de um elemento real, e a soma começa em zero.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        double[] notas = {6.0, 7.0, 8.0};\n        if (notas.length == 0) {\n            System.out.println(\"Sem notas\");\n            return;\n        }\n        double soma = 0;\n        double menor = notas[0];\n        for (double nota : notas) {\n            soma += nota;\n            menor = Math.min(menor, nota);\n        }\n        System.out.println(\"Média: \" + soma / notas.length);\n        System.out.println(\"Menor: \" + menor);\n    }\n}\n",
     "expected": "Média: 7.0\nMenor: 6.0",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Declare um array double com as notas 6.0, 7.0 e 8.0. Antes de acessar a primeira posição, confira length; se for zero, apresente Sem notas e encerre.",
+      "Inicialize soma com zero e menor com o primeiro elemento válido. Percorra todas as notas, somando cada uma e atualizando o menor valor. Não inicialize o menor em zero, pois zero não pertence aos dados iniciais.",
+      "Depois do percurso, apresente Média: seguido de soma dividida por length e Menor: seguido do mínimo, em duas linhas. Espere 7.0 e 6.0. Só então acrescente outra nota ou teste o array vazio, conferindo a nova previsão.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "matriz",
@@ -151,7 +268,16 @@
     "hint": "Use matriz[linha].length como limite do laço interno.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        int[][] matriz = {{1, 2, 3}, {4, 5}};\n        int soma = 0;\n        for (int linha = 0; linha < matriz.length; linha++) {\n            for (int coluna = 0; coluna < matriz[linha].length; coluna++) {\n                soma += matriz[linha][coluna];\n            }\n        }\n        System.out.println(\"Linhas: \" + matriz.length);\n        System.out.println(\"Soma: \" + soma);\n    }\n}\n",
     "expected": "Linhas: 2\nSoma: 15",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Declare a matriz irregular {{1, 2, 3}, {4, 5}}. Ela tem duas linhas, mas as linhas não possuem a mesma quantidade de colunas.",
+      "Use dois laços: o externo percorre matriz.length e o interno percorre matriz[linha].length. Some todos os elementos em um acumulador iniciado antes dos dois laços.",
+      "Imprima Linhas: 2 e Soma: 15 em linhas separadas. Depois acrescente uma terceira linha de um elemento e recalcule a previsão. Não use o tamanho da primeira linha como limite de todas as linhas.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "lista",
@@ -162,7 +288,16 @@
     "hint": "A lista usa size() e get(indice); o array usa length e colchetes.",
     "source": "import java.util.ArrayList;\n\npublic class Main {\n    public static void main(String[] args) {\n        ArrayList<String> nomes = new ArrayList<>();\n        nomes.add(\"Ana\");\n        nomes.add(\"Bruno\");\n        for (String nome : nomes) {\n            System.out.println(nome);\n        }\n        System.out.println(\"Quantidade: \" + nomes.size());\n    }\n}\n",
     "expected": "Ana\nBruno\nQuantidade: 2",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Crie um ArrayList<String> vazio e acrescente Ana e Bruno, nessa ordem. Escreva as chamadas de inclusão; não construa a saída inteira como um texto fixo.",
+      "Percorra a lista e imprima um nome por linha. Ao final, consulte size() para informar a quantidade atual com o rótulo Quantidade:.",
+      "Espere Ana, Bruno e Quantidade: 2. Depois inclua um terceiro nome, consulte o primeiro elemento pelo índice zero e remova um nome para verificar como a quantidade muda. Antes de consultar uma posição, garanta que ela existe.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "metodos",
@@ -173,7 +308,16 @@
     "hint": "O método devolve um double. main decide como apresentar.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        double dolares = converter(105.0, 5.25);\n        System.out.printf(java.util.Locale.US, \"Dólares: %.2f%n\", dolares);\n    }\n\n    static double converter(double reais, double cotacao) {\n        if (!Double.isFinite(reais) || reais < 0 || !Double.isFinite(cotacao) || cotacao <= 0) {\n            throw new IllegalArgumentException(\"Valor ou cotação inválidos\");\n        }\n        return reais / cotacao;\n    }\n}\n",
     "expected": "Dólares: 20.00",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Crie um método static double converter(double reais, double cotacao). Ele deve aceitar reais finitos e não negativos e cotação finita estritamente positiva; caso contrário, lance IllegalArgumentException.",
+      "O método devolve reais divididos pela cotação, sem imprimir a resposta. No main, chame converter com 105.0 e 5.25 e apresente Dólares: seguido do resultado com duas casas usando Locale.US.",
+      "Espere Dólares: 20.00. Depois faça outra chamada válida e teste cotação zero, tratando a falha no main quando quiser apresentar uma mensagem. A cotação é fictícia e fornecida pelo exercício, não consultada em um serviço financeiro.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "objetos",
@@ -184,7 +328,16 @@
     "hint": "new cria outro objeto; atribuir uma referência compartilha o objeto existente.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        Celular a = new Celular(\"A\");\n        Celular b = new Celular(\"B\");\n        a.bateria = 50;\n        System.out.println(a.modelo + \": \" + a.bateria);\n        System.out.println(b.modelo + \": \" + b.bateria);\n    }\n}\n\nclass Celular {\n    String modelo;\n    int bateria = 100;\n    Celular(String modelo) { this.modelo = modelo; }\n}\n",
     "expected": "A: 50\nB: 100",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Declare uma classe auxiliar Celular com modelo e bateria. O construtor recebe o modelo; a bateria começa em 100 para cada instância.",
+      "No main, crie dois objetos separados com modelos A e B. Altere somente a bateria do objeto A para 50 e imprima modelo: bateria de cada um.",
+      "Espere A: 50 e B: 100. No desafio, experimente fazer b = a antes da alteração e preveja que as duas variáveis passarão a alcançar o mesmo objeto. Restaure os dois new para recuperar a independência.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "polimorfismo",
@@ -195,7 +348,16 @@
     "hint": "O método de instância sobrescrito depende do objeto em execução. @Override verifica a intenção.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        Animal animal = new Cachorro();\n        animal.emitirSom();\n    }\n}\n\nclass Animal {\n    void emitirSom() { System.out.println(\"Som\"); }\n}\nclass Cachorro extends Animal {\n    @Override\n    void emitirSom() { System.out.println(\"Au!\"); }\n}\n",
     "expected": "Au!",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Declare uma classe Animal com um método de instância emitirSom que imprima Som. Declare Cachorro como subclasse e sobrescreva emitirSom para imprimir Au!, usando @Override.",
+      "No main, declare uma variável do tipo Animal e faça-a referenciar um novo Cachorro. Chame emitirSom por essa referência, sem escrever um teste de tipo para selecionar a mensagem.",
+      "A saída deve ser Au!. Explique a diferença entre o tipo da variável e a classe do objeto. Depois crie outra subclasse com outra implementação e repita a mesma chamada por Animal.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "construtores",
@@ -206,7 +368,16 @@
     "hint": "this(1.0) delega a inicialização para outro construtor. Construtor não declara void.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        Circulo padrao = new Circulo();\n        Circulo maior = new Circulo(2);\n        System.out.printf(java.util.Locale.US, \"Áreas: %.2f e %.2f%n\", padrao.area(), maior.area());\n    }\n}\n\nclass Circulo {\n    private double raio;\n    Circulo() { this(1.0); }\n    Circulo(double raio) {\n        if (!Double.isFinite(raio) || raio <= 0) {\n            throw new IllegalArgumentException(\"Raio inválido\");\n        }\n        this.raio = raio;\n    }\n    double area() { return Math.PI * raio * raio; }\n}\n",
     "expected": "Áreas: 3.14 e 12.57",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Crie a classe Circulo com um campo privado de raio. Declare um construtor sem argumentos que delegue raio 1.0 ao construtor com parâmetro, usando this(...).",
+      "No construtor principal, recuse raio não finito ou menor ou igual a zero lançando IllegalArgumentException. Implemente area() como Math.PI multiplicado pelo raio ao quadrado.",
+      "No main, crie um círculo padrão e outro de raio 2 e imprima Áreas: 3.14 e 12.57 usando duas casas e Locale.US. Depois teste a recusa de raio zero e trate a exceção no main. A forma vazia precisa ser declarada por você porque a classe já possui um construtor com parâmetro.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "conta",
@@ -261,7 +432,16 @@
     "hint": "Para imprimir uma barra invertida, escreva duas no literal. Não é necessário criar o caminho no computador.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        System.out.println(\"Linha 1\\nLinha 2\");\n        System.out.println(\"Caminho: C:\\\\estudos\\\\Main.java\");\n        System.out.printf(\"Total: %d%n\", 3 + 4);\n    }\n}\n",
     "expected": "Linha 1\nLinha 2\nCaminho: C:\\estudos\\Main.java\nTotal: 7",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Use uma string com a sequência de escape de quebra de linha para imprimir Linha 1 e Linha 2 em linhas distintas. Escreva a sequência no fonte como barra invertida seguida de n, em vez de partir uma string comum ao meio.",
+      "Imprima a mensagem Caminho: C:\\estudos\\Main.java, escapando cada barra invertida do literal Java. Isso apenas apresenta um caminho; não cria nem acessa um arquivo.",
+      "Use printf com %d e %n para imprimir Total: 7 a partir de 3 + 4. A referência tem quatro linhas visíveis. No desafio, inclua aspas na mensagem e compare o escape de nova linha com a quebra fornecida por %n.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "incremento",
@@ -272,7 +452,16 @@
     "hint": "O pós-incremento fornece o valor anterior; o pré-incremento fornece o valor já atualizado.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        int x = 3;\n        int anterior = x++;\n        int atualizado = ++x;\n        System.out.println(\"Anterior: \" + anterior);\n        System.out.println(\"Atualizado: \" + atualizado);\n        System.out.println(\"x: \" + x);\n    }\n}\n",
     "expected": "Anterior: 3\nAtualizado: 5\nx: 5",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Declare x como inteiro com valor 3. Em uma instrução separada, guarde o resultado de x++ em anterior. Em outra, guarde o resultado de ++x em atualizado.",
+      "Imprima Anterior:, Atualizado: e x: com os valores correspondentes, em três linhas. Evite colocar várias alterações de x em uma única expressão.",
+      "Espere 3, 5 e 5. Explique quando cada incremento ocorreu. Depois comece com x igual a 10 e escreva a previsão antes de executar; por último, reescreva com atribuições e somas explícitas.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "leitura-validada",
@@ -283,7 +472,16 @@
     "hint": "Quando hasNextInt retorna falso e ainda existe entrada, consuma o token com next antes de tentar outra vez.",
     "source": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner entrada = new Scanner(System.in);\n        boolean encontrou = false;\n        while (entrada.hasNext()) {\n            if (!entrada.hasNextInt()) {\n                System.out.println(\"Token inválido: \" + entrada.next());\n                continue;\n            }\n            int nota = entrada.nextInt();\n            if (nota < 0 || nota > 10) {\n                System.out.println(\"Fora da faixa: \" + nota);\n                continue;\n            }\n            System.out.println(\"Nota aceita: \" + nota);\n            encontrou = true;\n            break;\n        }\n        if (!encontrou) System.out.println(\"Nenhuma nota válida\");\n    }\n}\n",
     "expected": "Token inválido: texto\nFora da faixa: -1\nFora da faixa: 11\nNota aceita: 8",
-    "input": "texto\n-1\n11\n8\n"
+    "input": "texto\n-1\n11\n8\n",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Leia tokens até encontrar uma nota inteira no intervalo de 0 a 10, inclusive, ou até esgotar a entrada. Use hasNext para distinguir fim de entrada de token presente.",
+      "Se o token não puder ser lido como inteiro, consuma-o com next e imprima Token inválido: seguido dele. Se for inteiro fora da faixa, imprima Fora da faixa: seguido do valor e continue procurando.",
+      "Na primeira nota válida, imprima Nota aceita: valor e encerre a busca. Se nenhuma nota válida for encontrada, imprima Nenhuma nota válida. Para texto, -1, 11 e 8, os três primeiros são recusados e 8 é aceito; não volte a testar um token inválido sem consumi-lo.",
+      "Use inicialmente os dados de referência mostrados abaixo, na mesma ordem. Eles já ficam disponíveis no campo Entrada do programa; um dado por linha facilita conferir as leituras. Altere-os para os testes adicionais.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "normalizar-texto",
@@ -294,7 +492,16 @@
     "hint": "Guarde o retorno de trim e toLowerCase. O texto original continua disponível em outra variável.",
     "source": "import java.util.Locale;\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner entrada = new Scanner(System.in);\n        String original = entrada.hasNextLine() ? entrada.nextLine() : \"\";\n        String comando = original.trim().toLowerCase(Locale.ROOT);\n        if (comando.isEmpty()) {\n            System.out.println(\"Comando vazio\");\n        } else {\n            System.out.println(\"Comando: \" + comando);\n            System.out.println(\"Encerrar: \" + \"sair\".equals(comando));\n        }\n    }\n}\n",
     "expected": "Comando: sair\nEncerrar: true",
-    "input": "  SAIR  \n"
+    "input": "  SAIR  \n",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Leia uma linha se ela existir; se não houver linha, use texto vazio para este exercício. Remova espaços nas extremidades com trim e converta o comando para minúsculas com Locale.ROOT.",
+      "Se o comando tratado estiver vazio, apresente somente Comando vazio. Caso contrário, imprima Comando: seguido dele e Encerrar: seguido do booleano que compara seu conteúdo com sair.",
+      "Com dois espaços, SAIR e dois espaços, espere Comando: sair e Encerrar: true. Teste também uma linha vazia e CONTINUAR. Essa normalização pertence ao comando do menu; não a aplique automaticamente à senha de um login.",
+      "Use inicialmente os dados de referência mostrados abaixo, na mesma ordem. Eles já ficam disponíveis no campo Entrada do programa; um dado por linha facilita conferir as leituras. Altere-os para os testes adicionais.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "contar-vogais",
@@ -305,7 +512,16 @@
     "hint": "indexOf devolve zero para a primeira posição e -1 para ausência. A condição de presença precisa aceitar zero.",
     "source": "import java.util.Locale;\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner entrada = new Scanner(System.in);\n        String texto = entrada.hasNextLine() ? entrada.nextLine() : \"\";\n        texto = texto.toLowerCase(Locale.ROOT);\n        int quantidade = 0;\n        for (int i = 0; i < texto.length(); i++) {\n            if (\"aeiou\".indexOf(texto.charAt(i)) >= 0) quantidade++;\n        }\n        System.out.println(\"Vogais sem acento: \" + quantidade);\n    }\n}\n",
     "expected": "Vogais sem acento: 5",
-    "input": "Java em grupo\n"
+    "input": "Java em grupo\n",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Leia uma linha de texto e converta-a para minúsculas com Locale.ROOT. Se a entrada estiver ausente, este exercício usa texto vazio.",
+      "Percorra as posições do texto e conte apenas as unidades correspondentes a a, e, i, o e u. A regra é deliberadamente restrita às cinco vogais sem acento; espaços, pontuação e vogais acentuadas não entram na contagem.",
+      "Imprima Vogais sem acento: seguido da quantidade. Com Java em grupo, espere 5. Teste também AEIOU, rhythm e é para conferir o alcance exato da regra antes de tentar ampliá-la.",
+      "Use inicialmente os dados de referência mostrados abaixo, na mesma ordem. Eles já ficam disponíveis no campo Entrada do programa; um dado por linha facilita conferir as leituras. Altere-os para os testes adicionais.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "aprovacao-presenca",
@@ -316,7 +532,16 @@
     "hint": "Use && entre os requisitos. Double.isFinite rejeita NaN e infinito antes da classificação.",
     "source": "import java.util.Locale;\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner entrada = new Scanner(System.in).useLocale(Locale.US);\n        double media = entrada.nextDouble();\n        double presenca = entrada.nextDouble();\n        if (!Double.isFinite(media) || !Double.isFinite(presenca)\n                || media < 0 || media > 10 || presenca < 0 || presenca > 100) {\n            System.out.println(\"Dados inválidos\");\n        } else if (media >= 7 && presenca >= 75) {\n            System.out.println(\"Critérios atendidos\");\n        } else {\n            System.out.println(\"Critérios não atendidos\");\n        }\n    }\n}\n",
     "expected": "Critérios atendidos",
-    "input": "7\n75\n"
+    "input": "7\n75\n",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Leia dois doubles com Locale.US: primeiro a média e depois a presença em porcentagem. Recuse valores não finitos, média fora de 0 a 10 ou presença fora de 0 a 100 com Dados inválidos.",
+      "Para dados válidos, exija simultaneamente média maior ou igual a 7 e presença maior ou igual a 75. Apresente Critérios atendidos quando as duas exigências forem verdadeiras e Critérios não atendidos nos demais casos válidos.",
+      "Confira 7 e 75 como aceitos, 9 e 74 como válidos sem atender à regra e NaN e 80 como inválidos. Não use || entre as exigências de nota e presença. O enunciado fornece critérios didáticos, não uma política acadêmica universal.",
+      "Use inicialmente os dados de referência mostrados abaixo, na mesma ordem. Eles já ficam disponíveis no campo Entrada do programa; um dado por linha facilita conferir as leituras. Altere-os para os testes adicionais.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "estacoes",
@@ -327,7 +552,16 @@
     "hint": "A expressão switch precisa fornecer um resultado também para valores desconhecidos.",
     "source": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner entrada = new Scanner(System.in);\n        if (!entrada.hasNextInt()) {\n            System.out.println(\"Informe uma opção inteira\");\n            return;\n        }\n        String estacao = switch (entrada.nextInt()) {\n            case 1 -> \"Primavera\";\n            case 2 -> \"Verão\";\n            case 3 -> \"Outono\";\n            case 4 -> \"Inverno\";\n            default -> \"Estação desconhecida\";\n        };\n        System.out.println(estacao);\n    }\n}\n",
     "expected": "Outono",
-    "input": "3\n"
+    "input": "3\n",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Leia uma opção inteira. Se o próximo token não for inteiro ou não houver entrada, apresente Informe uma opção inteira e encerre.",
+      "Use uma expressão switch para converter 1 em Primavera, 2 em Verão, 3 em Outono e 4 em Inverno. Para qualquer outro inteiro, use Estação desconhecida.",
+      "Imprima somente o nome obtido. Com 3, espere Outono. Teste também as outras três opções, zero e texto. Esses números são opções de menu do exercício, não meses ou uma regra climática.",
+      "Use inicialmente os dados de referência mostrados abaixo, na mesma ordem. Eles já ficam disponíveis no campo Entrada do programa; um dado por linha facilita conferir as leituras. Altere-os para os testes adicionais.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "acumuladores",
@@ -338,7 +572,16 @@
     "hint": "Inicialize soma e quantidade fora do laço. Não conte a sentinela como dado.",
     "source": "import java.util.Locale;\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner entrada = new Scanner(System.in);\n        long soma = 0;\n        int quantidade = 0;\n        while (entrada.hasNextInt()) {\n            int valor = entrada.nextInt();\n            if (valor == 0) break;\n            if (valor < 0) continue;\n            soma += valor;\n            quantidade++;\n        }\n        System.out.println(\"Quantidade: \" + quantidade);\n        System.out.println(\"Soma: \" + soma);\n        if (quantidade == 0) System.out.println(\"Sem valores positivos\");\n        else System.out.printf(Locale.US, \"Média: %.2f%n\", (double) soma / quantidade);\n    }\n}\n",
     "expected": "Quantidade: 2\nSoma: 30\nMédia: 15.00",
-    "input": "10\n-3\n20\n0\n"
+    "input": "10\n-3\n20\n0\n",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Leia inteiros enquanto houver um próximo inteiro. Zero encerra a leitura e não entra na soma; negativos são ignorados e não aumentam a quantidade. Um token não inteiro encerra esta versão de referência.",
+      "Use long para acumular a soma e conte apenas os positivos aceitos. Ao terminar, imprima Quantidade: e Soma:. Se a quantidade for zero, apresente Sem valores positivos; caso contrário, calcule a média com conversão para double antes da divisão e apresente duas casas.",
+      "Para 10, -3, 20 e 0, espere quantidade 2, soma 30 e média 15.00. Teste somente zero e um único positivo seguido de zero. Não divida pelo número total de tokens, pois os negativos não foram incorporados à soma.",
+      "Use inicialmente os dados de referência mostrados abaixo, na mesma ordem. Eles já ficam disponíveis no campo Entrada do programa; um dado por linha facilita conferir as leituras. Altere-os para os testes adicionais.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "primo",
@@ -349,7 +592,16 @@
     "hint": "A condição divisor <= numero / divisor evita calcular divisor * divisor com possível transbordamento.",
     "source": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner entrada = new Scanner(System.in);\n        int numero = entrada.nextInt();\n        boolean primo = numero >= 2;\n        for (int divisor = 2; primo && divisor <= numero / divisor; divisor++) {\n            if (numero % divisor == 0) primo = false;\n        }\n        System.out.println(numero + (primo ? \" é primo\" : \" não é primo\"));\n    }\n}\n",
     "expected": "29 é primo",
-    "input": "29\n"
+    "input": "29\n",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Leia um inteiro e determine se ele é primo. Números menores que 2 não são primos. Para os demais, investigue se existe um divisor inteiro a partir de 2.",
+      "Percorra divisores enquanto divisor for menor ou igual a numero / divisor, evitando multiplicar divisor por divisor em int. Ao encontrar resto zero, marque não primo e encerre a investigação.",
+      "Imprima o número seguido de é primo ou não é primo. Confira 0 e 1 como não primos, 2 e 29 como primos e 49 como não primo. Explique por que a igualdade no limite inclui o divisor 7 ao investigar 49.",
+      "Use inicialmente os dados de referência mostrados abaixo, na mesma ordem. Eles já ficam disponíveis no campo Entrada do programa; um dado por linha facilita conferir as leituras. Altere-os para os testes adicionais.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "busca",
@@ -360,7 +612,16 @@
     "hint": "Só atualize a primeira posição enquanto ela ainda for -1. Atualize a última a cada encontro.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        int[] valores = {4, 7, 4, 9};\n        int procurado = 4;\n        int primeira = -1;\n        int ultima = -1;\n        for (int i = 0; i < valores.length; i++) {\n            if (valores[i] == procurado) {\n                if (primeira == -1) primeira = i;\n                ultima = i;\n            }\n        }\n        System.out.println(\"Primeira: \" + primeira);\n        System.out.println(\"Última: \" + ultima);\n    }\n}\n",
     "expected": "Primeira: 0\nÚltima: 2",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Declare o array {4, 7, 4, 9} e o valor procurado 4. Inicie primeira e ultima com -1, para representar que ainda não encontrou nenhuma ocorrência.",
+      "Percorra todos os índices. Ao encontrar o valor, preencha primeira somente se ainda for -1 e atualize ultima em toda ocorrência. Não encerre na primeira correspondência, pois ainda precisa localizar a última.",
+      "Imprima Primeira: 0 e Última: 2 para o caso inicial. Depois procure 9 e espere 3 nas duas respostas; procure 5 e espere -1 nas duas. O índice zero é uma ocorrência válida, não uma representação de ausência.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "copia-array",
@@ -371,7 +632,16 @@
     "hint": "Atribuir original a outra variável compartilha o mesmo array. Arrays.sort modifica o array recebido.",
     "source": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[] original = {3, 1, 2};\n        int[] copia = Arrays.copyOf(original, original.length);\n        Arrays.sort(copia);\n        System.out.println(\"Original: \" + Arrays.toString(original));\n        System.out.println(\"Cópia: \" + Arrays.toString(copia));\n    }\n}\n",
     "expected": "Original: [3, 1, 2]\nCópia: [1, 2, 3]",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Declare o array original {3, 1, 2}. Crie outro array com Arrays.copyOf, usando original.length como tamanho, para preservar a ordem recebida.",
+      "Ordene apenas a cópia com Arrays.sort. Mostre os dois arrays com Arrays.toString, usando os rótulos Original: e Cópia:.",
+      "Espere Original: [3, 1, 2] e Cópia: [1, 2, 3]. Depois faça o desafio substituindo a cópia por uma atribuição simples em uma versão de teste; a ordenação passará a atingir o mesmo array. Restaure a cópia ao concluir a investigação.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "matriz-transposta",
@@ -382,7 +652,16 @@
     "hint": "O resultado recebe o valor de matriz[linha][coluna] na posição transposta[coluna][linha]. Este exemplo pressupõe linhas de mesmo comprimento.",
     "source": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[][] matriz = {{1, 2, 3}, {4, 5, 6}};\n        int[][] transposta = new int[matriz[0].length][matriz.length];\n        for (int linha = 0; linha < matriz.length; linha++) {\n            for (int coluna = 0; coluna < matriz[linha].length; coluna++) {\n                transposta[coluna][linha] = matriz[linha][coluna];\n            }\n        }\n        for (int[] linha : transposta) System.out.println(Arrays.toString(linha));\n    }\n}\n",
     "expected": "[1, 4]\n[2, 5]\n[3, 6]",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Declare a matriz retangular {{1, 2, 3}, {4, 5, 6}}, com duas linhas e três colunas. Crie o resultado com três linhas e duas colunas.",
+      "Percorra linha e coluna da origem e atribua transposta[coluna][linha] a partir de matriz[linha][coluna]. Depois imprima cada linha da transposta com Arrays.toString.",
+      "Espere [1, 4], [2, 5] e [3, 6]. Este exercício assume uma matriz retangular e não vazia. Ao generalizar a entrada, valide essas condições antes de consultar matriz[0]; uma matriz irregular precisa de outra regra.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "sobrecarga",
@@ -393,7 +672,16 @@
     "hint": "Os tipos dos argumentos participam da escolha na compilação; apenas o tipo de retorno não distingue uma sobrecarga.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        System.out.println(\"Inteiros: \" + somar(2, 3));\n        System.out.println(\"Decimais: \" + somar(2.5, 3.0));\n    }\n\n    static int somar(int a, int b) { return a + b; }\n    static double somar(double a, double b) { return a + b; }\n}\n",
     "expected": "Inteiros: 5\nDecimais: 5.5",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Declare dois métodos static chamados somar: um recebe dois int e devolve int; o outro recebe dois double e devolve double. As listas de parâmetros precisam ser diferentes.",
+      "No main, chame somar(2, 3) e somar(2.5, 3.0), apresentando os rótulos Inteiros: e Decimais: antes dos resultados.",
+      "Espere 5 e 5.5. Explique qual assinatura cada chamada seleciona. Depois tente, em uma cópia do exercício, declarar a mesma lista de parâmetros mudando apenas o retorno; observe que isso não cria uma sobrecarga válida e restaure o programa.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "referencias",
@@ -404,7 +692,16 @@
     "hint": "O parâmetro recebe uma cópia da referência. Reatribuí-lo não troca a variável do chamador.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        Caixa original = new Caixa(1);\n        alterar(original);\n        System.out.println(\"Valor no objeto original: \" + original.valor);\n    }\n\n    static void alterar(Caixa caixa) {\n        caixa.valor = 9;\n        caixa = new Caixa(100);\n    }\n}\n\nclass Caixa {\n    int valor;\n    Caixa(int valor) { this.valor = valor; }\n}\n",
     "expected": "Valor no objeto original: 9",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Crie uma classe Caixa com campo valor e um construtor que receba o valor inicial. No main, crie original com valor 1 e passe essa referência para um método alterar.",
+      "Dentro de alterar, mude o campo do objeto recebido para 9. Depois reatribua apenas o parâmetro local a uma nova Caixa de valor 100. Não devolva essa nova referência nesta primeira versão.",
+      "Depois da chamada, imprima Valor no objeto original: seguido do campo do original. Espere 9. Explique por que a mutação foi observada, mas a nova referência local não substituiu a variável do main: Java passa o valor da referência.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "construtor-validado",
@@ -415,7 +712,16 @@
     "hint": "Construtores podem rejeitar argumentos com IllegalArgumentException. Faça isso antes de atribuir o estado.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        Produto produto = new Produto(\"  Caderno  \", 3);\n        System.out.println(produto.getNome() + \": \" + produto.getQuantidade());\n        try {\n            new Produto(\" \", 2);\n        } catch (IllegalArgumentException erro) {\n            System.out.println(erro.getMessage());\n        }\n    }\n}\n\nclass Produto {\n    private final String nome;\n    private final int quantidade;\n    Produto(String nome, int quantidade) {\n        if (nome == null || nome.trim().isEmpty() || quantidade < 0) {\n            throw new IllegalArgumentException(\"Nome ou quantidade inválidos\");\n        }\n        this.nome = nome.trim();\n        this.quantidade = quantidade;\n    }\n    public String getNome() { return nome; }\n    public int getQuantidade() { return quantidade; }\n}\n",
     "expected": "Caderno: 3\nNome ou quantidade inválidos",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Declare Produto com campos privados e finais nome e quantidade. No construtor, recuse nome nulo, vazio após trim ou quantidade negativa, lançando IllegalArgumentException com Nome ou quantidade inválidos.",
+      "Atribua o nome tratado e a quantidade somente após a validação e ofereça consultas getNome e getQuantidade. No main, construa um Produto com nome Caderno entre espaços e quantidade 3 e mostre Caderno: 3.",
+      "Tente construir outro Produto com somente espaços no nome e capture a exceção no main para apresentar a mensagem. Depois confira null e quantidade -1 separadamente. Não imprima um aviso no construtor para continuar criando um estado inválido.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "copia-defensiva",
@@ -448,7 +754,16 @@
     "hint": "Cada constante pertence a Situacao. O switch precisa produzir uma mensagem para todas as constantes.",
     "input": "",
     "source": "enum Situacao {\n    PENDENTE, EM_ANDAMENTO, CONCLUIDA\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Situacao atual = Situacao.EM_ANDAMENTO;\n        String mensagem = switch (atual) {\n            case PENDENTE -> \"Ainda não começou\";\n            case EM_ANDAMENTO -> \"Estudo em andamento\";\n            case CONCLUIDA -> \"Estudo concluído\";\n        };\n        System.out.println(mensagem);\n    }\n}",
-    "expected": "Estudo em andamento"
+    "expected": "Estudo em andamento",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Declare o enum Situacao com PENDENTE, EM_ANDAMENTO e CONCLUIDA. No main, escolha EM_ANDAMENTO como estado atual.",
+      "Use uma expressão switch que cubra todas as constantes: PENDENTE corresponde a Ainda não começou, EM_ANDAMENTO a Estudo em andamento e CONCLUIDA a Estudo concluído.",
+      "Imprima a mensagem obtida e espere Estudo em andamento. Depois acrescente o estado PAUSADA no desafio e atualize o switch para cobrir a nova possibilidade. Não use ordinal como código permanente da regra.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "colecoes-cadastro",
@@ -459,7 +774,16 @@
     "hint": "A lista mantém repetições; o conjunto reúne nomes distintos; put substitui o valor da mesma chave.",
     "input": "",
     "source": "import java.util.ArrayList;\nimport java.util.LinkedHashMap;\nimport java.util.LinkedHashSet;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<String> presencas = new ArrayList<>();\n        presencas.add(\"Ana\");\n        presencas.add(\"Bruno\");\n        presencas.add(\"Ana\");\n        Set<String> pessoas = new LinkedHashSet<>(presencas);\n        Map<String, Integer> notas = new LinkedHashMap<>();\n        notas.put(\"Ana\", 7);\n        notas.put(\"Bruno\", 8);\n        notas.put(\"Ana\", 9);\n        System.out.println(presencas);\n        System.out.println(pessoas);\n        System.out.println(notas);\n        System.out.println(notas.containsKey(\"Carla\"));\n    }\n}",
-    "expected": "[Ana, Bruno, Ana]\n[Ana, Bruno]\n{Ana=9, Bruno=8}\nfalse"
+    "expected": "[Ana, Bruno, Ana]\n[Ana, Bruno]\n{Ana=9, Bruno=8}\nfalse",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Crie uma List<String> e inclua Ana, Bruno e Ana, preservando a repetição. A partir dela, crie um LinkedHashSet para demonstrar unicidade com ordem de inserção previsível.",
+      "Crie um LinkedHashMap<String, Integer>. Associe Ana a 7, Bruno a 8 e depois atualize Ana para 9. Mostre lista, conjunto e mapa, um por linha.",
+      "Na quarta linha, mostre se o mapa contém a chave Carla usando containsKey. Espere [Ana, Bruno, Ana], [Ana, Bruno], {Ana=9, Bruno=8} e false. Explique por que put para Ana atualizou um valor em vez de criar uma segunda chave equivalente.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "filtrar-stream",
@@ -470,7 +794,16 @@
     "hint": "filter seleciona; sorted ordena o fluxo; collect realiza o processamento e reúne o resultado.",
     "input": "",
     "source": "import java.util.Arrays;\nimport java.util.List;\nimport java.util.stream.Collectors;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<Integer> notas = Arrays.asList(5, 7, 9, 7);\n        List<Integer> aprovadas = notas.stream()\n            .filter(n -> n >= 7)\n            .sorted()\n            .collect(Collectors.toList());\n        System.out.println(aprovadas);\n        System.out.println(notas);\n    }\n}",
-    "expected": "[7, 7, 9]\n[5, 7, 9, 7]"
+    "expected": "[7, 7, 9]\n[5, 7, 9, 7]",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Crie uma lista de Integer com 5, 7, 9 e 7, nessa ordem, usando Arrays.asList. A lista original deve continuar nessa sequência depois da consulta.",
+      "Crie uma stream, filtre notas maiores ou iguais a 7, ordene os elementos filtrados e colete em outra lista usando Collectors.toList.",
+      "Mostre a lista obtida e depois a original. Espere [7, 7, 9] e [5, 7, 9, 7]. Depois mude o limite para 8 e conte os aprovados no desafio. Não use a mesma stream já consumida em duas operações terminais.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "contrato-mensagem",
@@ -481,7 +814,16 @@
     "hint": "Implemente texto com acesso público e mantenha @Override para conferir a assinatura.",
     "input": "",
     "source": "interface Mensagem {\n    String texto();\n}\n\nclass BoasVindas implements Mensagem {\n    @Override\n    public String texto() {\n        return \"Bem-vindo ao estudo\";\n    }\n}\n\nclass Lembrete implements Mensagem {\n    @Override\n    public String texto() {\n        return \"Revise o exemplo antes de executar\";\n    }\n}\n\npublic class Main {\n    static void apresentar(Mensagem mensagem) {\n        System.out.println(mensagem.texto());\n    }\n\n    public static void main(String[] args) {\n        apresentar(new BoasVindas());\n        apresentar(new Lembrete());\n    }\n}",
-    "expected": "Bem-vindo ao estudo\nRevise o exemplo antes de executar"
+    "expected": "Bem-vindo ao estudo\nRevise o exemplo antes de executar",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Declare a interface Mensagem com o método String texto(). Implemente BoasVindas para devolver Bem-vindo ao estudo e Lembrete para devolver Revise o exemplo antes de executar.",
+      "Crie um método apresentar que receba Mensagem e imprima o texto devolvido. No main, forneça uma instância de cada implementação, nessa ordem.",
+      "A saída deve ter as duas mensagens em linhas separadas. Depois acrescente outra implementação e passe-a ao mesmo método. Não altere apresentar para testar cada classe concreta: ele deve continuar dependendo apenas do contrato Mensagem.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Confira a saída de referência da possível solução, as condições descritas nos passos e os casos adicionais do desafio. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "validar-quantidade",

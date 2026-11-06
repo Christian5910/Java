@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>02 · Lógica, tipos, operadores e entrada de dados · Java</title>
+<meta name="description" content="Transforme enunciados em programas: escolha tipos, acompanhe cálculos, valide entradas e confira resultados com exemplos completos.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page">
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main">
+<nav aria-label="Você está aqui" class="lesson-breadcrumb"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 2 de 30</span></nav>
+<header class="lesson-header"><h1>02 · Lógica, tipos, operadores e entrada de dados</h1><p class="lead">Transforme enunciados em programas: escolha tipos, acompanhe cálculos, valide entradas e confira resultados com exemplos completos.</p><p class="text-muted">Java 17 como referência · Teoria, laboratórios e exercícios comentados</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-24">Ir aos exercícios</a><button type="button" class="btn btn-outline-primary" id="printBook">Imprimir este tema / PDF</button></div></header>
+<div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Antes de calcular: um contrato para o problema</a></li>
+<li><a href="#secao-2">Transformar o enunciado em um algoritmo</a></li>
+<li><a href="#secao-3">Rastrear um algoritmo no papel</a></li>
+<li><a href="#secao-4">Variáveis, declaração e atribuição</a></li>
+<li><a href="#secao-5">Tipos primitivos e referências</a></li>
+<li><a href="#secao-6">Escolher o tipo pelo significado e pelos limites</a></li>
+<li><a href="#secao-7">Conversões, constantes e escopo</a></li>
+<li><a href="#secao-8">Literais, var, final e cópia de valores</a></li>
+<li><a href="#secao-9">Conversões: em que momento você perde informação</a></li>
+<li><a href="#secao-10">Operadores e ordem das operações</a></li>
+<li><a href="#secao-11">Precedência, curto-circuito e efeitos colaterais</a></li>
+<li><a href="#secao-12">Overflow, divisão por zero e números especiais</a></li>
+<li><a href="#secao-13">Saída e formatação</a></li>
+<li><a href="#secao-14">Entrada com Scanner</a></li>
+<li><a href="#secao-15">Entrada por tokens e por linhas: escolha uma estratégia</a></li>
+<li><a href="#secao-16">Math e números aleatórios</a></li>
+<li><a href="#secao-17">Consultar as operações matemáticas do material</a></li>
+<li><a href="#secao-18">Math e sorteios: intervalos, domínios e repetibilidade</a></li>
+<li><a href="#secao-19">Decimais e dinheiro: cálculo, arredondamento e apresentação</a></li>
+<li><a href="#secao-20">Laboratório completo: média com validação</a></li>
+<li><a href="#secao-21">Laboratório completo: conversão com unidades explícitas</a></li>
+<li><a href="#secao-22">Revisar sem adivinhar: uma pequena matriz de testes</a></li>
+<li><a href="#secao-23">Aplicar e conferir</a></li>
+<li><a href="#secao-24">Prática progressiva, resoluções e revisão final</a></li><li><a href="#fontes">Fontes e próximos passos</a></li></ol></nav></details></aside>
+<div class="lesson-reading"><article class="study-text lesson-article" aria-label="Conteúdo do tema 2"><h2 id="secao-1">1. Antes de calcular: um contrato para o problema</h2>
+<p>Os fundamentos ficam mais claros quando cada programa tem um contrato: quais dados aceita, qual resultado promete e o que faz quando não consegue calculá-lo. “Faça uma média” ainda deixa perguntas abertas: quantas notas? Pesos iguais? Intervalo permitido? Entrada em ponto ou vírgula? Qual saída para dados ausentes? Escreva as respostas antes de implementar.</p>
+<p>Nos laboratórios deste capítulo, os números decimais de entrada usam ponto. A média aceita exatamente três notas entre 0 e 10, inclusive; a aprovação começa em 7.0; um valor ausente, inválido ou não finito encerra o cálculo com uma mensagem. O conversor aceita reais não negativos e cotação positiva fornecida pelo exercício. São regras didáticas explícitas, que você pode alterar depois com novos testes.</p>
+<p><strong>Pré-requisito:</strong> reconhecer Main.java e seu método principal. <strong>Objetivo:</strong> escolher tipos, acompanhar expressões, ler e validar entradas, calcular sem perder informação por acidente e verificar o resultado. Use <a href="playground.html?ex=tipos">o laboratório de tipos</a> para experimentar expressões curtas. Para os programas completos abaixo, substitua o conteúdo do editor por um exemplo de cada vez.</p>
+<h2 id="secao-2">2. Transformar o enunciado em um algoritmo</h2>
+<p>Um algoritmo descreve passos para resolver um problema. Antes de escrever Java, identifique o que entra, qual transformação deve acontecer e o que será apresentado. Para calcular a média, receba as notas, some os valores e divida pela quantidade. A saída informa a média e a situação do aluno. Defina também a regra de aprovação: na atividade de média deste site, o limite é 7,0; na atividade de média da turma, é 6,0. Cada enunciado informa qual valor usar.</p>
+<p>Teste o raciocínio com valores simples antes de programar. Para notas 6, 7 e 8, a soma é 21 e a média é 7. Faça também um caso no limite e um caso inválido. Essa preparação ajuda a reconhecer um resultado errado mesmo quando o programa compila. Um nome de variável deve explicar o papel do valor: <code>media</code> e <code>horasTrabalhadas</code> ajudam mais do que <code>x</code> e <code>y</code> em uma regra de negócio.</p>
+<h2 id="secao-3">3. Rastrear um algoritmo no papel</h2>
+<p>Um teste de mesa registra o estado depois de cada instrução. Não anote apenas a resposta final: acompanhe o valor que cada variável tem naquele instante. Quando a execução divergir da sua previsão, você encontra a primeira transformação incorreta em vez de procurar o problema em todo o programa.</p>
+<pre tabindex="0"><code>int quantidade = 3;
+double preco = 12.50;
+double subtotal = quantidade * preco;
+double desconto = subtotal * 0.10;
+double total = subtotal - desconto;</code></pre>
+<div class="table-responsive"><table class="table"><caption>Teste de mesa de uma compra fictícia</caption><thead><tr><th>Etapa</th><th>Valor novo</th><th>Motivo</th></tr></thead><tbody><tr><td>quantidade</td><td>3</td><td>Quantidade declarada no exercício.</td></tr><tr><td>preco</td><td>12.50</td><td>Preço por unidade.</td></tr><tr><td>subtotal</td><td>37.50</td><td>3 × 12.50.</td></tr><tr><td>desconto</td><td>3.75</td><td>10% de 37.50.</td></tr><tr><td>total</td><td>33.75</td><td>Subtotal menos desconto.</td></tr></tbody></table></div>
+<p>Repita com quantidade zero, depois com quantidade negativa. O cálculo aceita ambas matematicamente; a regra de venda pode recusar a negativa. Separar cálculo e validação evita assumir que um resultado numérico é sempre um resultado permitido. Neste exemplo, os valores foram escolhidos para facilitar a conferência; operações de dinheiro com política decimal são tratadas adiante.</p>
+<h2 id="secao-4">4. Variáveis, declaração e atribuição</h2>
+<p>Uma variável associa um nome a um valor de determinado tipo. <code>int idade = 20;</code> declara uma variável inteira e fornece seu valor inicial. Em <code>idade = 21;</code>, o mesmo nome recebe outro valor. O sinal <code>=</code> faz atribuição; <code>==</code> faz comparação. Uma variável local precisa receber um valor antes de ser lida. Declarar <code>int total;</code> não autoriza imprimir <code>total</code> imediatamente.</p>
+<p>Java distingue maiúsculas e minúsculas. <code>nomeAluno</code> e <code>NomeAluno</code> são nomes diferentes. Use classes em <code>PascalCase</code>, métodos e variáveis em <code>camelCase</code> e constantes em <code>MAIUSCULAS_COM_UNDERLINE</code>. Identificadores não começam com dígito, não contêm espaços e não podem usar palavras reservadas. O caractere <code>_</code> isolado não é um identificador válido na versão adotada; nomes iniciados com esse caractere podem ser válidos, mas uma palavra descritiva costuma ser mais clara.</p>
+<h2 id="secao-5">5. Tipos primitivos e referências</h2>
+<div class="table-responsive"><table class="table"><caption>Os oito tipos primitivos</caption><thead><tr><th>Tipo</th><th>Uso</th><th>Exemplo</th></tr></thead><tbody><tr><td><code>byte</code></td><td>Inteiro de 8 bits com sinal.</td><td><code>byte nivel = 10;</code></td></tr><tr><td><code>short</code></td><td>Inteiro de 16 bits com sinal.</td><td><code>short ano = 2026;</code></td></tr><tr><td><code>int</code></td><td>Inteiro de 32 bits com sinal.</td><td><code>int quantidade = 30;</code></td></tr><tr><td><code>long</code></td><td>Inteiro de 64 bits com sinal.</td><td><code>long total = 3000000000L;</code></td></tr><tr><td><code>float</code></td><td>Ponto flutuante de 32 bits.</td><td><code>float altura = 1.75f;</code></td></tr><tr><td><code>double</code></td><td>Ponto flutuante de 64 bits.</td><td><code>double nota = 8.5;</code></td></tr><tr><td><code>char</code></td><td>Uma unidade de código UTF-16.</td><td><code>char turma = 'A';</code></td></tr><tr><td><code>boolean</code></td><td>Valor lógico.</td><td><code>boolean ativo = true;</code></td></tr></tbody></table></div>
+<p><code>String</code> é uma classe, não um tipo primitivo. Arrays e objetos também são tipos por referência. Uma referência pode ser <code>null</code>, indicando ausência de objeto, enquanto uma variável primitiva não recebe <code>null</code>. Identificadores como telefone, CEP e número de conta costumam ser textos: podem ter zeros iniciais e símbolos e não serão usados em operações aritméticas. O tipo deve representar o significado do dado.</p>
+<p><code>float</code> e <code>double</code> representam aproximações binárias de muitos valores decimais. São adequados para os exemplos iniciais de média, mas exigem cuidado com dinheiro e comparação exata. O capítulo de encapsulamento usa centavos inteiros em uma conta didática. Outra alternativa em aplicações financeiras é <code>BigDecimal</code>, com escala e arredondamento definidos. Imprimir duas casas decimais não corrige, por si só, a representação interna.</p>
+<h2 id="secao-6">6. Escolher o tipo pelo significado e pelos limites</h2>
+<p>Uma quantidade de alunos pode ser int. Um identificador como “00123” deve permanecer texto para preservar os zeros. Uma temperatura pode ser double. Um estado ligado/desligado pode ser boolean. Um char guarda uma unidade UTF-16, não qualquer símbolo visual inteiro. Não escolha um tipo menor apenas porque o valor de hoje cabe nele; pense no intervalo válido do problema e no resultado das operações.</p>
+<div class="table-responsive"><table class="table"><caption>Limites inteiros para consulta</caption><thead><tr><th>Tipo</th><th>Mínimo</th><th>Máximo</th></tr></thead><tbody><tr><td>byte</td><td>−128</td><td>127</td></tr><tr><td>short</td><td>−32 768</td><td>32 767</td></tr><tr><td>int</td><td>−2 147 483 648</td><td>2 147 483 647</td></tr><tr><td>long</td><td>−9 223 372 036 854 775 808</td><td>9 223 372 036 854 775 807</td></tr><tr><td>char</td><td>0</td><td>65 535, unidade UTF-16</td></tr></tbody></table></div>
+<p>Use <code>L</code> nos literais long e <code>f</code> nos float quando necessário: <code>3_000_000_000L</code>, <code>1.75f</code>. Sublinhados entre dígitos ajudam a leitura e não mudam o valor. Um literal decimal com ponto normalmente é double. <code>true</code> e <code>false</code> são booleanos; “true” entre aspas é um texto.</p>
+<p>Campos e elementos de arrays recebem valores iniciais definidos pela linguagem, como zero, false e null. Variáveis locais precisam de atribuição antes da leitura: não generalize “Java inicializa tudo com zero”. A variável local <code>int total;</code> ainda não pode ser usada para imprimir um resultado. A referência normativa é o <a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-4.html">capítulo de tipos e variáveis da JLS 17</a>.</p>
+<h2 id="secao-7">7. Conversões, constantes e escopo</h2>
+<p>Uma conversão de ampliação pode acontecer automaticamente, como passar um <code>int</code> para <code>long</code>. Ampliar para ponto flutuante pode perder precisão, especialmente com valores grandes. Uma conversão de redução precisa de cast e pode descartar informação: <code>(int) 7.9</code> produz <code>7</code>. Já converter um texto para número exige uma operação como <code>Integer.parseInt("20")</code>; escrever <code>(int) "20"</code> não é uma conversão válida.</p>
+<p><code>final double MEDIA_MINIMA = 7.0;</code> impede reatribuir essa variável depois da inicialização. <code>const</code> é uma palavra reservada e não é usada para declarar constantes em Java. Uma referência <code>final</code> a um array continua permitindo alterar seus elementos: a restrição é sobre a referência. O escopo de uma variável local acompanha o bloco em que ela foi declarada. Uma variável criada dentro de um <code>if</code> não fica automaticamente disponível depois da chave de fechamento.</p>
+<h2 id="secao-8">8. Literais, var, final e cópia de valores</h2>
+<p><code>var</code> permite inferir o tipo de uma variável local a partir de seu inicializador. <code>var quantidade = 3;</code> resulta em int e não permite depois atribuir “três”. Não é um tipo dinâmico, não serve para declarar uma variável sem inicializador e não permite inferir um tipo a partir de null sozinho. No começo, escrever os tipos explicitamente pode ajudar você a acompanhar as operações.</p>
+<p><code>final</code> impede nova atribuição à variável após ela receber seu valor. Isso não transforma automaticamente o objeto referenciado em imutável. Diferencie também uma variável final de uma constante de compilação: nem toda variável final tem um valor calculável em tempo de compilação. Para uma regra fixa do exercício, <code>final double MEDIA_MINIMA = 7.0;</code> comunica a intenção.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t2-copia" data-java-program>public class Main {
+    public static void main(String[] args) {
+        int original = 10;
+        int copia = original;
+        copia = 20;
+        int[] primeiro = {10};
+        final int[] segundo = primeiro;
+        segundo[0] = 20;
+        System.out.println(original + " / " + copia);
+        System.out.println(primeiro[0] + " / " + segundo[0]);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t2-copia">10 / 20
+20 / 20</samp></pre></figure>
+<p>A atribuição entre primitivos copia o valor. A atribuição entre referências também copia um valor: a referência, que passa a apontar para o mesmo objeto. Por isso, modificar o elemento do array por segundo afeta o que primeiro observa. A variável segundo é final, mas o elemento do array não ficou protegido. Esse exemplo antecipa vetores e objetos para evitar um modelo mental incorreto.</p>
+<h2 id="secao-9">9. Conversões: em que momento você perde informação</h2>
+<p>Uma conversão não recupera informação descartada antes. Em <code>(double) (10 / 4)</code>, a divisão inteira já produziu 2 antes do cast. Em <code>(double) 10 / 4</code>, a conversão acontece antes da divisão e o resultado é 2.5. A posição do cast é parte da regra, não apenas uma maneira de agradar ao compilador.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t2-conversoes" data-java-program>public class Main {
+    public static void main(String[] args) {
+        System.out.println((double) (10 / 4));
+        System.out.println((double) 10 / 4);
+        System.out.println((int) -7.9);
+        byte reduzido = (byte) 130;
+        System.out.println(reduzido);
+        byte a = 10;
+        byte b = 20;
+        int soma = a + b;
+        System.out.println(soma);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t2-conversoes">2.0
+2.5
+-7
+-126
+30</samp></pre></figure>
+<p>A conversão de 130 para byte não cabe no intervalo e resulta em −126; ela não limita automaticamente o valor a 127. A soma de dois byte é promovida para int, por isso <code>byte soma = a + b;</code> não compila sem uma conversão apropriada. Um cast explícito pode silenciar a proteção do compilador e introduzir um dado errado: valide o intervalo antes de reduzir o tipo.</p>
+<p>Ampliação também pode perder precisão quando o destino é ponto flutuante, porque nem todo inteiro grande tem representação exata em float ou double. Converter texto é outra tarefa: <code>Integer.parseInt("42")</code> interpreta dígitos e pode falhar. Essa distinção está formalizada nas <a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-5.html">conversões e promoções da JLS</a>.</p>
+<h2 id="secao-10">10. Operadores e ordem das operações</h2>
+<p>Os operadores aritméticos incluem soma <code>+</code>, subtração <code>-</code>, multiplicação <code>*</code>, divisão <code>/</code> e resto <code>%</code>. Multiplicação, divisão e resto têm precedência sobre soma e subtração. Parênteses deixam a regra explícita. Para média de três notas, use <code>(nota1 + nota2 + nota3) / 3.0</code>. <code>nota1 + nota2 + nota3 / 3.0</code> divide apenas a terceira nota antes de somar.</p>
+<p>Se os dois operandos de uma divisão são inteiros, o resultado é inteiro e a parte fracionária é descartada em direção a zero. <code>double resultado = 10 / 4;</code> guarda <code>2.0</code>, pois a atribuição ao <code>double</code> acontece depois da divisão. <code>10.0 / 4</code> produz <code>2.5</code>. O resto ajuda a identificar pares: <code>numero % 2 == 0</code>. A divisão inteira por zero causa <code>ArithmeticException</code>; em ponto flutuante pode produzir infinito ou <code>NaN</code>. Valide o divisor quando zero não fizer sentido no problema.</p>
+<p>Operadores compostos atualizam uma variável, como <code>total += valor</code>. <code>i++</code> incrementa e devolve o valor anterior na expressão; <code>++i</code> incrementa antes de produzir o valor. Evite misturar vários incrementos em uma única conta. Inteiros têm limites: operações comuns de <code>int</code> podem transbordar sem lançar exceção. Quando o limite for relevante, escolha um tipo apropriado e considere métodos como <code>Math.addExact</code>.</p>
+<p>Comparações como <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>==</code> e <code>!=</code> produzem booleanos. <code>&amp;&amp;</code> exige ambas as condições e avalia a segunda somente quando a primeira é verdadeira. <code>||</code> aceita pelo menos uma verdadeira e deixa de avaliar a segunda quando a primeira já é verdadeira. <code>!</code> inverte o valor lógico. Assim, <code>divisor != 0 &amp;&amp; total / divisor &gt; 2</code> protege a divisão. O operador <code>&amp;</code> em booleanos avalia ambos os lados e não oferece essa mesma proteção.</p>
+<h2 id="secao-11">11. Precedência, curto-circuito e efeitos colaterais</h2>
+<p>A precedência determina como a expressão é agrupada. A ordem de avaliação determina quando cada operando é calculado. Em Java, os operandos são avaliados da esquerda para a direita, respeitando o agrupamento e os operadores de curto-circuito. Para aprender e revisar código, escreva parênteses quando eles comunicarem a intenção.</p>
+<div class="table-responsive"><table class="table"><caption>Uma ordem prática, da maior precedência para a menor</caption><thead><tr><th>Grupo</th><th>Operadores</th><th>Exemplo</th></tr></thead><tbody><tr><td>Unários</td><td>!, sinais, ++ e --</td><td><code>!ativo</code></td></tr><tr><td>Multiplicativos</td><td>*, /, %</td><td><code>10 / 4</code></td></tr><tr><td>Aditivos</td><td>+, -</td><td><code>a + b * c</code></td></tr><tr><td>Relacionais</td><td>&lt;, &lt;=, &gt;, &gt;=</td><td><code>idade &gt;= 18</code></td></tr><tr><td>Igualdade</td><td>==, !=</td><td><code>quantidade != 0</code></td></tr><tr><td>Lógicos condicionais</td><td>&amp;&amp;, depois ||</td><td><code>ativo &amp;&amp; autorizado</code></td></tr><tr><td>Condicional e atribuição</td><td>?:, depois = e compostos</td><td><code>String r = ativo ? "Sim" : "Não";</code></td></tr></tbody></table></div>
+<p><code>&amp;&amp;</code> só avalia o lado direito se o esquerdo for verdadeiro. Em <code>divisor != 0 &amp;&amp; total / divisor &gt; 2</code>, a divisão não ocorre quando divisor é zero. <code>||</code> só avalia o segundo lado se o primeiro for falso. Com booleanos, &amp; e | avaliam ambos; com inteiros, fazem operações de bits. Não substitua um pelo outro para deixar a expressão mais curta.</p>
+<p>Evite alterar a mesma variável várias vezes em uma expressão. <code>int antes = contador++;</code> usa o valor anterior e depois incrementa; <code>int depois = ++contador;</code> incrementa antes de usar. Uma sequência de instruções simples facilita revisar o estado. Atribuições compostas também têm conversão implícita: <code>byte b = 127; b += 1;</code> resulta em −128. Expressões equivalentes matematicamente podem diferir em tipos e efeitos.</p>
+<p>Para valores booleanos, a tabela de &amp;&amp; só é verdadeira quando os dois lados são verdadeiros; a de || só é falsa quando os dois são falsos; ! inverte o valor. A regra “nota suficiente e presença suficiente” pede &amp;&amp;. Trocar por || muda o requisito. Compare expressões com as palavras do enunciado. Consulte o <a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-15.html">capítulo de expressões</a> quando precisar da regra formal.</p>
+<h2 id="secao-12">12. Overflow, divisão por zero e números especiais</h2>
+<p>O resultado de uma conta inteira pode ultrapassar o intervalo do tipo sem gerar uma exceção. <code>Integer.MAX_VALUE + 1</code> resulta em <code>Integer.MIN_VALUE</code>. Atribuir esse resultado depois a long não corrige o overflow anterior. Para multiplicar dois int usando a capacidade de long, converta um operando antes: <code>long total = (long) quantidade * precoCentavos;</code>.</p>
+<p>Quando o contrato exige detectar estouro, use operações como <code>Math.addExact</code> e <code>Math.multiplyExact</code>, que lançam ArithmeticException quando o resultado não cabe no tipo. Escolher long aumenta o intervalo, mas não o torna infinito. <code>Math.abs(Integer.MIN_VALUE)</code> também não produz um inteiro positivo representável; conheça os limites da operação que você escolheu.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t2-limites" data-java-program>public class Main {
+    public static void main(String[] args) {
+        System.out.println(Integer.MAX_VALUE + 1);
+        System.out.println((long) Integer.MAX_VALUE + 1);
+        System.out.println(1.0 / 0.0);
+        System.out.println(0.0 / 0.0);
+        System.out.println(Double.isFinite(1.0 / 0.0));
+        try {
+            Math.addExact(Integer.MAX_VALUE, 1);
+        } catch (ArithmeticException erro) {
+            System.out.println("Overflow detectado");
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t2-limites">-2147483648
+2147483648
+Infinity
+NaN
+false
+Overflow detectado</samp></pre></figure>
+<p>Divisão inteira por zero lança ArithmeticException. Divisão de ponto flutuante pode produzir infinito ou NaN. NaN significa um resultado que não é um número representável nessa operação; compará-lo com <code>== Double.NaN</code> não o identifica. Use <code>Double.isNaN</code> ou rejeite todos os valores não finitos com <code>Double.isFinite</code>. No contrato de uma nota, nem infinito nem NaN são entradas válidas.</p>
+<h2 id="secao-13">13. Saída e formatação</h2>
+<p><code>print</code> escreve sem encerrar a linha; <code>println</code> acrescenta uma quebra de linha; <code>printf</code> usa uma string de formato. <code>%s</code> apresenta texto, <code>%d</code> um inteiro, <code>%.2f</code> um número de ponto flutuante com duas casas e <code>%n</code> uma quebra de linha apropriada ao ambiente. O tipo do argumento precisa ser compatível com o formato. Para tornar os exemplos previsíveis, usamos <code>Locale.US</code> quando esperamos ponto decimal.</p>
+<pre><code>double nota1 = 6.0, nota2 = 7.0, nota3 = 8.0;
+double media = (nota1 + nota2 + nota3) / 3.0;
+System.out.printf(java.util.Locale.US, "Média: %.2f%n", media);
+System.out.println("Soma: " + (5 + 10));</code></pre>
+<p>O operador <code>+</code> também concatena textos. A avaliação segue a expressão: <code>"Soma: " + 5 + 10</code> produz <code>Soma: 510</code>; os parênteses do exemplo produzem <code>Soma: 15</code>. As sequências <code>\n</code>, <code>\t</code>, <code>\"</code> e <code>\\</code> representam, respectivamente, quebra de linha, tabulação, aspas e barra invertida. Comentários com <code>//</code> ou <code>/* ... */</code> documentam o raciocínio e não fazem parte da saída.</p>
+<h2 id="secao-14">14. Entrada com Scanner</h2>
+<p><code>Scanner</code> está em <code>java.util</code>. Um <code>import java.util.Scanner;</code> permite usar o nome curto; também é possível escrever o nome completo da classe. O import resolve nomes, sem iniciar a leitura. Crie uma instância vinculada a <code>System.in</code> e escolha o método conforme a entrada. <code>nextInt</code> lê inteiro, <code>nextDouble</code> lê decimal, <code>next</code> lê um token e <code>nextLine</code> lê o restante da linha.</p>
+<pre><code>import java.util.Locale;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in).useLocale(Locale.US);
+        String nome = entrada.nextLine();
+        double nota = entrada.nextDouble();
+        System.out.printf(Locale.US, "%s: %.1f%n", nome, nota);
+    }
+}</code></pre>
+<p>Forneça, por exemplo, <code>Ana</code> em uma linha e <code>8.5</code> na seguinte. No Playground, preencha a caixa de entrada antes de executar: esse texto é disponibilizado ao <code>System.in</code>. A ausência de dados não deve ser interpretada como zero. Entradas esgotadas causam erro se o programa tenta ler mais; entradas incompatíveis podem causar <code>InputMismatchException</code>. Verifique com <code>hasNextInt()</code> ou trate a conversão quando for necessário aceitar tentativas inválidas.</p>
+<p>Depois de <code>nextInt()</code>, uma chamada a <code>nextLine()</code> pode encontrar apenas o fim da mesma linha e devolver texto vazio. Consuma o restante da linha antes de pedir o próximo texto, ou use somente <code>nextLine()</code> e converta os valores. Por exemplo, em uma transferência bancária, o número do menu é lido antes do nome do destinatário. Criar vários scanners sobre <code>System.in</code> torna essa coordenação mais difícil. Compartilhe uma instância.</p>
+<p>Fechar um <code>Scanner</code> também fecha o recurso de entrada associado, quando ele é fechável. Um scanner sobre arquivo deve ter seu ciclo de vida controlado, normalmente com try-with-resources. Um scanner sobre <code>System.in</code> não deve ser fechado por um método auxiliar que devolve o controle para outras leituras. Isso corrige a simplificação do slide de que sempre fechar imediatamente evita necessariamente um vazamento.</p>
+<h2 id="secao-15">15. Entrada por tokens e por linhas: escolha uma estratégia</h2>
+<p>O Scanner pode separar a entrada em tokens, normalmente usando espaços em branco, ou ler linhas inteiras. <code>next()</code> encontra apenas um token; um nome completo exige <code>nextLine()</code>. <code>hasNextDouble()</code> verifica se o próximo token pode ser lido como decimal, mas não o consome. Se você repete a leitura sem consumir o token inválido, pode ficar preso verificando o mesmo texto.</p>
+<pre tabindex="0"><code>int idade = entrada.nextInt();
+entrada.nextLine(); // consome o restante da linha da idade
+String nomeCompleto = entrada.nextLine();</code></pre>
+<p>A linha de limpeza faz sentido quando o contrato estabelece que o nome está na linha seguinte. Se a entrada puder ter idade e nome na mesma linha, ela descartaria texto útil. Outra estratégia é ler tudo por linha e converter com Integer.parseInt ou Double.parseDouble, tratando NumberFormatException. Escolha uma estratégia coerente com o formato de entrada.</p>
+<p>Use uma instância de Scanner para System.in. No Playground, toda a entrada precisa estar escrita antes de iniciar; não há terminal interativo para responder depois. Em um console local, a leitura pode esperar que você digite. Fim de entrada é diferente de entrada inválida, e nenhum dos dois é automaticamente zero.</p>
+<p><code>useLocale(Locale.US)</code> define a interpretação numérica do Scanner. ParseDouble tem sua própria sintaxe e não passa a aceitar vírgulas por causa dessa configuração. Trocar todas as vírgulas por pontos sem um contrato também é perigoso: uma vírgula pode ser separador de grupo ou parte de outro campo. Informe o formato aceito e peça nova entrada ou encerre de forma clara.</p>
+<p>Feche recursos de que o programa é dono. Um Scanner criado sobre arquivo costuma usar try-with-resources. Fechar um Scanner de System.in encerra também a entrada associada; um método auxiliar não deve fazer isso enquanto outras partes do programa ainda precisam ler. O comportamento de leitura, localização e fechamento está na <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Scanner.html">documentação de Scanner</a>.</p>
+<h2 id="secao-16">16. Math e números aleatórios</h2>
+<p><code>Math</code> oferece métodos estáticos de uso direto: <code>Math.abs(-3)</code> produz 3; <code>Math.max(5, 7)</code> produz 7; <code>Math.min</code> encontra o menor; <code>Math.pow(2, 3)</code> produz 8.0; <code>Math.sqrt(16)</code> produz 4.0. <code>Math.PI</code> e <code>Math.E</code> são constantes. Os métodos trigonométricos usam radianos. Converta graus com <code>Math.toRadians</code> e radianos com <code>Math.toDegrees</code>.</p>
+<p><code>ceil</code> retorna o inteiro matemático mais próximo na direção de mais infinito; <code>floor</code>, na direção de menos infinito. Ambos retornam <code>double</code> nessa API. Para -2.3, os resultados são -2.0 e -3.0, respectivamente. <code>Math.round(double)</code> retorna <code>long</code>. Arredondar, truncar e apenas formatar a exibição são operações diferentes.</p>
+<pre><code>java.util.Random gerador = new java.util.Random(42);
+int dado = gerador.nextInt(6) + 1;
+System.out.println("Dado: " + dado);</code></pre>
+<p><code>nextInt(6)</code> produz valores de 0 a 5; somar 1 desloca o intervalo para 1 a 6. O limite precisa ser positivo. Uma semente fixa facilita repetir um teste com a mesma sequência de chamadas. Para uma nova sequência em cada execução, use <code>new Random()</code>. Esses exemplos são de aleatoriedade para exercícios, não de geração de senhas ou chaves criptográficas. <code>Math.random()</code> produz um <code>double</code> no intervalo de 0 incluído a 1 excluído.</p>
+<h2 id="secao-17">17. Consultar as operações matemáticas do material</h2>
+<p>Na tabela de métodos da apostila, <code>sin</code>, <code>cos</code> e <code>tan</code> recebem ângulos em radianos e retornam seno, cosseno e tangente. <code>asin</code>, <code>acos</code> e <code>atan</code> fazem as operações inversas e devolvem ângulos em radianos. <code>Math.sin(Math.toRadians(30))</code> aproxima 0.5; passar 30 diretamente significa 30 radianos. Os resultados de ponto flutuante devem ser interpretados como aproximações.</p>
+<p><code>Math.exp(x)</code> calcula e elevado a x; <code>Math.log(x)</code> calcula o logaritmo natural. Observe o domínio: raiz quadrada de um número negativo ou arco-seno de um valor fora de -1 a 1 produz <code>NaN</code> para esses argumentos reais. Nem toda operação matemática inválida gera uma exceção Java. <code>Double.isNaN</code> e <code>Double.isFinite</code> ajudam a reconhecer resultados que não atendem à regra do exercício.</p>
+<p>As constantes, parâmetros e tipos de retorno constam na <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Math.html">documentação de Math</a>. Antes de usar um método, confira o nome exato: o método para converter radianos em graus é <code>toDegrees</code>. A grafia incorreta em um exemplo diagramado não cria uma operação diferente na linguagem.</p>
+<h2 id="secao-18">18. Math e sorteios: intervalos, domínios e repetibilidade</h2>
+<p>Uma fórmula precisa respeitar o domínio das funções. <code>Math.sqrt(-1)</code> produz NaN; <code>Math.log(0)</code> produz infinito negativo; <code>Math.sin</code> recebe radianos. Não suponha que uma chamada sem exceção produziu um valor adequado. Verifique argumentos e resultado conforme o contrato.</p>
+<p>Arredondar para cima, para baixo e truncar são operações diferentes: para −2.3, ceil resulta em −2.0, floor em −3.0 e cast para int em −2. Para calcular caixas necessárias para 13 itens em caixas de 6, <code>(int) Math.ceil(13 / 6.0)</code> resulta em 3. Usar 13 / 6 faria a divisão inteira antes de ceil. Consulte os contratos da <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Math.html">API de Math</a> quando houver limites especiais.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t2-sorteio" data-java-program>import java.util.Random;
+
+public class Main {
+    public static void main(String[] args) {
+        Random gerador = new Random(42);
+        for (int i = 0; i &lt; 5; i++) {
+            int dado = gerador.nextInt(6) + 1;
+            System.out.println(dado);
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t2-sorteio">3
+4
+1
+3
+1</samp></pre></figure>
+<p>A semente fixa e a mesma sequência de chamadas tornam o exercício repetível com java.util.Random. A faixa [0, 6) é deslocada para [1, 7), que contém 1 a 6. Para uma faixa inteira de mínimo a máximo inclusivos, a ideia é <code>nextInt(maximo - minimo + 1) + minimo</code>, desde que a largura seja positiva e representável em int. Limites grandes exigem outro tratamento para evitar overflow na largura. Valide os limites antes de generalizar uma fórmula pequena.</p>
+<p>Não use Random para segredos, tokens de acesso ou senhas. Para necessidades de segurança, existe SecureRandom, dentro de um projeto que também precisa definir tamanho, armazenamento e ciclo de vida do segredo. Aqui, o objetivo é sorteio didático e teste reproduzível. Veja a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Random.html">API de Random</a> para seus limites e garantias.</p>
+<h2 id="secao-19">19. Decimais e dinheiro: cálculo, arredondamento e apresentação</h2>
+<p><code>0.1 + 0.2</code> pode aparecer como <code>0.30000000000000004</code> em double. Muitos decimais finitos na base 10 não são finitos na base 2. Isso não torna double inútil: significa que o tipo e a comparação precisam acompanhar o problema. Para medidas, defina uma tolerância coerente com a escala e a precisão necessárias; não copie um epsilon arbitrário para qualquer situação.</p>
+<p>Para quantias com duas casas fixas, centavos inteiros são uma opção, desde que você controle overflow e defina como tratar frações de centavo. BigDecimal permite aritmética decimal com regras explícitas. Crie o valor a partir de texto decimal ou de uma representação apropriada, em vez de importar uma aproximação de double com <code>new BigDecimal(0.1)</code>.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t2-dinheiro" data-java-program>import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+public class Main {
+    public static void main(String[] args) {
+        BigDecimal preco = new BigDecimal("19.90");
+        BigDecimal quantidade = new BigDecimal("3");
+        BigDecimal desconto = new BigDecimal("0.10");
+        BigDecimal total = preco.multiply(quantidade)
+                .multiply(BigDecimal.ONE.subtract(desconto))
+                .setScale(2, RoundingMode.HALF_UP);
+        System.out.println(total.toPlainString());
+        System.out.println(new BigDecimal("1")
+                .divide(new BigDecimal("3"), 2, RoundingMode.HALF_UP));
+        System.out.println(new BigDecimal("2.0")
+                .compareTo(new BigDecimal("2.00")) == 0);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t2-dinheiro">53.73
+0.33
+true</samp></pre></figure>
+<p>A política HALF_UP é uma escolha deste exercício, não uma regra universal de negócio. A divisão 1/3 precisa de escala/arredondamento para essa representação finita; sem uma política apropriada, uma divisão decimal não terminante pode lançar ArithmeticException. BigDecimal é imutável: use o valor retornado. <code>equals</code> considera também a escala; para igualdade numérica, <code>compareTo</code> igual a zero tem outra finalidade. Consulte a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/math/BigDecimal.html">API de BigDecimal</a>.</p>
+<p>Por fim, <code>printf("%.2f", valor)</code> formata a exibição de um ponto flutuante; isso não altera o valor armazenado nem define sozinho uma política de cálculo. Separe representação, operação e apresentação. É essa separação que permite conferir por que um relatório mostra uma quantia diferente da esperada.</p>
+<h2 id="secao-20">20. Laboratório completo: média com validação</h2>
+<p>Leia o contrato antes do código: nome completo não vazio, três notas finitas entre 0 e 10 e limite de aprovação igual a 7. A saída apresenta duas casas, mas a classificação usa a média calculada antes da formatação. Uma média real de 6.999 não vira aprovação porque a apresentação arredondou para 7.00. Se a regra exigir arredondar antes de classificar, ela deve dizer como.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t2-media" data-java-program>import java.util.Locale;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in).useLocale(Locale.US);
+        if (!entrada.hasNextLine()) {
+            System.out.println("Nome ausente.");
+            return;
+        }
+        String nome = entrada.nextLine().trim();
+        if (nome.isEmpty()) {
+            System.out.println("Nome vazio.");
+            return;
+        }
+        double soma = 0.0;
+        for (int i = 1; i &lt;= 3; i++) {
+            if (!entrada.hasNextDouble()) {
+                System.out.println("Nota " + i + " ausente ou inválida.");
+                return;
+            }
+            double nota = entrada.nextDouble();
+            if (!Double.isFinite(nota) || nota &lt; 0 || nota &gt; 10) {
+                System.out.println("Nota " + i + " fora do intervalo de 0 a 10.");
+                return;
+            }
+            soma += nota;
+        }
+        final double MEDIA_MINIMA = 7.0;
+        double media = soma / 3.0;
+        String situacao = media &gt;= MEDIA_MINIMA ? "Aprovado" : "Revisar conteúdo";
+        System.out.printf(Locale.US, "%s | média: %.2f | %s%n", nome, media, situacao);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t2-media">Ana Silva | média: 7.00 | Aprovado</samp></pre></figure>
+<p>Entrada para a saída acima:</p><pre tabindex="0"><samp>Ana Silva
+6 7 8</samp></pre>
+<p>O laço repete a leitura três vezes; <code>i</code> identifica a nota atual. <code>return</code> encerra main após informar um problema, de modo que uma média parcial não é apresentada como válida. A expressão condicional escolhe um texto conforme o resultado booleano. Decisões e laços recebem capítulos próprios nos temas 4 e 5; aqui, eles tornam o exemplo completo e verificável.</p>
+<div class="table-responsive"><table class="table"><caption>Casos que você deve reproduzir, mantendo Ana Silva na primeira linha</caption><thead><tr><th>Notas</th><th>Resultado esperado</th><th>O que verifica</th></tr></thead><tbody><tr><td>6 7 8</td><td>Média 7.00, Aprovado.</td><td>Caso comum e limite de aprovação.</td></tr><tr><td>0 0 0</td><td>Média 0.00, Revisar conteúdo.</td><td>Limite inferior válido.</td></tr><tr><td>10 10 10</td><td>Média 10.00, Aprovado.</td><td>Limite superior válido.</td></tr><tr><td>−1 7 8</td><td>Nota 1 fora do intervalo...</td><td>Negativo inválido; digite o sinal ASCII -.</td></tr><tr><td>6 texto 8</td><td>Nota 2 ausente ou inválida.</td><td>Token incompatível.</td></tr><tr><td>6 7</td><td>Nota 3 ausente ou inválida.</td><td>Entrada esgotada.</td></tr><tr><td>NaN 7 8</td><td>Nota 1 fora do intervalo...</td><td>Valor não finito.</td></tr></tbody></table></div>
+<h2 id="secao-21">21. Laboratório completo: conversão com unidades explícitas</h2>
+<p>A cotação do exercício informa quantos reais correspondem a um dólar. Portanto, dólares = reais / cotação. Anotar as unidades ajuda a evitar inverter a conta. Não estamos consultando um mercado real; o enunciado fornece todos os dados. O exemplo usa double para praticar fundamentos e não representa um motor financeiro com taxas, spreads e política de liquidação.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t2-conversor" data-java-program>import java.util.Locale;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner entrada = new Scanner(System.in).useLocale(Locale.US);
+        if (!entrada.hasNextDouble()) {
+            System.out.println("Valor em reais ausente ou inválido.");
+            return;
+        }
+        double reais = entrada.nextDouble();
+        if (!entrada.hasNextDouble()) {
+            System.out.println("Cotação ausente ou inválida.");
+            return;
+        }
+        double cotacao = entrada.nextDouble();
+        if (!Double.isFinite(reais) || reais &lt; 0
+                || !Double.isFinite(cotacao) || cotacao &lt;= 0) {
+            System.out.println("Use reais não negativos e cotação positiva, ambos finitos.");
+            return;
+        }
+        double dolares = reais / cotacao;
+        if (!Double.isFinite(dolares)) {
+            System.out.println("Resultado fora do intervalo representável.");
+            return;
+        }
+        System.out.printf(Locale.US, "USD %.2f%n", dolares);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t2-conversor">USD 20.00</samp></pre></figure>
+<p>Forneça <code>100 5</code>. Teste também <code>0 5</code>, que produz USD 0.00; <code>100 0</code>, que deve ser recusado; <code>-10 5</code>, igualmente recusado; e apenas <code>100</code>, que informa cotação ausente ou inválida. A validação do resultado cobre o caso em que números de entrada finitos ainda produzem um quociente infinito.</p>
+<h2 id="secao-22">22. Revisar sem adivinhar: uma pequena matriz de testes</h2>
+<p>Uma saída de referência só verifica o caso que a produziu. Antes de dizer que o programa está pronto, cubra pelo menos uma entrada válida comum, cada fronteira da regra, uma entrada malformada e uma entrada ausente. Para cálculos, use números que você consiga conferir por outro caminho, como papel, decomposição da conta ou uma segunda fórmula independente.</p>
+<p>No laboratório da média, 7 precisa ser aceito porque o contrato diz “a partir de 7”. Testar apenas média 9 não distingue &gt; de &gt;=. No conversor, a cotação zero precisa ser rejeitada antes da divisão. No sorteio, conferir que um resultado ficou entre 1 e 6 não prova toda a distribuição, mas detecta erros óbvios de deslocamento. Cada teste responde a uma pergunta específica.</p>
+<p>Ao corrigir uma falha, guarde o caso que a revelou. Um teste pequeno que verifica o erro real vale mais do que repetir muitas vezes a mesma entrada feliz. Em programas maiores, automatize as verificações com testes de unidade e integração; o tema 14 desenvolve esse caminho. Aqui, as tabelas de entradas e saídas já permitem uma revisão reproduzível.</p>
+<details><summary>Conferir uma previsão de expressões</summary><dl><dt><code>5 / 2</code></dt><dd>2, porque ambos os operandos são inteiros.</dd><dt><code>5 / 2.0</code></dt><dd>2.5, por divisão em ponto flutuante.</dd><dt><code>"Total: " + 5 + 2</code></dt><dd>Total: 52, pela concatenação da esquerda para a direita.</dd><dt><code>"Total: " + (5 + 2)</code></dt><dd>Total: 7, porque a soma está agrupada.</dd><dt><code>!false &amp;&amp; (3 &lt; 2 || 4 == 4)</code></dt><dd>true: a negação é verdadeira e o grupo também.</dd><dt><code>-7 / 2</code> e <code>-7 % 2</code></dt><dd>−3 e −1. A divisão trunca em direção a zero; o resto conserva o sinal do dividendo quando não é zero.</dd></dl></details>
+<h2 id="secao-23">23. Aplicar e conferir</h2>
+<p>Calcule uma média com três valores, um aumento percentual e uma conversão de reais para dólares. A cotação do exercício é fornecida pelo enunciado, não uma consulta de mercado. Teste cotação zero e valores negativos conforme a regra que você definiu. Anote também a diferença entre ler <code>8.5</code> com <code>Locale.US</code> e usar a configuração regional padrão. Uma mensagem de saída deve dizer o que foi calculado e qual unidade está sendo apresentada.</p>
+<p><a href="playground.html?ex=media">Praticar média</a>, <a href="playground.html?ex=entrada">Scanner e fim de linha</a> e <a href="playground.html?ex=dado">sorteio com Random</a>. Para conferir comportamentos de entrada, consulte a <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Scanner.html">API de Scanner</a>.</p>
+<p id="extraActivities2">Outras atividades deste tema: <a href="playground.html?ex=incremento">Incremento e ordem de avaliação</a> · <a href="playground.html?ex=leitura-validada">Validar e repetir a leitura</a>.</p>
+<h2 id="secao-24">24. Prática progressiva, resoluções e revisão final</h2>
+<ol><li><strong>Aquecimento:</strong> preveja o resultado de 9 / 4, 9 / 4.0, (double) (9 / 4), 9 % 4 e “R: ” + 9 + 4. Só depois execute.</li><li><strong>Conversão de temperatura:</strong> transforme 25 graus Celsius em Fahrenheit pela fórmula F = C × 9/5 + 32. O resultado deve ser 77.0. Teste também 0 e −40.</li><li><strong>Média ponderada:</strong> use notas 6, 7 e 8 com pesos 2, 3 e 5. Some os produtos e divida pela soma dos pesos. Defina o que fazer com pesos negativos ou soma zero antes de criar entrada variável.</li><li><strong>Leitura:</strong> modifique o laboratório da média para ler o nome depois das notas, em outra linha. Explique por que precisa tratar a mudança entre tokens e linhas.</li><li><strong>Compra fictícia:</strong> repita o exemplo BigDecimal com quantidade 2 e desconto 5%. A política é HALF_UP, duas casas no resultado final. Mostre o valor antes e depois do desconto.</li><li><strong>Investigação:</strong> explique por que double resultado = 9 / 4 não guarda 2.25. Corrija a expressão em duas formas diferentes.</li></ol>
+<details><summary>Conferir respostas do aquecimento</summary><p>As respostas são 2, 2.25, 2.0, 1 e R: 94. Um cast depois da divisão não recupera a fração perdida. Corrija com 9.0 / 4 ou (double) 9 / 4. Não altere todos os tipos sem entender onde a operação mudou.</p></details>
+<details><summary>Conferir solução: temperaturas</summary><figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t2-temperatura" data-java-program>public class Main {
+    public static void main(String[] args) {
+        double celsius = 25;
+        double fahrenheit = celsius * (9.0 / 5.0) + 32;
+        System.out.println(fahrenheit);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t2-temperatura">77.0</samp></pre></figure><p>Para 0, espere 32.0; para −40, espere −40.0. O agrupamento <code>(9 / 5)</code> faria divisão inteira e produziria uma razão incorreta. Usar 9.0 / 5.0 deixa a intenção explícita.</p></details>
+<details><summary>Conferir solução: média ponderada e compra</summary><figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t2-ponderada" data-java-program>import java.util.Locale;
+
+public class Main {
+    public static void main(String[] args) {
+        double nota1 = 6, nota2 = 7, nota3 = 8;
+        double peso1 = 2, peso2 = 3, peso3 = 5;
+        double somaPesos = peso1 + peso2 + peso3;
+        double media = (nota1 * peso1 + nota2 * peso2 + nota3 * peso3) / somaPesos;
+        System.out.printf(Locale.US, "Média ponderada: %.2f%n", media);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t2-ponderada">Média ponderada: 7.30</samp></pre></figure><p>Os pesos fixos deste programa são válidos e somam 10. Ao receber pesos externos, valide que sejam finitos e não negativos, que a soma seja positiva e finita e que o cálculo final continue representável. Para a compra: 19.90 × 2 = 39.80; 39.80 × 0.95 = 37.81.</p></details>
+<details><summary>Revisão conceitual comentada</summary><dl><dt>String é primitivo?</dt><dd>Não: é uma classe. “123” e 123 representam valores de tipos diferentes.</dd><dt>final torna um array imutável?</dt><dd>Não: impede reatribuir aquela variável, mas permite alterar seus elementos.</dd><dt>Todo erro matemático gera uma exceção?</dt><dd>Não: ponto flutuante pode produzir NaN e infinitos; inteiros podem sofrer overflow silencioso.</dd><dt>Por que validar NaN explicitamente?</dt><dd>Comparações como nota &lt; 0 ou nota &gt; 10 não o rejeitam; Double.isFinite expressa o contrato do laboratório.</dd><dt>Por que não arredondar toda conta imediatamente?</dt><dd>Arredondamentos intermediários podem mudar o resultado. A regra deve definir o momento e o modo.</dd><dt>O mesmo Scanner aceita ponto e vírgula automaticamente?</dt><dd>O reconhecimento depende da localização e do formato aceito; informe o contrato em vez de pressupor.</dd></dl></details>
+<p><strong>Critério para avançar:</strong> explique o tipo de cada variável, calcule a saída antes de executar e trate dados ausentes, inválidos e de fronteira. Refaça ao menos um laboratório sem copiar. Continue em <a href="tema-03.html">Strings e manipulação de textos</a> para aprofundar nomes, conversões e comparação de conteúdo.</p><h2 id="fontes">Fontes e próximos passos</h2><p>Base preservada da apostila <a href="assets/materiais/07DesenvolvimentodeAplicaes.pdf">Desenvolvimento de aplicações</a>, páginas 26 a 40. A ampliação inclui laboratórios próprios e referências oficiais nos assuntos correspondentes. Para consultar outras versões, confira a versão indicada na documentação.</p><ul><li><a href="https://dev.java/learn/first-steps/">Dev.java · primeiros passos</a></li><li><a href="https://docs.oracle.com/en/java/javase/17/docs/api/index.html">Biblioteca padrão · Java 17</a></li><li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/index.html">Especificação da linguagem · Java 17</a></li><li><a href="extra.html">Materiais, projetos e laboratórios da trilha</a></li></ul>
+</article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-01.html">Anterior · Tema 1</a><a class="btn btn-primary" href="tema-03.html">Próximo · Tema 3</a></nav></div></div></main>
+<footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <p class="mb-1">
+            <a href="index.html">Início</a> ·
+            <a href="cont.html">Conteúdo</a> ·
+            <a href="playground.html">Playground</a> ·
+            <a href="quiz.html">Quiz</a> ·
+            <a href="faq.html">FAQ</a> · <a href="extra.html">Extra</a>
+        </p>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+
+
+
+</body>
+</html>
