@@ -130,3 +130,8 @@
   /* Exemplo da página inicial: sem a margem de capítulo */
   .home-hero .lesson-example { margin-block: 0 1rem; }
 }
+
+/* Etapa 2 · botão Copiar dentro da barra do exemplo */
+@media screen {
+  :is(.lesson-article, .home-hero) .lesson-example > figcaption.has-copy { padding-block: 0.3rem; padding-right: 0.5rem; }
+}

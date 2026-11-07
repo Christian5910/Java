@@ -891,3 +891,65 @@ textarea.code-editor {
 }
 
 }
+
+/* =========================================================
+   Etapa 2 · Blocos de código: cores de sintaxe e botão Copiar
+   O script assets/js/code-blocks.js só acrescenta classes e um botão;
+   sem ele, os blocos continuam como na etapa 1.
+   ========================================================= */
+:root {
+  --tok-k: #FFB454;  /* palavras reservadas */
+  --tok-t: #C4B5FD;  /* tipos e classes */
+  --tok-s: #A5D6A7;  /* textos e caracteres */
+  --tok-n: #8CC8FF;  /* números */
+  --tok-c: #8E9AB3;  /* comentários */
+  --tok-a: #F0D58A;  /* anotações */
+}
+.tok-k { color: var(--tok-k); font-weight: 600; }
+.tok-t { color: var(--tok-t); }
+.tok-s { color: var(--tok-s); }
+.tok-n { color: var(--tok-n); }
+.tok-c { color: var(--tok-c); font-style: italic; }
+.tok-a { color: var(--tok-a); }
+
+@media screen {
+  .code-copy {
+    margin-left: auto; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+    min-height: 44px; min-width: 6.5rem; padding: 0 0.9rem;
+    background: transparent; color: #FFD7A1; border: 1px solid var(--line-strong); border-radius: 0.375rem;
+    font: inherit; font-size: 0.85rem; font-weight: 600; line-height: 1; cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  .code-copy::before {
+    content: "\f290"; font-family: "bootstrap-icons" !important; font-style: normal; font-weight: 400; font-size: 0.95rem;
+  }
+  .code-copy:hover { background: rgba(245, 158, 11, 0.14); border-color: var(--color-accent); color: #FFFFFF; }
+  .code-copy[data-state="done"] { color: var(--tok-s); border-color: var(--tok-s); }
+  .code-copy[data-state="done"]::before { content: "\f272"; }
+  .code-copy[data-state="fail"] { color: #FFB4A8; border-color: #FFB4A8; }
+
+  /* Blocos soltos (fora de figure) ganham a mesma barra de cabeçalho dos exemplos */
+  .code-bar {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+    margin-top: 1.25rem; padding: 0.3rem 0.5rem 0.3rem 1rem;
+    background: #17213A; border: 1px solid var(--line-strong); border-bottom: 0;
+    border-left: 4px solid var(--color-accent); border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  }
+  .code-bar-title { display: flex; align-items: center; gap: 0.6rem; color: #D3DAE8; font-size: 0.85rem; font-weight: 600; }
+  .code-bar-title::before {
+    content: "\f2c6"; font-family: "bootstrap-icons" !important; font-weight: 400; font-size: 1rem; line-height: 1;
+    color: var(--color-accent-strong);
+  }
+  .code-bar-shell .code-bar-title::before { content: "\f5c3"; }
+  .code-bar-other .code-bar-title::before { content: "\f362"; }
+  .study-text pre.has-bar { margin-top: 0; border-top-left-radius: 0; border-top-right-radius: 0; }
+
+  @media (max-width: 550px) {
+    .code-copy { min-width: 5.5rem; }
+  }
+}
+
+@media print {
+  .code-bar, .code-copy { display: none !important; }
+  .tok { color: inherit !important; font-weight: inherit; font-style: inherit; }
+}

@@ -1,4 +1,4 @@
-java-1.6.1
+java-1.6.2
 ./
 index.html
 cont.html
@@ -10,6 +10,7 @@ runtime.html
 style.css
 manifest.json
 assets/js/app.js
+assets/js/code-blocks.js
 assets/js/java-runtime.js
 assets/js/playground.js
 assets/js/pwa-register.js
