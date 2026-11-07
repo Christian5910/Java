@@ -632,3 +632,262 @@ textarea.code-editor { font: 0.9rem/1.65 Consolas, 'Cascadia Code', monospace; m
   body.print-playground > :not(#printReport) { display: none !important; }
   body.print-playground #printReport { display: block; white-space: pre-wrap; overflow-wrap: anywhere; font: 10pt/1.5 monospace; color: black; }
 }
+
+/* =========================================================
+   Etapa 1 · Camada de layout
+   Forma única para cards, botões em grade, links, código,
+   Playground e página inicial. Esta camada só vale em tela;
+   a impressão continua nas regras acima. Para desfazer a etapa,
+   basta remover este bloco (e o bloco equivalente em lessons.css).
+   ========================================================= */
+:root {
+  --radius-lg: 16px;  /* contêineres: cards, painéis, grupos */
+  --radius-md: 12px;  /* itens dentro de um contêiner */
+  --radius-sm: 8px;   /* código e campos */
+  --line: #2A3C5E;
+  --line-strong: #3A4F78;
+  --font-code: Consolas, 'Cascadia Code', 'Cascadia Mono', Menlo, 'DejaVu Sans Mono', ui-monospace, monospace;
+}
+
+@media screen {
+
+/* ---------- Cabeçalho de página ---------- */
+.page-header {
+  max-width: 52rem; margin-inline: auto;
+  padding-bottom: 1.75rem; margin-bottom: 2.5rem !important;
+  border-bottom: 1px solid var(--line);
+}
+.page-header h1 { letter-spacing: -0.01em; margin-bottom: 0.6rem; }
+.page-header p { max-width: 62ch; margin: 0 auto; line-height: 1.6; }
+
+/* Botões e alternativas do quiz no mesmo padrão do resto do site */
+.next-button, .restart-quiz { border-radius: 0.375rem; padding: 0.5rem 1.5rem; }
+.option-card { border-radius: var(--radius-md); }
+
+/* ---------- Superfícies: uma borda, dois raios ---------- */
+.surface-panel {
+  background: var(--color-surface); border: 1px solid var(--line);
+  border-radius: var(--radius-lg); padding: 1.25rem;
+}
+.card, .pillar-card, .topic-group, .gemini-panel {
+  border: 1px solid var(--line); border-radius: var(--radius-lg);
+}
+.criterion-card, .comparison-card, .totals-box, .accordion-item {
+  border: 1px solid var(--line); border-radius: var(--radius-md);
+}
+.comparison-card { border-width: 1px; }
+.comparison-card:hover { border-color: var(--color-accent); }
+/* Cards que não são clicáveis não se mexem ao passar o mouse. */
+.pillar-card, .pillar-card:hover { transform: none; box-shadow: none; }
+.accordion-item, .accordion-item:hover { transform: none; box-shadow: none; }
+.accordion-item { margin-bottom: 0.75rem; }
+
+/* ---------- Botões de tema em grade ---------- */
+.row:has(> .topic-item) {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem; margin: 0;
+}
+.row:has(> .topic-item) > .topic-item { width: auto; max-width: none; margin: 0; padding: 0; }
+.btn-topic.btn {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  min-height: 4.5rem; padding: 1rem 1.25rem !important;
+  text-align: left; font-weight: 600; line-height: 1.4;
+  border-width: 1px; border-radius: var(--radius-md);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.btn-topic.btn::after {
+  content: "\f285"; font-family: "bootstrap-icons" !important; font-style: normal; font-weight: 400;
+  flex-shrink: 0; line-height: 1; color: var(--color-accent-strong);
+}
+.btn-topic.btn:hover, .btn-topic.btn:focus-visible { transform: none; box-shadow: none; }
+.btn-topic > span { flex: 1 1 auto; }
+.topic-group .btn-topic { background: var(--color-bg-soft); }
+.topic-group { margin-block: 1.25rem; }
+
+/* ---------- Grupos de botões: colunas de mesma largura ---------- */
+.btn-grid, .playground-actions {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(11.5rem, 16rem));
+  gap: 0.75rem; align-items: stretch; margin-block: 1rem;
+}
+.btn-grid .btn, .playground-actions .btn { width: 100%; text-align: center; }
+.modal-footer .btn { min-width: 8rem; }
+
+/* Barra de busca e ações: tudo centralizado no mesmo eixo do cabeçalho */
+.topic-search + .btn-grid { grid-template-columns: repeat(auto-fit, minmax(11.5rem, 16rem)); justify-content: center; }
+.topic-search ~ p[role="status"] { text-align: center; }
+
+/* ---------- Links ---------- */
+:is(.study-text, .content-plain, .extra-intro, .activity-copy, .playground-intro,
+    .home-about, .home-note, .accordion-body, .modal-body, .criterion-card) a:not(.btn) {
+  color: #FFD7A1;
+  text-decoration-line: underline; text-decoration-thickness: 1px;
+  text-decoration-color: rgba(255, 215, 161, 0.45); text-underline-offset: 0.22em;
+  border-radius: 3px;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease, background-color 0.15s ease;
+}
+:is(.study-text, .content-plain, .extra-intro, .activity-copy, .playground-intro,
+    .home-about, .home-note, .accordion-body, .modal-body, .criterion-card) a:not(.btn):hover {
+  color: #FFFFFF; text-decoration-thickness: 2px; text-decoration-color: var(--color-accent-strong);
+  background: rgba(245, 158, 11, 0.14);
+}
+:is(.study-text, .content-plain, .extra-intro, .activity-copy, .playground-intro,
+    .home-about, .home-note, .accordion-body, .modal-body) a[href^="http"]:not(.btn)::after {
+  content: "\f1c5"; font-family: "bootstrap-icons" !important; font-style: normal; font-weight: 400;
+  display: inline-block; text-decoration: none; margin-left: 0.3em; font-size: 0.72em; vertical-align: 0.05em; opacity: 0.85;
+}
+:is(.study-text, .content-plain, .extra-intro, .activity-copy, .playground-intro,
+    .home-about, .home-note, .accordion-body, .modal-body) a[download]:not(.btn)::before {
+  content: "\f30a"; font-family: "bootstrap-icons" !important; font-style: normal; font-weight: 400;
+  display: inline-block; text-decoration: none; margin-right: 0.35em; font-size: 0.85em; vertical-align: -0.05em;
+}
+.navbar .nav-link:hover { box-shadow: inset 0 -3px 0 rgba(217, 119, 6, 0.55); }
+.site-footer p a { display: inline-block; padding: 0.3rem 0.2rem; }
+.navbar { border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+
+/* ---------- Texto: alinhado à esquerda, sem hifenização forçada ---------- */
+.study-text p, .activity-copy p, .playground-intro { text-align: left; hyphens: manual; }
+
+/* ---------- Código ---------- */
+.study-text pre, .activity-code, .java-output, textarea.code-editor, #javaInput { font-family: var(--font-code); }
+.study-text pre, .activity-code {
+  border: 1px solid var(--line-strong); border-left: 4px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+}
+:is(.study-text, .content-plain, .extra-intro, .activity-copy, .playground-intro,
+    .accordion-body, .home-about, .home-note) :not(pre) > code {
+  background: rgba(255, 215, 161, 0.09); border: 1px solid rgba(255, 215, 161, 0.18);
+  border-radius: 6px; padding: 0.08em 0.4em; font-family: var(--font-code); font-size: 0.88em;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+
+/* ---------- Blocos que abrem e fecham ---------- */
+main details:not(.lesson-toc details) {
+  background: var(--color-bg-soft); border: 1px solid var(--line);
+  border-radius: var(--radius-md); padding: 0 1rem; margin-block: 0.75rem;
+}
+main details:not(.lesson-toc details) > summary {
+  display: flex; align-items: center; gap: 0.6rem; list-style: none;
+  font-weight: 600; color: #FFD7A1; padding-block: 0.5rem;
+}
+main details:not(.lesson-toc details) > summary::-webkit-details-marker { display: none; }
+main details:not(.lesson-toc details) > summary::before {
+  content: "\f285"; font-family: "bootstrap-icons" !important; font-size: 0.8rem; line-height: 1;
+  color: var(--color-accent-strong); transition: transform 0.15s ease;
+}
+main details[open]:not(.lesson-toc details) > summary::before { transform: rotate(90deg); }
+main details[open]:not(.lesson-toc details) > summary { border-bottom: 1px solid var(--line); margin-bottom: 0.75rem; }
+main details:not(.lesson-toc details) > :last-child:not(summary) { margin-bottom: 1rem; }
+
+/* ---------- Tabelas ---------- */
+.study-text .table-responsive { border: 1px solid var(--line); border-radius: var(--radius-md); }
+.study-text .table { margin-bottom: 0; }
+.study-text .table thead th { background: var(--color-secondary); color: #FFFFFF; }
+.study-text .table tbody tr:last-child > * { border-bottom: 0; }
+
+/* ---------- Playground ---------- */
+.playground-intro + hr { display: none; }
+.activity-picker { margin-bottom: 1.5rem; }
+.activity-picker #exerciseCount { margin: 0.5rem 0 0 !important; }
+.activity-picker .activity-navigation {
+  display: grid; grid-template-columns: repeat(2, minmax(10rem, 13rem)) minmax(0, 1fr);
+  gap: 0.75rem; align-items: center; margin: 1rem 0 0;
+}
+.activity-picker .activity-navigation .btn { width: 100%; }
+
+.activity-copy {
+  max-width: none; margin-bottom: 1.5rem !important; padding: 1.5rem 1.75rem;
+  background: var(--color-surface); border: 1px solid var(--line); border-radius: var(--radius-lg);
+  display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  column-gap: 2.5rem; row-gap: 0.5rem; align-content: start;
+}
+.activity-copy > #activityTopic, .activity-copy > #activityTitle, .activity-copy > #activityGoal { grid-column: 1 / -1; }
+.activity-copy > #activityInstructions { grid-column: 1; grid-row: 4 / span 6; }
+.activity-copy > :not(#activityTopic):not(#activityTitle):not(#activityGoal):not(#activityInstructions) { grid-column: 2; }
+.activity-copy:has(> #activityInstructions[hidden]) { grid-template-columns: minmax(0, 1fr); }
+.activity-copy:has(> #activityInstructions[hidden]) > * { grid-column: 1 !important; }
+#activityTopic.text-muted { color: var(--color-accent-strong) !important; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.1rem !important; }
+.activity-copy h3 { font-size: 1rem; font-weight: 700; color: #FFD7A1; margin: 1.25rem 0 0.5rem; }
+.activity-copy > h3:first-of-type { margin-top: 0; }
+.activity-copy #activityInstructions > h3:first-child { margin-top: 0.75rem; }
+.activity-copy > a#topicLink { align-self: start; justify-self: start; }
+
+.playground-editor, .playground-output {
+  background: var(--color-surface); border: 1px solid var(--line);
+  border-radius: var(--radius-lg); padding: 1.25rem;
+}
+label[for="javaCode"] { display: flex; align-items: center; gap: 0.5rem; }
+label[for="javaCode"]::before {
+  content: "\f362"; font-family: "bootstrap-icons" !important; font-weight: 400; color: var(--color-accent-strong);
+}
+textarea.code-editor {
+  background: var(--color-bg); border-left: 4px solid var(--color-accent); border-radius: var(--radius-sm);
+}
+.runtime-status {
+  min-height: 0; padding: 0.65rem 0.9rem; margin-bottom: 1rem;
+  background: var(--color-bg-soft); border: 1px solid var(--line); border-radius: var(--radius-sm);
+}
+.export-row { gap: 1rem; }
+
+/* ---------- Página inicial ---------- */
+.home-hero {
+  display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 3rem; align-items: center; padding-block: 1rem 0.5rem;
+}
+.home-hero h1 {
+  font-size: clamp(2rem, 1.4rem + 2.4vw, 3.25rem); line-height: 1.12;
+  letter-spacing: -0.02em; max-width: 18ch; margin-bottom: 1rem; text-wrap: balance;
+}
+.home-hero .lead-text { font-size: 1.2rem; line-height: 1.6; color: var(--bs-secondary-color); max-width: 50ch; margin-bottom: 2rem; }
+.home-hero .btn-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 32rem; margin: 0; }
+.home-hero .home-code { margin: 0; }
+.home-section { margin-top: 3.5rem; }
+.home-section > .row.my-4 { margin-block: 0 !important; }
+.home-section > h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.25rem; }
+.home-about { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+.home-about > div { padding: 1.5rem; background: var(--color-surface); border: 1px solid var(--line); border-radius: var(--radius-lg); }
+.home-about h3 { font-size: 1.1rem; font-weight: 700; color: #FFD7A1; margin-bottom: 0.75rem; }
+.home-about p { line-height: 1.7; margin-bottom: 0; max-width: 62ch; }
+.home-note { margin-top: 1.5rem; max-width: 80ch; line-height: 1.7; color: var(--bs-secondary-color); }
+.path-list {
+  counter-reset: path; list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr)); gap: 0.75rem;
+}
+.path-list > li { counter-increment: path; margin: 0 !important; }
+.content-plain .path-list a, .home-section .path-list a {
+  display: flex; align-items: center; gap: 0.9rem; height: 100%; min-height: 4.25rem;
+  padding: 0.75rem 1rem; background: var(--color-surface); border: 1px solid var(--line);
+  border-radius: var(--radius-md); color: var(--color-text); text-decoration: none; font-weight: 500; line-height: 1.35;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.content-plain .path-list a::before, .home-section .path-list a::before {
+  content: counter(path, decimal-leading-zero); flex: 0 0 2.5rem; height: 2.5rem;
+  display: grid; place-items: center; border-radius: 10px;
+  background: var(--color-secondary); color: #FFD7A1; font-size: 0.9rem; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.content-plain .path-list a:hover, .home-section .path-list a:hover { background: var(--color-secondary-mid); border-color: var(--color-accent); color: #FFFFFF; }
+
+/* ---------- Telas menores ---------- */
+@media (max-width: 991.98px) {
+  .home-hero { grid-template-columns: minmax(0, 1fr); gap: 2rem; padding-bottom: 2rem; }
+  .home-about { grid-template-columns: minmax(0, 1fr); }
+  .activity-copy { grid-template-columns: minmax(0, 1fr); padding: 1.25rem; }
+  .activity-copy > #activityInstructions { grid-row: auto; }
+  .activity-copy > * { grid-column: 1 !important; }
+}
+@media (max-width: 767.98px) {
+  .row:has(> .topic-item) { grid-template-columns: minmax(0, 1fr); gap: 0.75rem; }
+  .btn-topic.btn { min-height: 4rem; }
+}
+@media (max-width: 550px) {
+  .btn-grid, .playground-actions, .home-hero .btn-grid { grid-template-columns: minmax(0, 1fr); }
+  .activity-picker .activity-navigation { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .activity-picker .activity-navigation p { grid-column: 1 / -1; }
+  .playground-editor, .playground-output { padding: 1rem; }
+  .page-header { margin-bottom: 1.75rem !important; padding-bottom: 1.25rem; }
+  .home-about > div { padding: 1.1rem; }
+  .home-section { margin-top: 2.5rem; }
+  .home-hero { padding-bottom: 0; }
+}
+
+}
