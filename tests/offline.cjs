@@ -71,7 +71,7 @@ const base = process.env.JAVA_SITE_URL || 'http://127.0.0.1:4177/java/';
   await page.locator('#extraPesquisa.show').waitFor();
   const files = await page.evaluate(async () => {
     const results=[];
-    for(const name of ['programas-java.zip','pesquisa-conhecendo-java.zip','roteiro-de-testes.html','fontes-da-pesquisa.txt','laboratorio-modulos.zip','laboratorio-swing.zip','laboratorio-javafx.zip','laboratorio-android.zip','laboratorio-spring.zip','roteiro-avancado.html','fontes-avancadas.txt']) {
+    for(const name of ['programas-java.zip','pesquisa-conhecendo-java.zip','roteiro-de-testes.html','fontes-da-pesquisa.txt','laboratorio-modulos.zip','laboratorio-swing-formulario.zip','laboratorio-swing.zip','laboratorio-javafx.zip','laboratorio-android.zip','laboratorio-spring.zip','roteiro-avancado.html','fontes-avancadas.txt']) {
       const response=await fetch('assets/extras/'+name);
       results.push(response.ok && (await response.arrayBuffer()).byteLength>1000);
     }
