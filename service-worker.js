@@ -23,7 +23,7 @@
    Sem isso, o navegador nunca vai detectar a atualização automaticamente.
    ========================================================================== */
 
-const SW_BUILD = 'java-1.6.3'; // Manter sincronizado com sw-version.txt.
+const SW_BUILD = 'java-1.6.2'; // Manter sincronizado com sw-version.txt.
 
 const VERSION_FILE = new URL('sw-version.txt', self.registration.scope).href;
 const CACHE_PREFIX = `java-${new URL(self.registration.scope).pathname}-cache-`;
