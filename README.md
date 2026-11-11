@@ -127,6 +127,7 @@ Os temas 15 a 30 continuam em ordem: módulos; Swing; JavaFX; desktop avançado;
 
 Downloads novos, incluídos no cache do site:
 
+- `laboratorio-modulos.zip`: laboratório do tema 15, executado no computador, com JDK 17 ou superior e sem Maven, Gradle ou internet. A pasta `inicio/` é o ponto de partida (compila, executa e não contém a regra) e `solucao/` traz uma possível solução das etapas 1 a 3 com respostas-modelo; os desafios D1 a D3 não têm solução distribuída. O `LEIA-ME.txt` traz enunciado, comandos, resultados esperados e critérios de conclusão, e avisa que `javac -m` só recompila arquivos mais novos que as classes geradas: sobre uma pasta `mods` antiga as falhas controladas podem terminar sem erro. Não executa no Playground.
 - `laboratorio-swing.zip`: JDK 17, janela e doze verificações da regra, sem dependências externas.
 - `laboratorio-javafx.zip`: JavaFX 21.0.10, JDK 17 e Maven; doze verificações do domínio sem abrir janela.
 - `laboratorio-android.zip`: Activity Java e Views XML, JDK 17, Gradle 8.9, plugin Android 8.7.3 e SDK 35; nove verificações da regra. Sem Gradle Wrapper; o LEIA-ME explica a distribuição local. APK e emulador exigem SDK e ambiente Android.
@@ -137,6 +138,8 @@ Downloads novos, incluídos no cache do site:
 As versões são fixadas para reprodução didática. Nenhum pacote é anunciado como configuração pública pronta. Os exemplos de cache, mensageria, OAuth2 e integração entre os clientes são evoluções guiadas; esses serviços não estão habilitados no catálogo inicial. Aplicações gráficas, APKs e servidor Spring executam fora do Playground.
 
 `python tests/platform-downloads.py` verifica ZIPs, XML e regras de Swing/Android. Com `--maven caminho-do-maven`, compila JavaFX, executa seus testes de domínio, roda os dezessete testes Spring e produz o JAR a partir dos arquivos distribuídos. Use JDK 17 em JAVA_HOME. A verificação não abre as janelas nem executa um emulador.
+
+`python tests/lab-modulos.py` extrai o ZIP do laboratório de módulos e executa, como estão escritos no `LEIA-ME.txt`, os comandos de compilar, executar, empacotar e inspecionar os JARs. Confere que o ponto de partida compila, executa e não traz a solução, que a solução imprime 15 verificações, que os testes falham quando a regra é quebrada, as três falhas controladas (com e sem pasta `mods` antiga), os desafios D1 a D3 e que a regra estrita do D3 é satisfazível. Usa `JAVA_HOME` quando ele contém a ferramenta; caso contrário, o `PATH`. As mensagens do compilador foram observadas no JDK 21 e variam entre versões; `--release 17` exige o JDK 17 ou superior com seus dados de assinatura.
 
 `node tests/platform-navigation.cjs` verifica os novos endereços, a transição 14/15, os agrupamentos, a busca, os quatro novos ZIPs e o caderno. `tests/offline.cjs` também cobre o tema 30, o Extra 20 e os novos arquivos no cache. A impressão adapta o sumário longo em duas colunas, mantendo todos os capítulos, as URLs e a restauração dos detalhes após imprimir.
 

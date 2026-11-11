@@ -1,4 +1,4 @@
-java-1.6.4
+java-1.6.5
 ./
 index.html
 cont.html
@@ -45,6 +45,7 @@ assets/extras/roteiro-de-testes.html
 assets/extras/projeto-integrador.zip
 assets/extras/laboratorio-arquivos.zip
 assets/extras/laboratorio-http.zip
+assets/extras/laboratorio-modulos.zip
 assets/extras/laboratorio-swing.zip
 assets/extras/laboratorio-javafx.zip
 assets/extras/laboratorio-android.zip
