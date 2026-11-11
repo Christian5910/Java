@@ -58,7 +58,10 @@ assert.equal(new Set(exercises.map(item => item.theme)).size, 14);
 for (const exercise of exercises) {
   assert.ok(exercise.source.includes('public class Main'));
   assert.ok(exercise.goal && exercise.challenge && exercise.hint && exercise.expected);
-  if(exercise.theme<=8) assert.ok(exercise.instructions?.length>=6 && exercise.checks, 'detailed instructions '+exercise.id);
+  assert.ok(Array.isArray(exercise.instructions) && exercise.instructions.length>=6 && exercise.checks, 'detailed instructions '+exercise.id);
+  assert.equal(new Set(exercise.instructions).size, exercise.instructions.length, 'repeated step '+exercise.id);
+  assert.ok(exercise.instructions.every(step => step.length>=60), 'vague step '+exercise.id);
+  assert.match(exercise.checks, /não atribui nota/, 'checks must not promise automatic grading '+exercise.id);
   assert.ok(allContent.includes('playground.html?ex=' + exercise.id) || ['tipos'].includes(exercise.id), 'unlinked exercise ' + exercise.id);
 }
 const quizSource = read('assets/js/quiz.js');

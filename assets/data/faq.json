@@ -416,7 +416,7 @@
   [
     "Playground",
     "Como testo os exemplos de interfaces, coleções e enum?",
-    "Use o link Praticar este programa no Playground ao lado do exemplo da apostila. Ele abre uma atividade própria, com código inicial, desafio, dica e saída de referência. Cada exemplo possui seu rascunho separado. Altere uma regra por vez e preveja o efeito: uma constante no enum, uma chave no mapa ou uma nova classe que implementa a interface.",
+    "Use o link Praticar este programa no Playground ao lado do exemplo da apostila. Ele abre uma atividade própria, com enunciado em passos, editor vazio, desafio, dica, critérios de conferência e uma possível solução recolhida. Cada exemplo possui seu rascunho separado. Altere uma regra por vez e preveja o efeito: uma constante no enum, uma chave no mapa ou uma nova classe que implementa a interface.",
     "cont.html"
   ],
   [

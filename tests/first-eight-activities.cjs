@@ -14,16 +14,21 @@ fs.mkdirSync(shots,{recursive:true});
       const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
       await page.goto(base+'playground.html?ex=ola');
       await page.waitForFunction(()=>!document.getElementById('runJava').disabled);
-      for(const exercise of data.filter(e=>e.theme<=8)) {
+      for(const exercise of data) {
         await page.selectOption('#exerciseSelect',exercise.id);
         assert.equal(await page.locator('#javaCode').inputValue(),'','fresh editor '+exercise.id);
+        assert.equal(await page.locator('#javaInput').inputValue(),exercise.input,'reference input '+exercise.id);
+        assert.equal(await page.locator('#activityInstructions').isVisible(),true,'steps visible '+exercise.id);
         assert.equal(await page.locator('#instructionList li').count(),exercise.instructions.length);
+        assert.equal(await page.locator('#activityChecks').textContent(),exercise.checks,'checks '+exercise.id);
+        assert.equal(await page.locator('#resetExample').textContent(),'Limpar meu código','reset label '+exercise.id);
         assert.match(await page.locator('#solutionTitle').innerText(),/Possível solução/);
         assert.equal(await page.locator('#sampleSolutionBlock').isVisible(),false);
         await page.locator('#solutionTitle').click();
         assert.equal(await page.locator('#sampleSolution').textContent(),exercise.source);
         assert.equal(await page.locator('#javaCode').inputValue(),'','solution must not fill editor');
-        assert.match(await page.locator('#topicLink').getAttribute('href'),new RegExp('tema-0'+exercise.theme+'\\.html'));
+        /* Capítulos 1 a 8 têm página própria; os demais abrem a janela de leitura de cont.html. */
+        assert.equal(await page.locator('#topicLink').getAttribute('href'),exercise.theme<=8?'tema-0'+exercise.theme+'.html':'cont.html#modal'+exercise.theme,'review link '+exercise.id);
         await page.locator('#solutionTitle').click();
       }
       await page.selectOption('#exerciseSelect','ola');
@@ -46,27 +51,42 @@ fs.mkdirSync(shots,{recursive:true});
       page.once('dialog',d=>d.accept());await page.locator('#resetExample').click();
       assert.equal(await page.locator('#javaCode').inputValue(),'');
       assert.equal(await page.locator('#javaInput').inputValue(),'');
-      for(const exercise of data.filter(e=>e.theme>8)) {
+      /* Atividades dos temas 9 a 14 passaram a usar o mesmo fluxo: um rascunho idêntico à solução é preservado. */
+      const later=data.filter(e=>e.theme>8);
+      assert.equal(later.length,15);
+      for(const exercise of later) {
         await page.selectOption('#exerciseSelect',exercise.id);
-        assert.equal(await page.locator('#javaCode').inputValue(),exercise.source,'legacy editor '+exercise.id);
-        assert.equal(await page.locator('#activityInstructions').isVisible(),false);
-        assert.match(await page.locator('#solutionTitle').innerText(),/Ver saída/);
+        await page.fill('#javaCode',exercise.source);
       }
+      await page.reload();await page.waitForFunction(()=>!document.getElementById('runJava').disabled);
+      for(const exercise of later) {
+        await page.selectOption('#exerciseSelect',exercise.id);
+        assert.equal(await page.locator('#javaCode').inputValue(),exercise.source,'draft equal to the solution kept '+exercise.id);
+        assert.equal(await page.locator('#sampleSolutionBlock').isVisible(),false,'solution closed '+exercise.id);
+      }
+      await page.selectOption('#exerciseSelect','conta');
+      page.once('dialog',d=>d.dismiss());await page.locator('#resetExample').click();
+      assert.equal(await page.locator('#javaCode').inputValue(),data.find(e=>e.id==='conta').source,'cancel keeps the draft');
+      page.once('dialog',d=>d.accept());await page.locator('#resetExample').click();
+      assert.equal(await page.locator('#javaCode').inputValue(),'','confirmed clear gives an empty editor, not the solution');
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
       assert.deepEqual(errors,[]);
       await context.close();
-      console.log('PASS all guided/legacy activities, solution, drafts and clear at '+width+'px.');
+      console.log('PASS all '+data.length+' activities, solution, drafts and clear at '+width+'px.');
     }
     const context=await browser.newContext({serviceWorkers:'block'});
     await context.addInitScript(()=>{
-      localStorage.setItem('java_playground_v1',JSON.stringify({current:'ola',drafts:{ola:{source:'// Rascunho anterior à atualização',input:'dados antigos'}}}));
+      localStorage.setItem('java_playground_v1',JSON.stringify({current:'ola',drafts:{ola:{source:'// Rascunho anterior à atualização',input:'dados antigos'},conta:{source:'// Rascunho do tema 9 anterior à atualização',input:''}}}));
     });
     const page=await context.newPage();await page.goto(base+'playground.html');
     await page.waitForFunction(()=>!document.getElementById('runJava').disabled);
     assert.equal(await page.locator('#javaCode').inputValue(),'// Rascunho anterior à atualização');
     assert.equal(await page.locator('#javaInput').inputValue(),'dados antigos');
     assert.match(await page.locator('#runtimeStatus').innerText(),/recuperado/);
+    await page.selectOption('#exerciseSelect','conta');
+    assert.equal(await page.locator('#javaCode').inputValue(),'// Rascunho do tema 9 anterior à atualização');
+    assert.match(await page.locator('#runtimeStatus').innerText(),/recuperado/);
     await context.close();
-    console.log('PASS old stored drafts survive the new blank-editor default.');
+    console.log('PASS old stored drafts (themes 1 to 14) survive the new blank-editor default.');
   } finally {await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});

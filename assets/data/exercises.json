@@ -388,7 +388,16 @@
     "hint": "Não ofereça setSaldo: as operações devem manter as regras da conta.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        Conta conta = new Conta(10000);\n        conta.depositar(2500);\n        System.out.println(\"Saque aceito: \" + conta.sacar(3000));\n        System.out.println(\"Saque excessivo: \" + conta.sacar(99999));\n        System.out.println(\"Saldo em centavos: \" + conta.getSaldo());\n    }\n}\n\nclass Conta {\n    private long saldo;\n    Conta(long saldo) {\n        if (saldo < 0) throw new IllegalArgumentException(\"Saldo negativo\");\n        this.saldo = saldo;\n    }\n    public long getSaldo() { return saldo; }\n    public void depositar(long valor) {\n        if (valor <= 0) throw new IllegalArgumentException(\"Depósito inválido\");\n        saldo = Math.addExact(saldo, valor);\n    }\n    public boolean sacar(long valor) {\n        if (valor <= 0 || valor > saldo) return false;\n        saldo -= valor;\n        return true;\n    }\n}\n",
     "expected": "Saque aceito: true\nSaque excessivo: false\nSaldo em centavos: 9500",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Crie a classe Conta, de topo e sem public, com um campo private long saldo que guarda centavos inteiros. Não declare setSaldo: o saldo só muda por operações com regra. O construtor recebe o saldo inicial e lança IllegalArgumentException com a mensagem Saldo negativo quando ele for menor que zero; getSaldo() apenas devolve o valor.",
+      "Implemente depositar(long valor): antes de alterar o saldo, lance IllegalArgumentException com a mensagem Depósito inválido se o valor for menor ou igual a zero; depois some com Math.addExact. Implemente sacar(long valor) com retorno boolean: devolva false, sem alterar nada, quando o valor for menor ou igual a zero ou maior que o saldo; caso contrário subtraia o valor e devolva true.",
+      "No main, crie uma Conta com saldo inicial 10000 e deposite 2500. Imprima três linhas, nesta ordem: Saque aceito: seguido do resultado de sacar(3000); Saque excessivo: seguido do resultado de sacar(99999); e Saldo em centavos: seguido de getSaldo(). A referência é true, false e 9500. Não escreva 9500 como texto fixo: o saldo deve vir da conta.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "A saída deve ter exatamente três linhas: Saque aceito: true, Saque excessivo: false e Saldo em centavos: 9500. Confira a conta: 10000 + 2500 - 3000 = 9500, e o saque recusado de 99999 não pode alterar o saldo. Confira também que a classe não oferece setSaldo. Um depósito de zero deve interromper o programa com IllegalArgumentException e a mensagem Depósito inválido; no desafio, trate essa falha. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "validacao",
@@ -399,7 +408,16 @@
     "hint": "A exceção ocorre antes da mudança de estado. O catch permite conferir o saldo.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        Conta conta = new Conta(10000);\n        try {\n            conta.depositar(-100);\n        } catch (IllegalArgumentException erro) {\n            System.out.println(erro.getMessage());\n        }\n        System.out.println(\"Saldo preservado: \" + conta.getSaldo());\n    }\n}\n\nclass Conta {\n    private long saldo;\n    Conta(long saldo) {\n        if (saldo < 0) throw new IllegalArgumentException(\"Saldo negativo\");\n        this.saldo = saldo;\n    }\n    public long getSaldo() { return saldo; }\n    public void depositar(long valor) {\n        if (valor <= 0) throw new IllegalArgumentException(\"Depósito inválido\");\n        saldo = Math.addExact(saldo, valor);\n    }\n    public boolean sacar(long valor) {\n        if (valor <= 0 || valor > saldo) return false;\n        saldo -= valor;\n        return true;\n    }\n}\n",
     "expected": "Depósito inválido\nSaldo preservado: 10000",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Escreva a classe Conta com um campo private long saldo, em centavos, e um construtor que recebe o saldo inicial e lança IllegalArgumentException com a mensagem Saldo negativo quando ele for menor que zero. Acrescente getSaldo(), que apenas devolve o valor. O método sacar não é necessário nesta atividade.",
+      "Implemente depositar(long valor): se o valor for menor ou igual a zero, lance IllegalArgumentException com a mensagem Depósito inválido antes de qualquer alteração do saldo; se for válido, some com Math.addExact. A verificação precisa vir antes da atribuição: imprimir uma mensagem e continuar não impede a mudança de estado.",
+      "No main, crie uma Conta com saldo inicial 10000. Chame depositar(-100) dentro de um try, capture IllegalArgumentException e imprima erro.getMessage(). Depois do bloco, imprima Saldo preservado: seguido de getSaldo(). A referência tem duas linhas: Depósito inválido e Saldo preservado: 10000.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "A saída deve ter exatamente duas linhas: Depósito inválido e Saldo preservado: 10000. Confira que a primeira linha vem de erro.getMessage(), a mensagem da exceção, e não de um println escrito dentro de depositar, e que o saldo continua 10000 depois da falha. Com depositar(0) a mesma mensagem deve aparecer; com depositar(100) nenhuma mensagem aparece e o saldo passa a 10100. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "banco",
@@ -410,7 +428,16 @@
     "hint": "Entrada: 1 consulta; 2 seguido do valor deposita; 3 seguido do valor saca; 0 sai.",
     "source": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner entrada = new Scanner(System.in);\n        Conta conta = new Conta(10000);\n        boolean continuar = true;\n        while (continuar && entrada.hasNextInt()) {\n            int opcao = entrada.nextInt();\n            switch (opcao) {\n                case 1 -> System.out.println(\"Saldo: \" + conta.getSaldo());\n                case 2, 3 -> {\n                    if (!entrada.hasNextLong()) {\n                        System.out.println(\"Valor ausente ou inválido\");\n                        return;\n                    }\n                    long valor = entrada.nextLong();\n                    try {\n                        if (opcao == 2) conta.depositar(valor);\n                        else System.out.println(\"Saque: \" + conta.sacar(valor));\n                    } catch (IllegalArgumentException erro) {\n                        System.out.println(erro.getMessage());\n                    }\n                }\n                case 0 -> continuar = false;\n                default -> System.out.println(\"Opção inválida\");\n            }\n        }\n        System.out.println(\"Encerrado\");\n    }\n}\n\nclass Conta {\n    private long saldo;\n    Conta(long saldo) {\n        if (saldo < 0) throw new IllegalArgumentException(\"Saldo negativo\");\n        this.saldo = saldo;\n    }\n    public long getSaldo() { return saldo; }\n    public void depositar(long valor) {\n        if (valor <= 0) throw new IllegalArgumentException(\"Depósito inválido\");\n        saldo = Math.addExact(saldo, valor);\n    }\n    public boolean sacar(long valor) {\n        if (valor <= 0 || valor > saldo) return false;\n        saldo -= valor;\n        return true;\n    }\n}\n",
     "expected": "Saldo: 10000\nSaque: true\nSaldo: 9500\nEncerrado",
-    "input": "1\n2\n2500\n3\n3000\n1\n0\n"
+    "input": "1\n2\n2500\n3\n3000\n1\n0\n",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Escreva a classe Conta com saldo privado em centavos (long), construtor que recusa saldo negativo, getSaldo(), depositar(long valor) e sacar(long valor). Depositar lança IllegalArgumentException com a mensagem Depósito inválido para valor menor ou igual a zero. Sacar devolve false, sem alterar o saldo, quando o valor for menor ou igual a zero ou maior que o saldo, e devolve true depois de subtrair.",
+      "No main, crie um Scanner sobre System.in e uma Conta com saldo 10000. Repita enquanto o programa não tiver sido encerrado e houver um inteiro disponível (hasNextInt()): leia a opção. A opção 1 imprime Saldo: seguido do saldo; a opção 0 encerra o laço; qualquer valor diferente de 0, 1, 2 e 3 imprime Opção inválida.",
+      "As opções 2 e 3 leem em seguida um valor em centavos (hasNextLong() e nextLong()). Se não houver esse valor, imprima Valor ausente ou inválido e encerre o programa naquele ponto, sem imprimir Encerrado. A opção 2 deposita e, se o depósito for recusado, imprime a mensagem da exceção; a opção 3 imprime Saque: seguido de true ou false. Depois do laço, imprima Encerrado.",
+      "Use inicialmente os dados de referência abaixo, um por linha e nesta ordem: 1 (consultar), 2 e 2500 (depositar 2500), 3 e 3000 (sacar 3000), 1 (consultar) e 0 (sair). Eles já ficam disponíveis no campo Entrada do programa; altere-os para os testes adicionais.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "Com a entrada de referência, a saída deve ter quatro linhas: Saldo: 10000, Saque: true, Saldo: 9500 e Encerrado. Nos testes adicionais, 2 seguido de 0 deve imprimir Depósito inválido; 3 seguido de 99999 deve imprimir Saque: false; 3 seguido de -5 também deve imprimir Saque: false, sem lançar exceção; a opção 7 deve imprimir Opção inválida; e a entrada 2, sem valor depois dela, deve imprimir Valor ausente ou inválido, sem Encerrado. Em cada teste, confira o saldo com a opção 1 antes de sair. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "acesso",
@@ -421,7 +448,16 @@
     "hint": "Main e Produto são classes de topo distintas; private impede aquele acesso direto.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        Produto produto = new Produto(10);\n        System.out.println(\"Estoque: \" + produto.getEstoque());\n    }\n}\n\nclass Produto {\n    private int estoque;\n    Produto(int estoque) { this.estoque = estoque; }\n    public int getEstoque() { return estoque; }\n}\n",
     "expected": "Estoque: 10",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Escreva a classe Produto, de topo e sem public, com um campo private int estoque e um construtor que receba o estoque inicial e o guarde no campo. Main e Produto são classes distintas do mesmo arquivo.",
+      "Acrescente public int getEstoque(), que apenas devolve o campo. Não torne o campo public e não crie um método que o altere sem regra: a leitura passa por uma operação pública.",
+      "No main, crie um Produto com estoque 10 e imprima uma linha: Estoque: seguido do resultado de getEstoque(). A referência é Estoque: 10. O 10 deve ser entregue ao construtor e lido pelo getter, não escrito diretamente na mensagem.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "A saída deve ser uma única linha: Estoque: 10. Confira que o campo é private e que Main só lê o valor por getEstoque(). Para observar a proteção, troque produto.getEstoque() por produto.estoque: o compilador deve recusar o acesso ao campo privado (a redação da mensagem depende do compilador). Restaure o código em seguida. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "escapes",
@@ -732,7 +768,16 @@
     "hint": "private restringe o acesso ao campo, mas uma referência compartilhada ainda pode permitir alterar seus elementos.",
     "source": "import java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        double[] entrada = {7.0, 8.0};\n        Boletim boletim = new Boletim(entrada);\n        entrada[0] = 0;\n        double[] consulta = boletim.getNotas();\n        consulta[1] = 0;\n        System.out.println(\"Notas preservadas: \" + Arrays.toString(boletim.getNotas()));\n        System.out.println(\"Média: \" + boletim.media());\n    }\n}\n\nclass Boletim {\n    private final double[] notas;\n    Boletim(double[] notas) {\n        if (notas == null || notas.length == 0) {\n            throw new IllegalArgumentException(\"Informe ao menos uma nota\");\n        }\n        for (double nota : notas) {\n            if (!Double.isFinite(nota) || nota < 0 || nota > 10) {\n                throw new IllegalArgumentException(\"Nota inválida\");\n            }\n        }\n        this.notas = Arrays.copyOf(notas, notas.length);\n    }\n    public double[] getNotas() { return Arrays.copyOf(notas, notas.length); }\n    public double media() {\n        double soma = 0;\n        for (double nota : notas) soma += nota;\n        return soma / notas.length;\n    }\n}\n",
     "expected": "Notas preservadas: [7.0, 8.0]\nMédia: 7.5",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Escreva a classe Boletim com um campo private final double[] notas. O construtor recebe um array e lança IllegalArgumentException quando ele for nulo ou vazio (mensagem Informe ao menos uma nota) ou quando alguma nota não for finita, for menor que 0 ou maior que 10 (mensagem Nota inválida). Só depois de validar, guarde uma cópia feita com Arrays.copyOf, nunca a referência recebida.",
+      "Implemente getNotas(), que devolve uma nova cópia do array interno a cada chamada, e media(), que soma as notas internas e divide a soma pela quantidade de notas, usando double.",
+      "No main, crie double[] entrada = {7.0, 8.0} e construa o Boletim. Depois altere entrada[0] para 0, chame getNotas() e altere o segundo elemento da cópia recebida para 0. Imprima Notas preservadas: seguido de Arrays.toString(boletim.getNotas()) e, na linha seguinte, Média: seguido de boletim.media(). A referência é [7.0, 8.0] e 7.5.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "A saída deve ter duas linhas: Notas preservadas: [7.0, 8.0] e Média: 7.5. Se aparecer 0.0 nas notas, uma referência ainda está compartilhada: sem a cópia no construtor, a alteração feita em entrada[0] chega ao boletim; sem a cópia no getter, a alteração feita na cópia consultada chega a ele. Retire uma cópia por vez, como pede o desafio, e compare a saída com a referência. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "static-final",
@@ -743,7 +788,16 @@
     "hint": "Cada objeto recebe seu id no construtor. O contador static pertence à classe; os getters públicos não permitem alterar id.",
     "source": "public class Main {\n    public static void main(String[] args) {\n        Registro a = new Registro();\n        Registro b = new Registro();\n        System.out.println(\"IDs: \" + a.getId() + \", \" + b.getId());\n        System.out.println(\"Próximo ID: \" + Registro.getProximoId());\n    }\n}\n\nclass Registro {\n    private static int proximoId = 1;\n    private final int id;\n    Registro() { id = proximoId++; }\n    public int getId() { return id; }\n    public static int getProximoId() { return proximoId; }\n}\n",
     "expected": "IDs: 1, 2\nPróximo ID: 3",
-    "input": ""
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Escreva a classe Registro com dois campos privados: um private static int proximoId, iniciado em 1 e compartilhado por todos os objetos, e um private final int id, que pertence a cada objeto.",
+      "No construtor sem parâmetros, atribua o valor atual do contador a id e, depois, incremente o contador (id = proximoId++). Crie public int getId() e public static int getProximoId(). Não crie método que altere id.",
+      "No main, crie dois Registro, a e b. Imprima IDs: seguido dos ids de a e b, separados por vírgula e espaço e, na linha seguinte, Próximo ID: seguido de Registro.getProximoId(), chamado pela classe. A referência é IDs: 1, 2 e Próximo ID: 3.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "A saída deve ter duas linhas: IDs: 1, 2 e Próximo ID: 3. Confira que o contador avança uma vez por objeto criado e que cada id é atribuído uma única vez, por ser final. Ao criar um terceiro registro, como pede o desafio, o próximo id deve passar a 4. Tentar reatribuir id fora do construtor deve ser recusado pelo compilador. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "estados-enum",
@@ -832,9 +886,18 @@
     "goal": "Distinguir texto numérico inválido de quantidade fora da regra.",
     "challenge": "Acrescente entradas negativas e vazias e confira se as demais tentativas continuam.",
     "hint": "NumberFormatException deriva de IllegalArgumentException; a captura específica precisa vir primeiro.",
-    "input": "",
     "source": "public class Main {\n    static int lerQuantidade(String texto) {\n        int quantidade = Integer.parseInt(texto);\n        if (quantidade <= 0) {\n            throw new IllegalArgumentException(\"Quantidade deve ser positiva\");\n        }\n        return quantidade;\n    }\n\n    public static void main(String[] args) {\n        String[] entradas = {\"3\", \"zero\", \"0\"};\n        for (String texto : entradas) {\n            try {\n                System.out.println(\"Quantidade: \" + lerQuantidade(texto));\n            } catch (NumberFormatException erro) {\n                System.out.println(\"Formato inválido: \" + texto);\n            } catch (IllegalArgumentException erro) {\n                System.out.println(erro.getMessage());\n            }\n        }\n    }\n}",
-    "expected": "Quantidade: 3\nFormato inválido: zero\nQuantidade deve ser positiva"
+    "expected": "Quantidade: 3\nFormato inválido: zero\nQuantidade deve ser positiva",
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "No Main, escreva o método estático int lerQuantidade(String texto). Converta o texto com Integer.parseInt e, se o resultado for menor ou igual a zero, lance IllegalArgumentException com a mensagem Quantidade deve ser positiva. Um texto que não seja número faz o próprio parseInt lançar NumberFormatException.",
+      "No main, declare um array de textos com 3, zero e 0, escritos no código (esta atividade não lê dados do teclado), e percorra-o com um for aprimorado.",
+      "Para cada texto, dentro de um try, imprima Quantidade: seguido do resultado de lerQuantidade(texto). Capture primeiro NumberFormatException e imprima Formato inválido: seguido do texto; depois capture IllegalArgumentException e imprima erro.getMessage(). Os dois erros não interrompem a repetição: o programa passa pelos três textos. A ordem dos catch importa, porque NumberFormatException é um tipo mais específico de IllegalArgumentException.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "A saída deve ter três linhas, uma por texto: Quantidade: 3, Formato inválido: zero e Quantidade deve ser positiva. Confira que a primeira linha usa o valor convertido, a segunda usa o texto original e a terceira usa a mensagem da exceção. Colocar o catch de IllegalArgumentException antes do de NumberFormatException deve causar erro de compilação, pois o segundo nunca seria alcançado. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "ordenacao-contratos",
@@ -843,9 +906,18 @@
     "goal": "Criar uma ordem de consulta sem alterar a ordem de cadastro.",
     "challenge": "Inclua dois alunos com a mesma nota e nome; acrescente matrícula como terceiro critério.",
     "hint": "Crie uma cópia da lista. Compare notas sem subtrair inteiros e use thenComparing para desempatar.",
-    "input": "",
     "source": "import java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.Comparator;\nimport java.util.List;\n\nclass Aluno {\n    private final String nome;\n    private final int nota;\n    Aluno(String nome, int nota) {\n        if (nome == null || nome.trim().isEmpty() || nota < 0 || nota > 10) {\n            throw new IllegalArgumentException(\"Aluno inválido\");\n        }\n        this.nome = nome;\n        this.nota = nota;\n    }\n    String getNome() { return nome; }\n    int getNota() { return nota; }\n    @Override public String toString() { return nome + \":\" + nota; }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        List<Aluno> cadastro = Arrays.asList(\n            new Aluno(\"Carla\", 7), new Aluno(\"Ana\", 9), new Aluno(\"Bruno\", 7));\n        List<Aluno> consulta = new ArrayList<>(cadastro);\n        consulta.sort(Comparator.comparingInt(Aluno::getNota).reversed()\n            .thenComparing(Aluno::getNome));\n        System.out.println(\"Consulta: \" + consulta);\n        System.out.println(\"Cadastro: \" + cadastro);\n    }\n}",
-    "expected": "Consulta: [Ana:9, Bruno:7, Carla:7]\nCadastro: [Carla:7, Ana:9, Bruno:7]"
+    "expected": "Consulta: [Ana:9, Bruno:7, Carla:7]\nCadastro: [Carla:7, Ana:9, Bruno:7]",
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Escreva a classe Aluno, de topo e sem public, com os campos private final String nome e private final int nota. O construtor lança IllegalArgumentException com a mensagem Aluno inválido quando o nome for nulo ou em branco ou a nota estiver fora de 0 a 10. Crie getNome(), getNota() e um toString() que devolva o nome, dois-pontos e a nota (por exemplo, Ana:9).",
+      "No main, monte a lista de cadastro com Arrays.asList, nesta ordem: Carla 7, Ana 9 e Bruno 7. Crie a lista de consulta como uma cópia (new ArrayList<>(cadastro)): a ordenação será feita nela, para que a ordem de cadastro continue como foi informada.",
+      "Ordene a consulta por nota decrescente e, em caso de empate, por nome crescente: Comparator.comparingInt(Aluno::getNota).reversed().thenComparing(Aluno::getNome). Não compare notas por subtração. Imprima Consulta: seguido da lista de consulta e, na linha seguinte, Cadastro: seguido da lista de cadastro. A referência é Consulta: [Ana:9, Bruno:7, Carla:7] e Cadastro: [Carla:7, Ana:9, Bruno:7].",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "A saída deve ter duas linhas. Em Consulta, Ana vem primeiro por ter a maior nota e Bruno antecede Carla pelo desempate de nome; em Cadastro, a ordem original (Carla, Ana, Bruno) deve continuar. Se as duas listas aparecerem na mesma ordem, a ordenação foi feita sobre o cadastro e não sobre a cópia. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "generics-limites",
@@ -854,9 +926,18 @@
     "goal": "Relacionar a origem e o destino de uma cópia com parâmetros genéricos.",
     "challenge": "Copie uma lista de Double para a mesma lista de Number e explique por que a operação inversa não é segura.",
     "hint": "A origem fornece valores compatíveis com T; o destino aceita T. O compilador verifica essa relação.",
-    "input": "",
     "source": "import java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.List;\n\npublic class Main {\n    static <T> void copiar(List<? extends T> origem, List<? super T> destino) {\n        for (T valor : origem) destino.add(valor);\n    }\n    public static void main(String[] args) {\n        List<Integer> inteiros = Arrays.asList(2, 4, 6);\n        List<Number> numeros = new ArrayList<>();\n        copiar(inteiros, numeros);\n        copiar(Arrays.asList(1.5, 2.5), numeros);\n        System.out.println(numeros);\n        System.out.println(\"Origem: \" + inteiros);\n    }\n}",
-    "expected": "[2, 4, 6, 1.5, 2.5]\nOrigem: [2, 4, 6]"
+    "expected": "[2, 4, 6, 1.5, 2.5]\nOrigem: [2, 4, 6]",
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Escreva o método estático genérico com a assinatura <T> void copiar(List<? extends T> origem, List<? super T> destino). A origem só fornece valores compatíveis com T (leitura) e o destino aceita valores de T (escrita).",
+      "No corpo, percorra a origem com um for aprimorado cuja variável tem tipo T e adicione cada valor ao destino. O método não devolve nada e não altera a origem.",
+      "No main, crie List<Integer> inteiros = Arrays.asList(2, 4, 6) e List<Number> numeros = new ArrayList<>(). Copie inteiros para numeros e, depois, copie Arrays.asList(1.5, 2.5) para numeros. Imprima numeros e, na linha seguinte, Origem: seguido de inteiros. A referência é [2, 4, 6, 1.5, 2.5] e Origem: [2, 4, 6].",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "A saída deve ter duas linhas: [2, 4, 6, 1.5, 2.5] e Origem: [2, 4, 6]. Confira que a lista de Number recebeu Integer e Double e que a origem continuou com três elementos. Tentar copiar de List<Number> para List<Integer> deve ser recusado pelo compilador, pois nada garante que cada Number seja um Integer. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "importacao-validada",
@@ -865,9 +946,19 @@
     "goal": "Validar todas as linhas antes de substituir o estado atual.",
     "challenge": "Teste matrícula repetida, linha vazia e nota fora de 0 a 10. Confira se uma falha mantém o cadastro anterior.",
     "hint": "O formato didático usa duas colunas separadas por ponto e vírgula. Primeiro construa um mapa novo; só atribua o resultado quando a leitura terminar.",
-    "input": "",
     "source": "import java.io.BufferedReader;\nimport java.io.IOException;\nimport java.io.StringReader;\nimport java.util.LinkedHashMap;\nimport java.util.Map;\n\npublic class Main {\n    static Map<String, Integer> importar(String texto) throws IOException {\n        Map<String, Integer> novo = new LinkedHashMap<>();\n        try (BufferedReader leitor = new BufferedReader(new StringReader(texto))) {\n            String linha;\n            int numero = 0;\n            while ((linha = leitor.readLine()) != null) {\n                numero++;\n                String[] partes = linha.split(\";\", -1);\n                if (partes.length != 2 || partes[0].trim().isEmpty()) {\n                    throw new IllegalArgumentException(\"Linha \" + numero + \" inválida\");\n                }\n                String id = partes[0].trim();\n                int nota;\n                try { nota = Integer.parseInt(partes[1].trim()); }\n                catch (NumberFormatException erro) {\n                    throw new IllegalArgumentException(\"Nota inválida na linha \" + numero, erro);\n                }\n                if (nota < 0 || nota > 10 || novo.containsKey(id)) {\n                    throw new IllegalArgumentException(\"Regra inválida na linha \" + numero);\n                }\n                novo.put(id, nota);\n            }\n        }\n        return novo;\n    }\n    public static void main(String[] args) throws IOException {\n        Map<String, Integer> atual = importar(\"A01;8\\nA02;7\\n\");\n        System.out.println(\"Cadastro: \" + atual);\n        try { atual = importar(\"A03;9\\nA04;texto\\n\"); }\n        catch (IllegalArgumentException erro) { System.out.println(erro.getMessage()); }\n        System.out.println(\"Após recusa: \" + atual);\n    }\n}",
-    "expected": "Cadastro: {A01=8, A02=7}\nNota inválida na linha 2\nApós recusa: {A01=8, A02=7}"
+    "expected": "Cadastro: {A01=8, A02=7}\nNota inválida na linha 2\nApós recusa: {A01=8, A02=7}",
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "No Main, escreva o método estático Map<String, Integer> importar(String texto) throws IOException. Crie, logo no início, um LinkedHashMap novo e vazio; leia o texto linha a linha com um BufferedReader sobre um StringReader, em um try-with-resources, contando as linhas a partir de 1. O cadastro atual do programa não pode ser tocado dentro deste método.",
+      "Cada linha tem duas colunas separadas por ponto e vírgula: identificador e nota (por exemplo, A01;8). Separe com split(\";\", -1), que mantém colunas vazias. Se o resultado não tiver exatamente duas partes, ou se o identificador, sem espaços nas pontas, estiver vazio, lance IllegalArgumentException com a mensagem Linha N inválida, em que N é o número da linha.",
+      "Converta a nota com Integer.parseInt; se a conversão falhar, lance IllegalArgumentException com a mensagem Nota inválida na linha N, preservando a causa. Recuse também nota fora de 0 a 10 ou identificador repetido, com a mensagem Regra inválida na linha N. Só uma linha que passou por todas as verificações entra no mapa novo, e o método devolve o mapa novo ao final.",
+      "No main, importe o texto de duas linhas A01;8 e A02;7 (a quebra de linha é escrita como \\n no texto Java), guarde o resultado em atual e imprima Cadastro: seguido de atual. Depois tente importar as linhas A03;9 e A04;texto dentro de um try, atribuindo o resultado a atual; capture IllegalArgumentException e imprima erro.getMessage(). Por fim, imprima Após recusa: seguido de atual.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "A saída deve ter três linhas: Cadastro: {A01=8, A02=7}, Nota inválida na linha 2 e Após recusa: {A01=8, A02=7}. Observe que a linha A03;9, que era válida, também não entrou no cadastro: nada é substituído antes de a leitura terminar. Teste outras falhas, sempre com o cadastro anterior intacto: uma linha vazia deve dar Linha 2 inválida; uma nota 11, Regra inválida na linha 1; um identificador repetido, Regra inválida na linha 2. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "datas-decimais",
@@ -876,9 +967,18 @@
     "goal": "Trabalhar com uma data civil fixa e arredondamento decimal definido.",
     "challenge": "Mude o prazo para atravessar o fim do mês e compare descontos que gerem mais de duas casas decimais.",
     "hint": "LocalDate não contém fuso horário. Crie BigDecimal a partir de texto e defina escala e arredondamento.",
-    "input": "",
     "source": "import java.math.BigDecimal;\nimport java.math.RoundingMode;\nimport java.time.LocalDate;\nimport java.time.format.DateTimeFormatter;\n\npublic class Main {\n    public static void main(String[] args) {\n        LocalDate inicio = LocalDate.of(2026, 10, 15);\n        LocalDate prazo = inicio.plusDays(7);\n        BigDecimal unitario = new BigDecimal(\"19.90\");\n        BigDecimal quantidade = new BigDecimal(\"3\");\n        BigDecimal fator = new BigDecimal(\"0.90\");\n        BigDecimal total = unitario.multiply(quantidade).multiply(fator)\n            .setScale(2, RoundingMode.HALF_UP);\n        System.out.println(\"Prazo: \" + prazo.format(DateTimeFormatter.ISO_LOCAL_DATE));\n        System.out.println(\"Total: \" + total.toPlainString());\n        System.out.println(\"Mesmo valor: \" +\n            (new BigDecimal(\"2.0\").compareTo(new BigDecimal(\"2.00\")) == 0));\n    }\n}",
-    "expected": "Prazo: 2026-10-22\nTotal: 53.73\nMesmo valor: true"
+    "expected": "Prazo: 2026-10-22\nTotal: 53.73\nMesmo valor: true",
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Crie a data de início com LocalDate.of(2026, 10, 15), calcule o prazo somando 7 dias com plusDays(7) e formate-o com DateTimeFormatter.ISO_LOCAL_DATE. LocalDate representa uma data civil, sem horário nem fuso.",
+      "Crie três BigDecimal a partir de texto, nunca de double: preço unitário 19.90, quantidade 3 e fator 0.90 (que aplica 10% de desconto). Calcule unitário vezes quantidade vezes fator e ajuste o resultado com setScale(2, RoundingMode.HALF_UP).",
+      "Imprima três linhas: Prazo: seguido da data formatada; Total: seguido do total em toPlainString(); e Mesmo valor: seguido do resultado de comparar new BigDecimal(\"2.0\") com new BigDecimal(\"2.00\") usando compareTo(...) == 0. A referência é Prazo: 2026-10-22, Total: 53.73 e Mesmo valor: true.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "A saída deve ter três linhas: Prazo: 2026-10-22, Total: 53.73 e Mesmo valor: true. Confira o cálculo: 19.90 x 3 x 0.90 dá 53.7300, que setScale(2, RoundingMode.HALF_UP) ajusta para 53.73. Na terceira linha, compareTo ignora a escala; trocá-lo por equals(...) deve imprimir false, porque 2.0 e 2.00 têm escalas diferentes. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "tarefas-futuro",
@@ -887,9 +987,18 @@
     "goal": "Separar execução concorrente da ordem em que os resultados são apresentados.",
     "challenge": "Inclua uma tarefa que lança exceção e investigue ExecutionException sem apresentar um resultado de sucesso.",
     "hint": "Guarde os Future e consulte os resultados no fluxo principal. Encerre o executor mesmo quando uma tarefa falhar.",
-    "input": "",
     "source": "import java.util.concurrent.ExecutorService;\nimport java.util.concurrent.Executors;\nimport java.util.concurrent.Future;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        ExecutorService executor = Executors.newFixedThreadPool(2);\n        try {\n            Future<Integer> primeira = executor.submit(() -> 12 * 12);\n            Future<Integer> segunda = executor.submit(() -> 7 * 7);\n            System.out.println(\"Primeira: \" + primeira.get());\n            System.out.println(\"Segunda: \" + segunda.get());\n            System.out.println(\"Soma: \" + (primeira.get() + segunda.get()));\n        } finally {\n            executor.shutdownNow();\n        }\n    }\n}",
-    "expected": "Primeira: 144\nSegunda: 49\nSoma: 193"
+    "expected": "Primeira: 144\nSegunda: 49\nSoma: 193",
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Declare main com throws Exception, porque Future.get() lança exceções verificadas. Crie um ExecutorService com Executors.newFixedThreadPool(2) e use try/finally: o finally chama shutdownNow(), para o executor ser encerrado mesmo quando algo falhar.",
+      "Dentro do try, envie duas tarefas com submit, usando expressões lambda que devolvem Integer: a primeira calcula 12 * 12 e a segunda 7 * 7. Guarde cada resultado em um Future<Integer>.",
+      "Ainda no fluxo principal, imprima, nesta ordem, Primeira: seguido de primeira.get(); Segunda: seguido de segunda.get(); e Soma: seguido da soma dos dois get(). A ordem das linhas é a do código, e não a da conclusão das tarefas. Não escreva 144, 49 ou 193 como texto fixo.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "A saída deve ter três linhas: Primeira: 144, Segunda: 49 e Soma: 193 (144 + 49). Confira que os valores vêm de get() e que o programa termina: sem encerrar o executor no finally, o programa pode não terminar. Com uma tarefa que lança exceção, como pede o desafio, get() deve lançar ExecutionException e nenhuma linha de sucesso deve ser impressa para ela. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "contador-atomico",
@@ -898,9 +1007,18 @@
     "goal": "Esperar o término das tarefas antes de conferir uma atualização atômica.",
     "challenge": "Troque o número de tarefas e de incrementos e calcule o total esperado antes de executar.",
     "hint": "AtomicInteger protege o incremento isolado; Future.get permite aguardar a conclusão das tarefas.",
-    "input": "",
     "source": "import java.util.ArrayList;\nimport java.util.List;\nimport java.util.concurrent.ExecutorService;\nimport java.util.concurrent.Executors;\nimport java.util.concurrent.Future;\nimport java.util.concurrent.atomic.AtomicInteger;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        AtomicInteger contador = new AtomicInteger();\n        ExecutorService executor = Executors.newFixedThreadPool(2);\n        List<Future<?>> tarefas = new ArrayList<>();\n        try {\n            for (int t = 0; t < 4; t++) {\n                tarefas.add(executor.submit(() -> {\n                    for (int i = 0; i < 1000; i++) contador.incrementAndGet();\n                }));\n            }\n            for (Future<?> tarefa : tarefas) tarefa.get();\n            System.out.println(\"Total: \" + contador.get());\n        } finally {\n            executor.shutdownNow();\n        }\n    }\n}",
-    "expected": "Total: 4000"
+    "expected": "Total: 4000",
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Declare main com throws Exception. Crie um AtomicInteger com valor inicial zero e um ExecutorService com 2 threads, usando try/finally com shutdownNow() no finally.",
+      "Crie uma lista de Future<?> e envie 4 tarefas com submit. Cada tarefa é um Runnable (lambda sem valor de retorno) que executa um laço de 1000 repetições chamando incrementAndGet() no AtomicInteger. Adicione cada Future devolvido à lista.",
+      "Antes de imprimir, percorra a lista e chame get() em cada Future, para aguardar o término de todas as tarefas. Só então imprima Total: seguido de contador.get(). A referência é Total: 4000, isto é, 4 tarefas vezes 1000 incrementos; não escreva 4000 como texto fixo.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "A saída deve ser uma linha: Total: 4000. Confira a conta (4 x 1000). Se o total for impresso antes de aguardar os Future, a contagem pode ser menor, porque as tarefas ainda podem estar em andamento. Ao mudar o número de tarefas e de incrementos, como pede o desafio, calcule o total esperado antes de executar. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "servico-estoque",
@@ -909,9 +1027,19 @@
     "goal": "Manter a regra de retirada na classe que controla o estoque.",
     "challenge": "Acrescente outro produto e teste retiradas negativas, exatas e acima da disponibilidade.",
     "hint": "Valide identificador e quantidade antes de alterar. Uma recusa por falta de saldo de itens não pode descontar nada.",
-    "input": "",
     "source": "import java.util.Collections;\nimport java.util.LinkedHashMap;\nimport java.util.Map;\n\nclass Estoque {\n    private final Map<String, Integer> itens = new LinkedHashMap<>();\n    private static void validar(String id, int quantidade) {\n        if (id == null || id.trim().isEmpty() || quantidade <= 0) {\n            throw new IllegalArgumentException(\"Dados inválidos\");\n        }\n    }\n    void receber(String id, int quantidade) {\n        validar(id, quantidade);\n        int novo = Math.addExact(itens.getOrDefault(id, 0), quantidade);\n        itens.put(id, novo);\n    }\n    boolean retirar(String id, int quantidade) {\n        validar(id, quantidade);\n        int atual = itens.getOrDefault(id, 0);\n        if (quantidade > atual) return false;\n        itens.put(id, atual - quantidade);\n        return true;\n    }\n    Map<String, Integer> consultar() {\n        return Collections.unmodifiableMap(new LinkedHashMap<>(itens));\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Estoque estoque = new Estoque();\n        estoque.receber(\"A\", 5);\n        System.out.println(\"Retirada aceita: \" + estoque.retirar(\"A\", 2));\n        Map<String, Integer> fotografia = estoque.consultar();\n        System.out.println(\"Retirada recusada: \" + estoque.retirar(\"A\", 4));\n        System.out.println(\"Estoque: \" + estoque.consultar());\n        estoque.receber(\"A\", 1);\n        System.out.println(\"Fotografia anterior: \" + fotografia);\n    }\n}",
-    "expected": "Retirada aceita: true\nRetirada recusada: false\nEstoque: {A=3}\nFotografia anterior: {A=3}"
+    "expected": "Retirada aceita: true\nRetirada recusada: false\nEstoque: {A=3}\nFotografia anterior: {A=3}",
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "Escreva a classe Estoque, de topo e sem public, com um mapa privado e final (LinkedHashMap<String, Integer>) que associa o identificador do item à quantidade. Crie o método privado estático validar(String id, int quantidade), que lança IllegalArgumentException com a mensagem Dados inválidos quando o identificador for nulo ou em branco ou a quantidade for menor ou igual a zero.",
+      "Implemente receber(String id, int quantidade): valide e some a quantidade à atual (zero se o item ainda não existir) com Math.addExact. Implemente boolean retirar(String id, int quantidade): valide; se a quantidade pedida for maior que a atual, devolva false sem alterar nada; senão grave a diferença e devolva true.",
+      "Implemente consultar(), que devolve uma cópia somente leitura do mapa: Collections.unmodifiableMap(new LinkedHashMap<>(itens)). Devolver o próprio mapa permitiria alterá-lo de fora e faria uma consulta anterior mudar depois.",
+      "No main, crie um Estoque e receba 5 unidades do item A. Imprima Retirada aceita: seguido de retirar(\"A\", 2); guarde a fotografia = consultar(); imprima Retirada recusada: seguido de retirar(\"A\", 4); imprima Estoque: seguido de consultar(); receba mais 1 unidade de A; e imprima Fotografia anterior: seguido da fotografia. A referência é true, false, {A=3} e {A=3}.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "A saída deve ter quatro linhas: Retirada aceita: true, Retirada recusada: false, Estoque: {A=3} e Fotografia anterior: {A=3}. Confira que a retirada recusada (4 maior que 3) não descontou nada e que a fotografia continuou em {A=3} depois de receber mais 1 unidade, porque é uma cópia: o estoque atual passou a 4. Uma retirada com quantidade zero ou negativa deve lançar IllegalArgumentException com a mensagem Dados inválidos. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   },
   {
     "id": "testes-contrato",
@@ -920,8 +1048,17 @@
     "goal": "Verificar resultados e recusas sem depender da opção -ea.",
     "challenge": "Acrescente o teste de Integer.MAX_VALUE mais um e confirme a exceção de overflow.",
     "hint": "Cada verificação deve ter um resultado esperado claro. Não coloque a própria operação dentro da palavra-chave assert.",
-    "input": "",
     "source": "public class Main {\n    static int acrescentar(int atual, int quantidade) {\n        if (atual < 0 || quantidade <= 0) throw new IllegalArgumentException(\"Dados inválidos\");\n        return Math.addExact(atual, quantidade);\n    }\n    static void conferir(boolean condicao, String nome) {\n        if (!condicao) throw new AssertionError(nome);\n    }\n    public static void main(String[] args) {\n        conferir(acrescentar(0, 3) == 3, \"Entrada inicial\");\n        conferir(acrescentar(3, 2) == 5, \"Acumulação\");\n        boolean recusouZero = false;\n        try { acrescentar(3, 0); }\n        catch (IllegalArgumentException esperado) { recusouZero = true; }\n        conferir(recusouZero, \"Recusar zero\");\n        boolean recusouNegativo = false;\n        try { acrescentar(-1, 2); }\n        catch (IllegalArgumentException esperado) { recusouNegativo = true; }\n        conferir(recusouNegativo, \"Recusar estado negativo\");\n        System.out.println(\"4 cenários verificados\");\n    }\n}",
-    "expected": "4 cenários verificados"
+    "expected": "4 cenários verificados",
+    "input": "",
+    "instructions": [
+      "Comece no editor vazio escrevendo o programa completo em Main.java, com public class Main e o método public static void main(String[] args). Classes auxiliares sem public podem ficar no mesmo arquivo.",
+      "No Main, escreva o método estático int acrescentar(int atual, int quantidade). Se atual for menor que zero ou quantidade for menor ou igual a zero, lance IllegalArgumentException com a mensagem Dados inválidos; caso contrário, devolva Math.addExact(atual, quantidade).",
+      "Escreva o método estático conferir(boolean condicao, String nome), que lança new AssertionError(nome) quando a condição for falsa. Não use a palavra-chave assert: ela só age quando o Java é executado com a opção -ea, e a verificação precisa funcionar sempre.",
+      "No main, faça quatro verificações nomeadas: acrescentar(0, 3) igual a 3 (Entrada inicial); acrescentar(3, 2) igual a 5 (Acumulação); acrescentar(3, 0) recusado com IllegalArgumentException (Recusar zero); acrescentar(-1, 2) recusado com IllegalArgumentException (Recusar estado negativo). Nas recusas, use try/catch e uma variável boolean que só vira true dentro do catch. Se nenhuma conferência falhar, imprima 4 cenários verificados.",
+      "Deixe o campo Entrada do programa vazio nesta atividade inicial: os valores de partida ficam escritos no próprio código. Se você ampliar o programa para ler dados, informe depois a entrada correspondente.",
+      "Antes de executar, escreva sua previsão. Compile, leia os diagnósticos se houver e compare o resultado com as regras do enunciado. Consulte a possível solução somente depois da tentativa; abri-la não preenche o editor."
+    ],
+    "checks": "A saída deve ser uma linha: 4 cenários verificados. Para ver o teste falhar, troque temporariamente um resultado esperado (por exemplo, acrescentar(0, 3) == 4): o programa deve terminar com AssertionError e o nome do cenário, Entrada inicial. Restaure o valor em seguida. Com o teste do desafio, Integer.MAX_VALUE mais 1 deve lançar ArithmeticException, por causa de Math.addExact. O botão executa seu código; ele não atribui nota nem verifica automaticamente todos os requisitos."
   }
 ]
