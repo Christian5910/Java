@@ -1,4 +1,4 @@
-java-1.6.6
+java-1.6.7
 ./
 index.html
 cont.html
@@ -51,6 +51,7 @@ assets/extras/laboratorio-swing.zip
 assets/extras/laboratorio-javafx.zip
 assets/extras/laboratorio-android.zip
 assets/extras/laboratorio-spring.zip
+assets/extras/laboratorio-integracao.zip
 assets/extras/roteiro-avancado.html
 assets/extras/fontes-avancadas.txt
 tema-01.html
