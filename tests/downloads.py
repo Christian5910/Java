@@ -1,5 +1,5 @@
 from pathlib import Path
-import json, subprocess, tempfile, zipfile
+import importlib.util, json, subprocess, tempfile, zipfile
 
 root=Path(__file__).resolve().parents[1]
 work=root.parent/'.work/local-lab-tests'
@@ -9,10 +9,16 @@ def run(command,directory,input=''):
     result=subprocess.run(command,cwd=directory,input=input,encoding='utf-8',capture_output=True,timeout=30)
     assert result.returncode==0, result.stderr+'\n'+result.stdout
     return result.stdout.replace('\r','').strip()
+examples=json.loads((root/'assets/data/exercises.json').read_text(encoding='utf-8'))
 with zipfile.ZipFile(root/'assets/extras/programas-java.zip') as z:
     assert z.testzip() is None
-    for e in json.loads((root/'assets/data/exercises.json').read_text(encoding='utf-8')):
+    for e in examples:
         assert z.read(f'tema-{e["theme"]:02d}/{e["id"]}/Main.java').decode('utf-8')==e['source']
+# O ZIP sai do catálogo: enunciados, entradas e saídas não podem ficar atrás do Playground.
+spec=importlib.util.spec_from_file_location('gerar_programas',root/'tools/gerar-programas-java.py')
+gerar=importlib.util.module_from_spec(spec); spec.loader.exec_module(gerar)
+diferentes=gerar.desatualizado(examples,root/'assets/extras/programas-java.zip')
+assert not diferentes, 'programas-java.zip está desatualizado em relação ao catálogo; rode python tools/gerar-programas-java.py: '+', '.join(diferentes[:5])
 for name in ['projeto-integrador','laboratorio-arquivos','laboratorio-http']:
     directory=Path(tempfile.mkdtemp(prefix=name+'-',dir=work))
     with zipfile.ZipFile(root/'assets/extras'/(name+'.zip')) as z:
@@ -31,4 +37,4 @@ for name in ['projeto-integrador','laboratorio-arquivos','laboratorio-http']:
     if name=='laboratorio-arquivos':
         assert run(['java',*java_options,'-cp','out','Main'],directory)==expected,'replacement must also work'
     print('PASS downloadable laboratory:',name)
-print('PASS 53 downloadable examples and all local laboratory outputs, including project contract tests.')
+print(f'PASS {len(examples)} downloadable examples and all local laboratory outputs, including project contract tests.')

@@ -12,7 +12,7 @@ Site estático baseado nos materiais de Desenvolvimento de aplicações e nos ex
 
 - `cont.html`: índice dos trinta temas, busca por assunto e impressão da apostila. Os temas 1 a 8 abrem páginas próprias; os temas 9 a 30 mantêm as janelas de leitura. Os pares de temas ficam em containers com título e ícone à direita; os antigos botões intermediários de categoria foram removidos.
 - `tema-01.html` a `tema-08.html`: capítulos ampliados com sumário, exemplos completos, exercícios resolvidos, referências e impressão individual. O conteúdo original foi preservado e aprofundado.
-- `playground.html`: 53 atividades com código Java editável, entrada para Scanner, desafios e saídas de referência.
+- `playground.html`: atividades de console organizadas por tema, com editor Java, entrada para Scanner, enunciado em passos, critérios de conferência, desafios e possível solução recolhida. O catálogo fica em `assets/data/exercises.json` e todas as contagens da página saem dele.
 - `quiz.html`: 60 questões de nível médio/avançado, dicas, comentários, retomada e resultado por tema.
 - `faq.html`: 80 perguntas com busca.
 - `assets/materiais/`: sete PDFs com links de abertura e download no conteúdo.
@@ -75,7 +75,7 @@ Os textos de `../projetos/Aula 1 - Conhecendo o Java/pages/` foram usados como m
 | `conexoes.html`, `recursos.html`, `certificacoes.html` | Tema 10: build, testes, persistência, ecossistema e roteiro de continuidade. |
 | `historia.html` | Contexto comparado à história já presente no tema 1. |
 
-Os exemplos incorporados da pesquisa aos temas 1 a 10 usam Java 17 com APIs disponíveis ao compilador do site. Recursos externos e posteriores são indicados para JDK local. Os 66 arquivos originais estão disponíveis em um ZIP identificado como pesquisa histórica. Os 53 programas atuais possuem outro ZIP, separado por atividade, com entradas e saídas. O roteiro de testes e o catálogo de fontes também podem ser baixados. Esses quatro arquivos e extra.html integram o cache offline.
+Os exemplos incorporados da pesquisa aos temas 1 a 10 usam Java 17 com APIs disponíveis ao compilador do site. Recursos externos e posteriores são indicados para JDK local. Os 66 arquivos originais estão disponíveis em um ZIP identificado como pesquisa histórica. Os programas atuais possuem outro ZIP (`programas-java.zip`), separado por atividade, com enunciado, entrada e saída. Ele é gerado do catálogo por `python tools/gerar-programas-java.py` (com `--check` só confere), e `python tests/downloads.py` falha se ele ficar desatualizado. O `Main.java` de cada pasta é uma possível solução, não um ponto de partida. O roteiro de testes e o catálogo de fontes também podem ser baixados. Esses quatro arquivos e extra.html integram o cache offline.
 
 A revisão evita reproduzir estatísticas sem fonte, garantias de desempenho, detalhes comerciais de certificações e a simulação por IA do runner antigo. Corrige também simplificações sobre imutabilidade de streams, custo de inserção em listas, construtor de cópia automático e a identificação de fábrica simples como Factory Method. A execução atual continua real e local no navegador.
 
@@ -92,7 +92,9 @@ A revisão evita reproduzir estatísticas sem fonte, garantias de desempenho, de
 
 `node tests/topic-pages.cjs` usa Playwright e Edge para conferir os oito capítulos, transição 8/9, links antigos, busca, impressão, sumário, resoluções, telas de 1440/390 px e leitura offline. Aceita `JAVA_SITE_URL` (padrão: `http://127.0.0.1:4188/organizar/`). As capturas ficam em `.work/topic-shots` e `.work/first-eight/shots`.
 
-`node tests/first-eight-activities.cjs` verifica as 53 atividades dos temas 1 a 14 (o nome do arquivo é histórico: os oito primeiros temas foram os primeiros a usar o fluxo): editor vazio e entrada de referência na primeira visita, passos e critérios de conferência, destino do link de revisão, solução que não preenche o editor, limpeza com confirmação e recuperação dos rascunhos antigos, inclusive os de temas 9 a 14 e os idênticos à solução. Usa `JAVA_SITE_URL`, com padrão `http://127.0.0.1:4189/`.
+`node tests/first-eight-activities.cjs` verifica todas as atividades do catálogo, dos temas 1 a 14 (o nome do arquivo é histórico: os oito primeiros temas foram os primeiros a usar o fluxo): editor vazio e entrada de referência na primeira visita, passos e critérios de conferência, destino do link de revisão, solução que não preenche o editor, limpeza com confirmação e recuperação dos rascunhos antigos, inclusive os de temas 9 a 14 e os idênticos à solução. Usa `JAVA_SITE_URL`, com padrão `http://127.0.0.1:4189/`.
+
+`node tests/static.cjs` deriva as contagens do catálogo, exige que todo tema de 1 a 14 tenha ao menos duas atividades (primeira aplicação e uma variação ou integração) e que toda atividade seja alcançável a partir de um capítulo. Também exige que as fontes usem só a biblioteca do Java 8, que é o que o runtime do navegador oferece: `isBlank`, `repeat`, `List.of`, `Stream.toList` (mas não `Collectors.toList`), `record`, blocos de texto e outras APIs posteriores compilam num JDK atual e falham no Playground. O que usa APIs posteriores, vários arquivos, janelas ou serviços é laboratório local, nunca atividade do Playground.
 
 Para busca e impressão reunidas, o índice carrega os oito capítulos por `fetch`, usando os HTMLs como fonte única. Use HTTP/HTTPS; a leitura direta de cada capítulo também funciona por `file://`, mas a reunião no índice requer servidor. Os capítulos e seu CSS estão no cache offline. Links antigos `cont.html#modal1` a `#modal8` são redirecionados para as páginas novas; `#cat1` a `#cat15` localizam o grupo correspondente.
 
@@ -102,9 +104,9 @@ Em todas as atividades do catálogo, o código de referência permanece no catá
 
 `node tests/research.cjs` compila os cinco programas completos incorporados da pesquisa e confere suas saídas. `node tests/offline.cjs` também verifica que o pop-up não aparece online, surge na perda de conexão e na abertura offline, preserva o rascunho e fecha na reconexão.
 
-`node tests/quiz-progress.cjs` verifica a migração de tentativas antigas para sessenta questões, preservando respostas, alternativas e posição, e rejeita dados inconsistentes. `node tests/examples.cjs` requer JDK 17 ou posterior no PATH e confere as saídas dos 53 programas, incluindo entradas inválidas e valores de fronteira.
+`node tests/quiz-progress.cjs` verifica a migração de tentativas antigas para sessenta questões, preservando respostas, alternativas e posição, e rejeita dados inconsistentes. `node tests/examples.cjs` requer JDK 17 ou posterior no PATH e confere as saídas dos programas do catálogo, incluindo entradas inválidas e valores de fronteira.
 
-`node tests/browser.cjs` usa Playwright e Microsoft Edge instalados no ambiente de teste. Inicie o site em `http://127.0.0.1:4177/java/`, ou defina `JAVA_SITE_URL`. A verificação executa os 53 programas, erros de compilação e execução, interrupção, retomada, rascunhos, downloads, quiz completo, buscas e navegação. O ambiente de teste precisa de internet para a JVM.
+`node tests/browser.cjs` usa Playwright e Microsoft Edge instalados no ambiente de teste. Inicie o site em `http://127.0.0.1:4177/java/`, ou defina `JAVA_SITE_URL`. A verificação executa os programas do catálogo, erros de compilação e execução, interrupção, retomada, rascunhos, downloads, quiz completo, buscas e navegação. O ambiente de teste precisa de internet para a JVM.
 
 `node tests/offline.cjs` confere conteúdo, quiz, carregamento das atividades e PDF sem conexão, além da mensagem que informa a necessidade de conexão para executar Java. A revisão visual foi feita em Microsoft Edge, com telas de computador e emulação de celular; não equivale a testar todos os navegadores ou aparelhos físicos.
 
@@ -123,7 +125,7 @@ A impressão usa o mesmo tema visual em papel, capa, roteiro e paginação. Link
 
 ## Trilha de plataformas e Spring Boot
 
-Os temas 15 a 30 continuam em ordem: módulos; Swing; JavaFX; desktop avançado; distribuição; Android básico e avançado; Spring Boot, REST, JPA, segurança, testes, operação, cache/mensagens; integração e projeto final. Cada capítulo tem mais de 1.100 palavras, exemplos e prática comentada. As seções 13 a 20 do Extra acompanham os ambientes e os testes. O catálogo de 53 atividades permanece nos temas 1 a 14, e o quiz de 60 questões nos temas 1 a 10. As chaves de rascunho e de progresso foram preservadas.
+Os temas 15 a 30 continuam em ordem: módulos; Swing; JavaFX; desktop avançado; distribuição; Android básico e avançado; Spring Boot, REST, JPA, segurança, testes, operação, cache/mensagens; integração e projeto final. Cada capítulo tem mais de 1.100 palavras, exemplos e prática comentada. As seções 13 a 20 do Extra acompanham os ambientes e os testes. O catálogo permanece nos temas 1 a 14, e o quiz de 60 questões nos temas 1 a 10. As chaves de rascunho e de progresso foram preservadas.
 
 Downloads novos, incluídos no cache do site:
 

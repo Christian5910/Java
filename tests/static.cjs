@@ -52,7 +52,23 @@ assert.ok(allContent.replace(/<[^>]*>/g, ' ').split(/\s+/).length > 48000);
 assert.equal([...read('faq.html').matchAll(/class="accordion-item"/g)].length, 80);
 assert.ok(read('extra.html').replace(/<[^>]*>/g, ' ').split(/\s+/).length > 16500);
 const exercises = JSON.parse(read('assets/data/exercises.json'));
-assert.equal(exercises.length, 53);
+assert.ok(exercises.length > 0);
+// A contagem vem do catálogo, não de um número escrito à mão: o que se exige é a progressão por tema.
+const porTema = {};
+for (const exercise of exercises) porTema[exercise.theme] = (porTema[exercise.theme] || 0) + 1;
+assert.deepEqual(Object.keys(porTema).map(Number).sort((a, b) => a - b), Array.from({ length: 14 }, (_, i) => i + 1), 'todo tema de 1 a 14 tem prática');
+for (const [tema, total] of Object.entries(porTema)) assert.ok(total >= 2, `o tema ${tema} precisa de ao menos duas atividades (primeira aplicação e uma variação ou integração)`);
+// O runtime do navegador tem as assinaturas da biblioteca do Java 8: APIs posteriores compilam num JDK atual, mas não ali.
+const depoisDoJava8 = [
+  [/\.isBlank\(\)/, 'String.isBlank'], [/\.strip(Leading|Trailing)?\(\)/, 'String.strip'], [/\.repeat\(/, 'String.repeat'],
+  [/\.lines\(\)/, 'String.lines'], [/\b(List|Set|Map)\.(of|copyOf)\(/, 'List/Set/Map.of e copyOf'],
+  [/(?<!Collectors)\.toList\(\)/, 'Stream.toList'], [/\.formatted\(/, 'String.formatted'], [/\bPath\.of\(/, 'Path.of'],
+  [/Files\.(readString|writeString)/, 'Files.readString e writeString'], [/\.readAllBytes\(\)/, 'readAllBytes'],
+  [/\.transferTo\(/, 'transferTo'], [/\brecord\s+\w+\s*\(/, 'record'], [/\"\"\"/, 'bloco de texto'],
+];
+for (const exercise of exercises) {
+  for (const [padrao, nome] of depoisDoJava8) assert.ok(!padrao.test(exercise.source), `${exercise.id} usa ${nome}, ausente da biblioteca do Java 8 do navegador`);
+}
 assert.equal(new Set(exercises.map(item => item.id)).size, exercises.length);
 assert.equal(new Set(exercises.map(item => item.theme)).size, 14);
 for (const exercise of exercises) {
@@ -106,4 +122,4 @@ for (let n=1;n<=30;n++) {
 }
 const faq = JSON.parse(read('assets/data/faq.json'));
 for(const [,q,a] of faq) assert.ok(read('faq.html').includes(q.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')),q);
-console.log(`PASS: ${htmlFiles.length} HTML pages, 30 linear chapters, 20 extras, 60 questions, 53 exercises, 80 FAQ entries and ${cached.length} cache paths.`);
+console.log(`PASS: ${htmlFiles.length} HTML pages, 30 linear chapters, 20 extras, 60 questions, ${exercises.length} exercises, 80 FAQ entries and ${cached.length} cache paths.`);
