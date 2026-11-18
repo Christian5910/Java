@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11 · Coleções, generics e contratos de dados · Java</title>
+<meta name="description" content="Escolha coleções, generics e critérios de igualdade e ordenação que tornem as regras de dados verificáveis.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 11 de 30</span></nav><header class="lesson-header"><h1>11 · Coleções, generics e contratos de dados</h1><p class="lead">Escolha coleções, generics e critérios de igualdade e ordenação que tornem as regras de dados verificáveis.</p><p class="text-muted">Java 17 como referência · Teoria, exemplos e prática guiada</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-13">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Do cadastro à regra de consulta</a></li><li><a href="#secao-2">Identidade, igualdade e código de hash</a></li><li><a href="#secao-3">O que cada estrutura promete</a></li><li><a href="#secao-4">Tipos genéricos como parte do contrato</a></li><li><a href="#secao-5">Herança entre elementos não vira herança entre listas</a></li><li><a href="#secao-6">Limites extends e super na prática</a></li><li><a href="#secao-7">Apagamento de tipos e limites da verificação</a></li><li><a href="#secao-8">Ordenar por uma regra explícita</a></li><li><a href="#secao-9">Ordenação e igualdade precisam ser interpretadas juntas</a></li><li><a href="#secao-10">Cópia, visão e fotografia do estado</a></li><li><a href="#secao-11">Consultas com streams e agregações</a></li><li><a href="#secao-12">Escolher custo e memória de acordo com a tarefa</a></li><li><a href="#secao-13">Prática: cadastro, consulta e contratos verificáveis</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. Do cadastro à regra de consulta</h2>
+<p>Nos temas anteriores, você criou objetos, protegeu atributos e reuniu valores em arrays, listas e mapas. Agora o problema passa a ser o contrato dessas estruturas: o que significa encontrar um registro, quando dois registros são iguais, como ordenar uma consulta e quem pode alterar os dados recebidos. Essas decisões aparecem mesmo em um programa pequeno. Uma lista que parece correta na primeira impressão pode permitir duplicação indevida, perder a ordem de cadastro ou expor o estado interno de um objeto.</p>
+<p>Considere um cadastro de alunos com matrícula, nome e nota. Matrícula identifica o aluno; nome serve para apresentação e busca; nota participa da regra de avaliação. Duas pessoas podem ter o mesmo nome e notas podem mudar. Portanto, usar apenas o nome como chave pode juntar pessoas diferentes, enquanto usar a nota como identidade torna uma atualização capaz de mudar o significado do registro. Antes de escolher uma coleção, escreva qual informação identifica cada objeto e quais consultas serão realizadas.</p>
+<p>Neste tema, mantenha o cadastro e suas consultas como conceitos separados. A sequência de inclusão pode ser útil para apresentar o histórico, enquanto outra tela precisa mostrar as maiores notas primeiro. Você não precisa sacrificar uma ordem para obter a outra. Crie uma projeção ou uma cópia apropriada para consultar, aplique o critério nessa estrutura e preserve a regra de alteração do cadastro. Esse cuidado prepara o trabalho com persistência e serviços dos próximos temas.</p>
+<h2 id="secao-2">2. Identidade, igualdade e código de hash</h2>
+<p>A identidade de referência responde se duas variáveis apontam para o mesmo objeto. A igualdade lógica responde se os objetos representam o mesmo valor segundo o contrato da classe. Em uma classe que não redefine <code>equals</code>, a implementação herdada de <code>Object</code> usa identidade. Criar duas instâncias com os mesmos campos não as torna automaticamente iguais. Se a regra do cadastro define matrícula como identidade lógica, a classe precisa expressar essa decisão de maneira consistente.</p>
+<p>Ao redefinir <code>equals</code>, mantenha reflexividade, simetria, transitividade e consistência enquanto os dados relevantes não mudarem. Um objeto não nulo deve ser diferente de <code>null</code>. Se duas instâncias são iguais, seus <code>hashCode</code> precisam ser iguais. O inverso não é obrigatório: colisões existem e a estrutura continua precisando verificar igualdade. Um hash não é uma matrícula, uma assinatura criptográfica nem uma garantia de unicidade. Consulte os <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html">contratos de Object</a> para conferir essas obrigações.</p>
+<p>Campos usados na igualdade de uma chave devem permanecer estáveis enquanto ela estiver em um mapa ou conjunto baseado em hash. Se uma chave muda de matrícula depois da inclusão, a estrutura pode continuar guardando a entrada numa posição calculada para o valor anterior. Uma busca com o novo valor pode falhar, mesmo que o objeto apareça durante a iteração. Prefira identificadores imutáveis e atualize os dados que não fazem parte da identidade por operações próprias.</p>
+<p><a href="playground.html?ex=igualdade-hash">Praticar Igualdade que o HashSet respeita</a></p>
+<p><a href="playground.html?ex=chave-mutavel">Praticar Chave que muda depois de entrar</a></p>
+<h2 id="secao-3">3. O que cada estrutura promete</h2>
+<p>Uma lista oferece sequência e posições, mas não impõe identidade única de aluno. Um conjunto evita elementos repetidos segundo sua regra de equivalência. Um mapa permite localizar uma associação pela chave. A estrutura não decide qual chave representa bem o domínio. Se você escolher <code>Map&lt;String, Aluno&gt;</code> com matrícula textual, ainda precisa validar matrículas vazias, inclusões repetidas e a política para atualização. <code>put</code> substitui uma associação existente e não avisa, por si só, que um cadastro deveria ter sido recusado.</p>
+<p>A implementação também participa do contrato de observação. <code>HashMap</code> não garante ordem de inserção. <code>LinkedHashMap</code>, em sua configuração usual, permite percorrer a ordem de inclusão. <code>TreeMap</code> ordena chaves conforme comparação. Não use o resultado de uma impressão ocasional para prometer uma ordem que a implementação não oferece. Um teste que depende de uma ordem inexistente pode passar hoje e falhar depois de uma alteração na quantidade de registros.</p>
+<p>Para o cadastro didático, uma política simples é recusar matrícula já existente em uma operação de inclusão e oferecer uma operação diferente para atualização. Isso torna a intenção visível no nome do método e no resultado. Teste as duas operações com a mesma chave: a inclusão deve preservar o registro anterior; a atualização permitida deve mudar apenas os dados previstos. Se outras threads também puderem escrever, a verificação de existência e a inclusão precisarão de coordenação, como será discutido no tema 13.</p>
+<h2 id="secao-4">4. Tipos genéricos como parte do contrato</h2>
+<p>Um parâmetro genérico relaciona os tipos que uma estrutura recebe e devolve. Uma <code>List&lt;Aluno&gt;</code> permite recuperar um aluno sem espalhar casts pelo programa. Se uma função recebe essa lista, o compilador pode rejeitar a inclusão de um texto no lugar de aluno. Essa verificação ajuda antes da execução, mas não substitui regras como nota dentro da faixa ou matrícula válida. O sistema de tipos e a validação do domínio tratam problemas diferentes.</p>
+<p>Generics também evitam trocar uma restrição clara por um contrato amplo demais. Uma lista de <code>Object</code> pode receber valores sem relação entre si; quem a lê precisa descobrir que operações cada elemento oferece. Não escolha <code>Object</code> apenas para fazer uma chamada compilar. Se a função trabalha com alunos, declare esse tipo. Se trabalha com qualquer valor que oferece uma capacidade, considere uma interface que represente essa capacidade. O objetivo é expressar a relação necessária, sem tornar a assinatura mais flexível do que o uso exige.</p>
+<p>Uma classe genérica pode ter campos e operações relacionados ao mesmo parâmetro; um método genérico pode declarar seu próprio parâmetro antes do retorno. Em <code>static &lt;T&gt; T primeiro(List&lt;T&gt; itens)</code>, o tipo devolvido se relaciona ao tipo dos elementos recebidos. Essa assinatura ainda precisa definir o que fazer com uma lista vazia. Retornar <code>null</code>, lançar uma exceção ou devolver um resultado opcional são escolhas de contrato que devem aparecer na documentação e nos testes. Veja os <a href="https://docs.oracle.com/javase/tutorial/java/generics/methods.html">métodos genéricos</a>.</p>
+<h2 id="secao-5">5. Herança entre elementos não vira herança entre listas</h2>
+<p>Um <code>Integer</code> pode ser usado como <code>Number</code>, mas <code>List&lt;Integer&gt;</code> não é uma <code>List&lt;Number&gt;</code>. Se a atribuição fosse permitida, um código que recebe a lista de números poderia acrescentar um <code>Double</code> à lista original de inteiros. Mais tarde, outro trecho esperaria ler um inteiro naquela posição. O compilador impede a atribuição para preservar a relação entre o tipo declarado e os elementos aceitos.</p>
+<p>Use uma assinatura que corresponda à direção dos dados. Se uma função apenas lê números de uma lista recebida, ela não precisa poder acrescentar qualquer <code>Number</code>. Se outra função só acrescenta inteiros em um destino, ela não precisa saber que tipo específico aquele destino devolveria em todas as leituras. É essa diferença entre fornecer e receber valores que permite usar limites com curingas de maneira segura. Evite memorizar símbolos sem relacioná-los às operações que o método executa.</p>
+<h2 id="secao-6">6. Limites extends e super na prática</h2>
+<p>Em <code>List&lt;? extends Number&gt;</code>, o tipo concreto dos elementos é desconhecido, mas é compatível com <code>Number</code>. Você pode ler um elemento como número. Não pode acrescentar arbitrariamente um <code>Integer</code>, pois a lista recebida poderia ser de <code>Double</code>. Em <code>List&lt;? super Integer&gt;</code>, o destino aceita inteiros, mas a leitura geral só permite assumir <code>Object</code>. Essa assinatura expressa uma capacidade de escrita, não a certeza de que todos os elementos são inteiros.</p>
+<p>O método de cópia abaixo usa um parâmetro <code>T</code> para relacionar a origem e o destino. A origem fornece valores compatíveis com T, e o destino aceita esses valores. A lista de origem não é alterada; o destino acumula os elementos copiados. Antes de executar, observe as duas chamadas e explique qual relação de tipos permite cada uma. O exemplo não implementa cópia profunda dos objetos: ele transfere os valores dos elementos, que podem ser referências compartilhadas.</p>
+<pre><code>import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class Main {
+    static &lt;T&gt; void copiar(List&lt;? extends T&gt; origem, List&lt;? super T&gt; destino) {
+        for (T valor : origem) destino.add(valor);
+    }
+    public static void main(String[] args) {
+        List&lt;Integer&gt; inteiros = Arrays.asList(2, 4, 6);
+        List&lt;Number&gt; numeros = new ArrayList&lt;&gt;();
+        copiar(inteiros, numeros);
+        copiar(Arrays.asList(1.5, 2.5), numeros);
+        System.out.println(numeros);
+        System.out.println(&quot;Origem: &quot; + inteiros);
+    }
+}</code></pre><p><a href="playground.html?ex=generics-limites">Praticar Ler de um tipo, escrever em outro</a></p><p>Saída do programa inicial:</p><pre><code>[2, 4, 6, 1.5, 2.5]
+Origem: [2, 4, 6]</code></pre><h2 id="secao-7">7. Apagamento de tipos e limites da verificação</h2>
+<p>A implementação de generics usa apagamento de tipos. Não é criada uma classe de execução diferente para cada combinação de parâmetros, como <code>ArrayList&lt;String&gt;</code> e <code>ArrayList&lt;Integer&gt;</code>. O compilador realiza verificações e adaptações apropriadas no código gerado. Por isso, algumas operações que parecem naturais para um tipo concreto não são permitidas com um parâmetro genérico, como criar diretamente <code>new T()</code> sem outra informação de construção.</p>
+<p>Evite tipos crus e casts não verificados. Misturar uma lista parametrizada com código que a trata como lista crua pode permitir uma inclusão indevida e deslocar a falha para uma leitura posterior. O aviso do compilador é uma informação sobre a perda de garantia, e não um ruído que deve ser silenciado automaticamente. Investigue o limite da API ou adapte o código para manter a relação de tipos. O <a href="https://docs.oracle.com/javase/tutorial/java/generics/erasure.html">guia de apagamento de tipos</a> explica o mecanismo.</p>
+<h2 id="secao-8">8. Ordenar por uma regra explícita</h2>
+<p>Um comparador recebe dois valores e informa a relação de ordem entre eles. O sinal do resultado importa; não é necessário devolver a diferença aritmética entre números. Subtrair inteiros para comparar pode sofrer overflow. Use operações de comparação apropriadas ou construtores de comparadores, como <code>comparingInt</code>. Para uma consulta de notas, declare também os desempates. Duas notas iguais não dizem qual nome deve aparecer primeiro.</p>
+<p>O programa a seguir preserva a lista de cadastro e ordena outra lista por nota decrescente e nome crescente. <code>reversed()</code> é aplicado ao critério da nota antes de acrescentar o desempate por nome. Aplicar a inversão depois de compor os dois critérios inverteria ambos. Desenhe a ordem esperada de Ana, Bruno e Carla antes de executar; depois confira que o cadastro continua na sequência original. A cópia da lista compartilha os alunos, que neste exemplo possuem apenas campos finais com valores imutáveis.</p>
+<pre><code>import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
+class Aluno {
+    private final String nome;
+    private final int nota;
+    Aluno(String nome, int nota) {
+        if (nome == null || nome.trim().isEmpty() || nota &lt; 0 || nota &gt; 10) {
+            throw new IllegalArgumentException(&quot;Aluno inválido&quot;);
+        }
+        this.nome = nome;
+        this.nota = nota;
+    }
+    String getNome() { return nome; }
+    int getNota() { return nota; }
+    @Override public String toString() { return nome + &quot;:&quot; + nota; }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        List&lt;Aluno&gt; cadastro = Arrays.asList(
+            new Aluno(&quot;Carla&quot;, 7), new Aluno(&quot;Ana&quot;, 9), new Aluno(&quot;Bruno&quot;, 7));
+        List&lt;Aluno&gt; consulta = new ArrayList&lt;&gt;(cadastro);
+        consulta.sort(Comparator.comparingInt(Aluno::getNota).reversed()
+            .thenComparing(Aluno::getNome));
+        System.out.println(&quot;Consulta: &quot; + consulta);
+        System.out.println(&quot;Cadastro: &quot; + cadastro);
+    }
+}</code></pre><p><a href="playground.html?ex=ordenacao-contratos">Praticar Ordenação com desempate</a></p><p>Saída do programa inicial:</p><pre><code>Consulta: [Ana:9, Bruno:7, Carla:7]
+Cadastro: [Carla:7, Ana:9, Bruno:7]</code></pre><h2 id="secao-9">9. Ordenação e igualdade precisam ser interpretadas juntas</h2>
+<p>Uma lista ordenada pode conter vários elementos que o comparador considera equivalentes. Já um conjunto ordenado, como <code>TreeSet</code>, usa a comparação para distinguir suas posições de elementos. Se um comparador considera apenas a nota, dois alunos com a mesma nota podem ser tratados como equivalentes nessa estrutura. Isso pode fazer um conjunto deixar de representar todos os alunos que o domínio considera diferentes. Não é um problema de ordenação aleatória: é uma escolha insuficiente de critério.</p>
+<p>Se você precisa apenas apresentar uma consulta ordenada, uma cópia de lista costuma expressar melhor a intenção do que converter o cadastro para um conjunto. Se precisa de um conjunto ordenado, defina uma comparação compatível com a regra de igualdade desejada. Acrescente matrícula como desempate quando ela identifica o registro, e teste alunos com todos os demais campos iguais. Consulte o contrato de <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html">Comparator</a> ao combinar estruturas ordenadas com igualdade.</p>
+<h2 id="secao-10">10. Cópia, visão e fotografia do estado</h2>
+<p>Uma cópia de coleção cria outra estrutura, mas pode continuar compartilhando os objetos dos elementos. Uma visão não modificável pode apenas impedir que o receptor chame operações de alteração por aquele caminho; alterações feitas na coleção de origem ainda podem aparecer na visão. Uma fotografia independente exige copiar a estrutura e definir como tratar os elementos internos. Essas diferenças aparecem no contrato de um getter e na maneira como uma tela conserva resultados de consulta.</p>
+<p>No estoque do tema 14, a consulta fará uma cópia do mapa e envolverá essa cópia com uma visão não modificável. Como as chaves são strings e os valores são inteiros empacotados, os elementos usados nesse modelo não permitem editar seu conteúdo interno. A fotografia permanece estável quando novas movimentações alteram o estoque. Se o mapa guardasse objetos mutáveis de produto, seria necessário decidir entre cópias, objetos de valor imutáveis ou uma projeção específica para consulta.</p>
+<p>Teste a independência nos dois sentidos. Primeiro modifique a coleção devolvida e observe se a API permite isso. Depois altere o objeto de origem por uma operação legítima e confira se o resultado já guardado mudou. Uma API pode recusar a primeira operação e ainda permitir a segunda por compartilhar uma estrutura. Não use os termos “imutável”, “não modificável” e “cópia” como se descrevessem sempre o mesmo comportamento.</p>
+<h2 id="secao-11">11. Consultas com streams e agregações</h2>
+<p>Depois de definir os tipos e as regras de igualdade, um pipeline de stream pode selecionar registros e produzir um resultado de consulta. Separe a fonte da agregação: filtrar alunos aprovados, extrair a nota e calcular uma média são operações diferentes. Verifique o caso vazio antes de usar o resultado de uma média opcional. Não substitua ausência por zero sem decidir que isso representa corretamente a situação. Uma turma sem alunos não possui necessariamente uma média igual a zero.</p>
+<p>Ao produzir um mapa com coletores, considere chaves repetidas. Uma coleta que exige chave única pode lançar uma exceção quando o dado contém duplicações. Uma função de combinação deve representar uma política clara, como somar quantidades ou escolher o registro mais recente segundo um critério definido. Não escolha “ficar com o último” só para evitar a falha: isso pode apagar uma informação que deveria ter sido recusada. Em importações, a validação da identidade costuma preceder a consulta.</p>
+<p>Evite alterar o cadastro de dentro de lambdas de consulta. Um pipeline com efeitos colaterais torna a ordem de avaliação e a observação do estado mais difíceis de acompanhar. Prefira produzir uma nova lista ou um total e aplicar alterações por operações explícitas do domínio. Essa separação também facilita testar o caso sequencial antes de considerar processamento paralelo, que exigirá outros cuidados no tema 13.</p>
+<h2 id="secao-12">12. Escolher custo e memória de acordo com a tarefa</h2>
+<p>Uma busca linear percorre elementos até encontrar o alvo ou encerrar a sequência. Um mapa indexado pode reduzir o custo médio de consultas por chave, mas ocupa memória e exige atualização consistente. Uma ordenação reorganiza a consulta e tem custo diferente de uma simples filtragem. Para alguns poucos registros de estudo, a implementação mais clara pode ser suficiente. Para um volume maior, descreva a consulta frequente e meça o caminho que realmente consome tempo.</p>
+<p>Não mantenha vários índices antes de precisar deles. Se o cadastro possui um mapa por matrícula e outro por nome, cada inclusão, atualização e remoção precisa preservar a coerência entre ambos. Um índice de nome pode mapear para vários alunos, pois nomes repetidos são possíveis. Uma alteração que atualiza só um índice produz resultados contraditórios. Teste uma sequência completa de inclusão, busca, atualização e remoção antes de concluir que o novo índice melhorou o programa.</p>
+<h2 id="secao-13">13. Prática: cadastro, consulta e contratos verificáveis</h2>
+<p>Monte um cadastro por matrícula com pelo menos seis alunos, dois nomes repetidos e três notas iguais. Recuse uma inclusão com matrícula já existente. Produza uma consulta por nota sem alterar a ordem de inclusão. Depois devolva uma fotografia dos resultados e teste o comportamento quando o cadastro muda. Registre quais objetos continuam compartilhados e quais estruturas foram copiadas. O teste precisa verificar conteúdo e ordem, não apenas quantidade.</p>
+<p>Explique também as assinaturas genéricas usadas na cópia. Mostre uma chamada válida e outra que o compilador deve recusar, e restaure o programa executável ao terminar. Uma tentativa de compilação recusada pode ensinar o contrato, mas não deve ser confundida com uma falha em tempo de execução. Use as atividades deste tema no Playground para guardar rascunhos independentes. A seção <a href="extra.html#extraLaboratorios">Laboratórios de continuidade</a> propõe variações desse cadastro.</p>
+<details><summary>Se dois alunos têm a mesma nota, posso usar só a nota para guardá-los em um TreeSet?</summary><p>Esse critério pode tratar os alunos como equivalentes e manter apenas um deles. Para uma consulta ordenada que admite empates, use uma lista. Para um conjunto, a comparação precisa distinguir os registros de acordo com a igualdade pretendida, por exemplo incluindo matrícula.</p></details><details><summary>Uma lista não modificável prova que os alunos internos nunca mudarão?</summary><p>Não. A restrição da lista não determina a mutabilidade dos elementos. Se os alunos forem mutáveis e compartilhados, suas notas poderão mudar por outra referência. Defina uma projeção ou uma política de cópia que corresponda ao contrato da consulta.</p></details></article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-10.html">Anterior · Tema 10</a><a class="btn btn-primary" href="tema-12.html">Próximo · Tema 12</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <nav class="footer-links" aria-label="Atalhos do rodapé"><a href="index.html">Início</a><a href="cont.html">Conteúdo</a><a href="playground.html">Playground</a><a href="quiz.html">Quiz</a><a href="faq.html">FAQ</a><a href="extra.html">Extra</a></nav>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/code-blocks.js" defer></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>15 · Módulos, dependências e arquitetura portável · Java</title>
+<meta name="description" content="Organize o projeto em módulos e artefatos, com dependências, recursos e contratos que não acoplam as telas.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 15 de 30</span></nav><header class="lesson-header"><h1>15 · Módulos, dependências e arquitetura portável</h1><p class="lead">Organize o projeto em módulos e artefatos, com dependências, recursos e contratos que não acoplam as telas.</p><p class="text-muted">Java 17 como referência · Teoria, exemplos e prática guiada</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-8">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Do projeto pequeno ao programa distribuído</a></li><li><a href="#secao-2">Pacote, módulo e artefato têm responsabilidades diferentes</a></li><li><a href="#secao-3">Um módulo mínimo que você pode compilar</a></li><li><a href="#secao-4">Ler a resolução antes de trocar opções</a></li><li><a href="#secao-5">Maven e Gradle no trabalho cotidiano</a></li><li><a href="#secao-6">Recursos, codificação e caminhos portáveis</a></li><li><a href="#secao-7">Contrato compartilhado sem acoplar as telas</a></li><li><a href="#secao-8">Prática: preparar uma base reaproveitável</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. Do projeto pequeno ao programa distribuído</h2>
+<p>Até o tema 14, você organizou regras, entradas e armazenamento para que cada parte pudesse ser verificada. A continuação leva esse mesmo cuidado a aplicações com janela, dispositivos móveis e serviços HTTP. Comece identificando o que já pode ser reaproveitado. A regra que recusa uma nota fora de 0 a 10 pode viver numa classe Java sem importar Swing, Android ou Spring. Cada plataforma converte sua entrada e apresenta o resultado de uma maneira própria.</p>
+<p>Uma dependência aparece quando uma parte precisa conhecer um tipo, recurso ou comportamento de outra. Se a classe de domínio recebe um JTextField, ela passa a depender de uma biblioteca gráfica e dificulta testes sem tela. Se recebe o valor da nota, preserva um contrato que cabe no terminal, numa janela ou numa requisição. A direção das dependências influencia quais mudanças se espalham pelo projeto e quais ambientes conseguem executar determinada parte.</p>
+<p>Este tema usa Java 17 como referência dos laboratórios locais. Os exemplos de módulos exigem um JDK instalado e terminal; o Playground continua dedicado ao seu catálogo de console. Você pode ler e imprimir todo o percurso no site. Quando houver um projeto externo ao navegador, o texto indicará os arquivos para download, os requisitos e uma forma de conferir a execução.</p>
+<h2 id="secao-2">2. Pacote, módulo e artefato têm responsabilidades diferentes</h2>
+<p>Um pacote organiza nomes e participa do controle de acesso da linguagem. Um módulo nomeado, introduzido pelo sistema de módulos da plataforma, declara dependências e quais pacotes exporta. Um artefato de build é uma unidade publicada ou produzida, como um arquivo JAR identificado por coordenadas Maven. Um projeto pode conter muitos pacotes, produzir um artefato e ainda executar sem um módulo nomeado.</p>
+<p>O arquivo module-info.java fica na raiz dos fontes de um módulo. A diretiva requires declara leitura de outro módulo; exports disponibiliza um pacote para uso por outros módulos. Exportar não torna membros privados públicos. Acesso continua sujeito à visibilidade das classes e dos membros. Também não equivale a liberar reflexão sobre todos os detalhes internos. Bibliotecas que precisam de reflexão profunda podem exigir opens, de preferência restrito ao módulo que realmente precisa dela.</p>
+<p>Evite acrescentar module-info.java ao primeiro projeto Spring apenas para torná-lo mais organizado. Bibliotecas e plugins possuem requisitos de resolução e reflexão próprios. Primeiro faça o build funcionar, entenda como as dependências entram e decida se a fronteira de módulos resolve uma necessidade do projeto. Consulte a <a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-7.html">especificação de pacotes e módulos</a> quando precisar conferir as regras de leitura e exportação.</p>
+<h2 id="secao-3">3. Um módulo mínimo que você pode compilar</h2>
+<p>Crie a pasta src/estudo.core. Dentro dela, salve module-info.java e o diretório br/estudo/core contendo Saudacao.java. O nome do diretório que está imediatamente abaixo de src coincide com o nome do módulo usado pelo comando. A classe pública pertence ao pacote br.estudo.core, que também determina seu caminho relativo. Use exatamente as declarações abaixo em dois arquivos separados.</p>
+<pre><code>// src/estudo.core/module-info.java
+module estudo.core { exports br.estudo.core; }
+
+// src/estudo.core/br/estudo/core/Saudacao.java
+package br.estudo.core;
+public class Saudacao {
+    public static void main(String[] args) {
+        System.out.println(&quot;Módulo pronto&quot;);
+    }
+}</code></pre>
+<pre><code>javac --release 17 -encoding UTF-8 -d mods --module-source-path src -m estudo.core
+java --module-path mods -m estudo.core/br.estudo.core.Saudacao</code></pre>
+<h2 id="secao-4">4. Ler a resolução antes de trocar opções</h2>
+<p>A saída esperada é Módulo pronto. Se a classe não for localizada, confira a pasta a partir da qual executou o comando, a declaração de pacote e o nome qualificado depois da barra. Se um módulo exigido estiver ausente, a JVM interrompe a inicialização antes de chamar main. Alterar o código da regra não resolve uma dependência que o resolvedor não conseguiu encontrar.</p>
+<p>No classpath, classes de bibliotecas tradicionais participam do módulo sem nome. No module-path, JARs modulares declaram seu descritor; alguns JARs sem descritor podem ser tratados como módulos automáticos. Os nomes resultantes e as possibilidades de leitura exigem atenção. Para começar, mantenha um exemplo integralmente no classpath ou um conjunto pequeno de módulos explícitos. Misturar caminhos sem compreender cada entrada costuma produzir mensagens difíceis de relacionar com a intenção do projeto.</p>
+<p>O comando jdeps ajuda a inspecionar dependências de classes e artefatos. O resultado observado depende das classes analisadas e das opções utilizadas; recursos carregados por reflexão ou nomes construídos em execução podem exigir configuração adicional. A inspeção apoia a preparação do runtime, mas a confirmação final continua sendo executar os fluxos relevantes com o pacote produzido.</p>
+<h2 id="secao-5">5. Maven e Gradle no trabalho cotidiano</h2>
+<p>Maven organiza um ciclo de vida com etapas como compile, test e package. O pom.xml declara a identidade do projeto, as dependências e a configuração dos plugins. Gradle descreve tarefas e relações num build próprio. Um projeto deve indicar qual ferramenta usa e sua versão adequada. Aprender os dois ao mesmo tempo não é requisito para acompanhar o laboratório Spring, que usa Maven.</p>
+<p>Uma dependência pode trazer outras dependências transitivas. É por isso que adicionar um starter fornece várias bibliotecas sem listar cada uma manualmente. O gerenciamento de versões coordena esse conjunto. Alterar individualmente uma biblioteca gerida pelo framework pode criar incompatibilidades que só aparecem na inicialização. Inspecione a árvore com mvn dependency:tree e leia a recomendação da linha utilizada antes de sobrescrever versões.</p>
+<p>O escopo também importa. Uma biblioteca necessária apenas em teste deve ficar no escopo test. Uma implementação de banco pode entrar em runtime quando o código compila usando APIs mais gerais. O artefato que você entrega deve carregar o necessário para executar, com licenças e configuração apropriadas. A pasta de cache local do desenvolvedor não deve ser a única explicação de por que um programa funciona.</p>
+<h2 id="secao-6">6. Recursos, codificação e caminhos portáveis</h2>
+<p>Um arquivo dentro do JAR é um recurso da aplicação. Um documento criado pelo usuário é um dado externo. Para um modelo de relatório empacotado, use getResourceAsStream com caminho conhecido e trate retorno nulo. Para uma exportação escolhida pelo usuário, receba um Path externo e verifique permissões e falhas. Um recurso dentro do JAR não oferece necessariamente um caminho gravável no sistema de arquivos.</p>
+<p>Declare UTF-8 no build e nas operações de texto. Acentos que funcionam numa máquina podem depender da codificação padrão de outra instalação. Use Path.resolve para compor caminhos, em vez de concatenar barras fixas. Diferenças de maiúsculas e minúsculas, nomes reservados e permissões também variam entre sistemas. Teste com o mesmo conjunto de nomes e caracteres nas plataformas que você pretende apoiar.</p>
+<p>Configuração como endereço do servidor deve ser fornecida por mecanismo documentado. Evite embutir a pasta do seu computador ou credenciais nos fontes e no JAR. Uma configuração inválida deve gerar uma mensagem que ajude o usuário a corrigir o valor sem revelar segredos. Separar configuração de regra prepara a distribuição desktop e a configuração externa do Spring Boot.</p>
+<h2 id="secao-7">7. Contrato compartilhado sem acoplar as telas</h2>
+<p>Imagine uma operação registrarNota que recebe matrícula e valor. O domínio valida a matrícula, verifica a faixa e devolve um resultado de negócio. O adaptador Swing lê o campo e atualiza um rótulo. O adaptador HTTP transforma o JSON em uma chamada e escolhe o status. O domínio permanece responsável pela regra mesmo que exista uma validação antecipada no formulário.</p>
+<p>O compartilhamento precisa respeitar a API disponível em cada destino. Android possui runtime e bibliotecas próprias; uma classe que compila para Java 17 no servidor pode chamar uma API ausente no aparelho. Você pode compartilhar fontes ou um artefato de domínio compatível, mantendo adaptadores separados. Anotações JPA, componentes gráficos e referências ao contexto Android ficam fora dessa fronteira quando não fazem parte da regra comum.</p>
+<p>Antes de dividir tudo em muitos módulos, escreva um teste da regra sem levantar a aplicação. Se o teste exige uma janela ou banco para comparar 6,5 com a nota mínima, existe uma dependência que merece revisão. Uma separação pequena, visível em pacotes e construtores, costuma ser suficiente para demonstrar o contrato antes de introduzir novos artefatos.</p>
+<h2 id="secao-8">8. Prática: preparar uma base reaproveitável</h2>
+<p>Compile o módulo da saudação e registre os comandos e a saída. Depois acrescente uma classe pública Nota com um método avaliar que receba texto e recuse valor vazio, não numérico, infinito ou fora da faixa. Preserve essa validação no domínio. Execute um teste de 7, de 6,5 e de uma recusa, sem carregar uma biblioteca de interface.</p>
+<p>Faça uma segunda experiência controlada: renomeie o pacote sem mover o arquivo e tente compilar a partir de uma pasta de saída vazia. Com a opção -m, o javac recompila só os arquivos mais novos que as classes já geradas e pode terminar sem erro sobre uma saída antiga. Leia a mensagem e corrija a estrutura. Por fim, descreva quais dados seriam recurso do JAR e quais seriam documentos do usuário. O trabalho está concluído quando outra pessoa consegue compilar a pasta extraída com os requisitos declarados, explicar a dependência de cada parte e repetir as verificações.</p>
+<p>Para repetir esta prática com um ponto de partida que já compila, um roteiro passo a passo, as falhas controladas, critérios de conclusão e uma possível solução em pasta separada, baixe o <a href="assets/extras/laboratorio-modulos.zip" download>laboratório de módulos e build</a>. Ele executa no seu computador, com JDK 17 ou superior, e não no Playground.</p>
+<details><summary>Um pacote exportado permite acessar um campo private de outra classe?</summary><p>Não. exports abre o pacote para acesso normal entre módulos, preservando as regras de visibilidade da linguagem. Reflexão profunda possui regras próprias e não deve ser liberada indiscriminadamente.</p></details>
+</article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-14.html">Anterior · Tema 14</a><a class="btn btn-primary" href="tema-16.html">Próximo · Tema 16</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <nav class="footer-links" aria-label="Atalhos do rodapé"><a href="index.html">Início</a><a href="cont.html">Conteúdo</a><a href="playground.html">Playground</a><a href="quiz.html">Quiz</a><a href="faq.html">FAQ</a><a href="extra.html">Extra</a></nav>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/code-blocks.js" defer></script>
+
+
+
+</body>
+</html>

@@ -14,7 +14,7 @@ const cases = {
 };
 let count = 0;
 const directories = new Map();
-for (const file of Array.from({length:8},(_,i)=>`tema-0${i+1}.html`)) {
+for (const file of Array.from({length:30},(_,i)=>`tema-${String(i+1).padStart(2,'0')}.html`)) {
   const html = fs.readFileSync(path.join(root,file),'utf8');
   for(const [,code] of html.matchAll(/<code(?:\s[^>]*)?>([\s\S]*?)<\/code>/g)) {
     assert.ok(!/'[\r\n]+'/.test(decode(code)),file+': broken Java char literal');

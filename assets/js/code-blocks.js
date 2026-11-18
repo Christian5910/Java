@@ -163,7 +163,7 @@
   }
   function run() {
     scan(document.body);
-    /* Capítulos carregados depois (ex.: temas 1 a 8 na página Conteúdo) recebem o mesmo tratamento. */
+    /* Capítulos carregados depois (ex.: temas na página Conteúdo) recebem o mesmo tratamento. */
     if (window.MutationObserver) {
       new MutationObserver(function (records) {
         records.forEach(function (record) { record.addedNodes.forEach(scan); });

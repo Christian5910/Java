@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>27 · Spring Boot em operação: configuração, observabilidade e entrega · Java</title>
+<meta name="description" content="Prepare o serviço para operar: configuração externa, Actuator, logs, métricas, prontidão e entrega reversível.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 27 de 30</span></nav><header class="lesson-header"><h1>27 · Spring Boot em operação: configuração, observabilidade e entrega</h1><p class="lead">Prepare o serviço para operar: configuração externa, Actuator, logs, métricas, prontidão e entrega reversível.</p><p class="text-muted">Java 17 como referência · Teoria, exemplos e prática guiada</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-8">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">O artefato precisa executar fora do ambiente de desenvolvimento</a></li><li><a href="#secao-2">Configuração externa e perfis</a></li><li><a href="#secao-3">Actuator: selecionar e proteger endpoints</a></li><li><a href="#secao-4">Logs, métricas e rastreamento</a></li><li><a href="#secao-5">Disponibilidade, prontidão e encerramento</a></li><li><a href="#secao-6">Contêineres e limites de recursos</a></li><li><a href="#secao-7">Entrega, migração e reversão</a></li><li><a href="#secao-8">Prática: um roteiro de operação local</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. O artefato precisa executar fora do ambiente de desenvolvimento</h2>
+<p>Um serviço pode passar nos testes e ainda falhar ao iniciar por uma configuração ausente, permissão de pasta ou conexão indisponível. A entrega precisa identificar o artefato, a versão de Java, a configuração necessária e a forma de observar o processo. O mesmo JAR pode ser usado em ambientes diferentes quando os valores específicos são fornecidos externamente.</p>
+<p>No catálogo do laboratório, as propriedades privilegiam uma execução local descartável. H2 está em memória, o endereço é loopback e a saúde pública não mostra componentes. Para uma instalação permanente, você precisará substituir esses valores, adicionar migrações e estabelecer acesso, transporte seguro e recuperação de dados. A transição deve ser verificável em etapas.</p>
+<p>Este capítulo apresenta decisões operacionais e experimentos locais. Ele não configura automaticamente um provedor de nuvem nem publica o servidor. Use o projeto do tema 22 para observar inicialização, saúde e encerramento; mantenha os dados fictícios enquanto experimenta.</p>
+<h2 id="secao-2">2. Configuração externa e perfis</h2>
+<p>Spring Boot aceita configuração em arquivos, variáveis e argumentos, com uma ordem de precedência definida. Um valor em um local pode ser sobrescrito por outro. Ao investigar um comportamento, identifique a origem efetiva sem registrar segredos. A <a href="https://docs.spring.io/spring-boot/3.5/reference/features/external-config.html">documentação de configuração externa</a> descreve as fontes e a ordem da linha utilizada.</p>
+<p>Perfis permitem ativar conjuntos de configuração, como estudo e integração. Eles não são um cofre. Um arquivo application-producao.properties com senha real continua sendo um arquivo com segredo se for incluído no repositório ou no JAR. Use o mecanismo de segredos do ambiente e restrinja quem pode lê-lo.</p>
+<p>Para valores relacionados, ConfigurationProperties permite agrupar e validar a configuração. Uma URL obrigatória ausente pode impedir a inicialização com uma explicação clara, em vez de aparecer como null numa operação posterior. Defina unidades para durações e limites para números. Uma configuração que aceita valor negativo de timeout pode produzir uma falha difícil de relacionar ao preenchimento original.</p>
+<h2 id="secao-3">3. Actuator: selecionar e proteger endpoints</h2>
+<p>Actuator oferece recursos operacionais. Expor um endpoint na web e autorizar seu acesso são decisões diferentes. O laboratório expõe apenas health e permite essa rota sem detalhes. Endpoints de ambiente, métricas detalhadas, dump de memória e configuração exigem análise de necessidade e acesso.</p>
+<p>Saúde pode combinar indicadores de dependências. Um serviço que depende de banco precisa representar a situação de forma útil para a infraestrutura, sem divulgar credenciais ou detalhes desnecessários ao público. Consulte os <a href="https://docs.spring.io/spring-boot/3.5/reference/actuator/endpoints.html">endpoints do Actuator</a> e escolha explicitamente o conjunto que pretende disponibilizar.</p>
+<p>Não abra todos os endpoints apenas para acompanhar uma aula de métricas. Habilite o necessário, configure a exportação para o coletor escolhido e confirme a recusa do restante. Um endereço de administração também precisa de uma política de rede e autenticação compatível com quem o consome.</p>
+<h2 id="secao-4">4. Logs, métricas e rastreamento</h2>
+<p>Logs registram acontecimentos e contexto; métricas agregam medidas ao longo do tempo; traces ajudam a seguir uma operação entre componentes. Cada recurso responde perguntas diferentes. Um log de erro informa uma falha particular, enquanto uma métrica pode revelar que a taxa de erro cresceu após uma entrega.</p>
+<p>Use identificadores de correlação apropriados e preserve o contexto nas chamadas necessárias. Evite colocar dados pessoais, senhas ou tokens em mensagens. Em métricas, rótulos com valores ilimitados, como um id de pedido por série, podem criar cardinalidade excessiva. Prefira dimensões limitadas que ajudem a comparar comportamento, como operação e classe de resultado.</p>
+<p>Para o catálogo, comece medindo quantidade de chamadas, duração e recusas de uma retirada. Diferencie conflito de regra de falha inesperada. Uma taxa alta de 409 pode indicar clientes trabalhando com dados antigos, enquanto 500 exige outra investigação. O observador precisa conhecer o contrato para interpretar o número.</p>
+<h2 id="secao-5">5. Disponibilidade, prontidão e encerramento</h2>
+<p>Uma verificação de vida responde se o processo deve continuar executando. Uma verificação de prontidão responde se ele está apto a receber trabalho. Confundir uma dependência temporariamente indisponível com processo irrecuperável pode provocar reinicializações que aumentam o problema. O significado de cada probe deve acompanhar a arquitetura e a infraestrutura.</p>
+<p>Graceful shutdown permite que o servidor pare de aceitar novo trabalho e aguarde operações em andamento dentro de um prazo. O catálogo configura shutdown gracioso e timeout de fase de 20 segundos. Isso não garante que qualquer tarefa arbitrária, chamada externa ou fila própria será concluída. Esses recursos precisam de integração com o ciclo de vida e de limites compatíveis.</p>
+<p>Teste o encerramento com uma operação controlada e observe o que o cliente recebe. A infraestrutura também precisa conceder tempo suficiente antes de forçar o término do processo. Um timeout interno maior que a janela de desligamento pode deixar o cliente sem confirmação mesmo que o servidor tenha produzido parte dos efeitos.</p>
+<pre><code>server.shutdown=graceful
+spring.lifecycle.timeout-per-shutdown-phase=20s
+management.endpoints.web.exposure.include=health
+management.endpoint.health.show-details=never</code></pre>
+<h2 id="secao-6">6. Contêineres e limites de recursos</h2>
+<p>Um contêiner empacota processo e dependências num formato próprio, mas não elimina a necessidade de configurar memória, CPU, rede e armazenamento. O runtime Java observa os limites disponíveis conforme sua versão e configuração. Meça uso sob carga antes de escolher valores; memória total envolve heap, metaspace, threads, buffers e outros componentes.</p>
+<p>Use uma imagem base compatível e mantida, com usuário e permissões adequados. O diretório de dados deve ter persistência planejada quando necessário. Um banco em memória dentro do contêiner continua perdendo registros ao encerrar. Variáveis de ambiente e segredos precisam ser fornecidos pelo mecanismo do ambiente, sem copiá-los para camadas da imagem.</p>
+<p>O comando de build de imagem do Spring Boot pode integrar buildpacks quando o projeto e o ambiente oferecem os requisitos. Leia a <a href="https://docs.spring.io/spring-boot/3.5/maven-plugin/build-image.html">documentação do plugin Maven</a> antes de executar. O laboratório não exige Docker e não distribui uma imagem de produção pronta.</p>
+<h2 id="secao-7">7. Entrega, migração e reversão</h2>
+<p>Uma entrega deve ligar código, testes e artefato de forma identificável. Registre a versão ou revisão que produziu o JAR e mantenha a configuração do ambiente separada. Reproduzir o build ajuda a investigar se uma diferença veio do código, das dependências ou da infraestrutura.</p>
+<p>Mudanças de banco precisam ser compatíveis com a estratégia de atualização. Se duas versões da aplicação executam ao mesmo tempo, uma coluna removida pode quebrar a versão anterior. Planeje expansões compatíveis, migração de dados e remoção posterior quando o cenário exigir. Reverter apenas o JAR não desfaz automaticamente uma transformação de dados.</p>
+<p>Estabeleça um critério de sucesso após a entrega: inicialização, prontidão, consulta de exemplo e operação de teste sem dados reais. Defina também quando interromper a atualização. O roteiro deve dizer onde verificar resultados e como preservar evidências sem copiar informações sensíveis.</p>
+<h2 id="secao-8">8. Prática: um roteiro de operação local</h2>
+<p>Inicie o catálogo com uma porta alternativa fornecida por argumento e confirme a consulta de saúde. Confira que detalhes internos e rotas não autorizadas permanecem inacessíveis. Cadastre dados fictícios, encerre o processo e observe o catálogo vazio após a nova inicialização. Registre que essa perda faz parte da configuração em memória.</p>
+<p>Depois escreva uma proposta de configuração permanente: banco, migrações, segredo, TLS, saúde, logs e restauração. Marque quais itens foram executados e quais são apenas planejamento. A atividade termina quando outra pessoa consegue iniciar, observar e encerrar o serviço a partir do roteiro, sem descobrir valores por tentativa.</p>
+<details><summary>Um processo respondendo a health UP comprova que todas as operações de negócio funcionam?</summary><p>Não. A saúde representa os indicadores configurados. Fluxos de negócio, permissões, dados e integrações precisam das verificações correspondentes; uma consulta de saúde não substitui esses cenários.</p></details>
+</article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-26.html">Anterior · Tema 26</a><a class="btn btn-primary" href="tema-28.html">Próximo · Tema 28</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <nav class="footer-links" aria-label="Atalhos do rodapé"><a href="index.html">Início</a><a href="cont.html">Conteúdo</a><a href="playground.html">Playground</a><a href="quiz.html">Quiz</a><a href="faq.html">FAQ</a><a href="extra.html">Extra</a></nav>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/code-blocks.js" defer></script>
+
+
+
+</body>
+</html>

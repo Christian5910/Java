@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>29 · Integrações distribuídas: resiliência, contratos e consistência · Java</title>
+<meta name="description" content="Projete integrações que admitem falha: timeouts, idempotência, resiliência e contratos entre versões.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 29 de 30</span></nav><header class="lesson-header"><h1>29 · Integrações distribuídas: resiliência, contratos e consistência</h1><p class="lead">Projete integrações que admitem falha: timeouts, idempotência, resiliência e contratos entre versões.</p><p class="text-muted">Java 17 como referência · Teoria, exemplos e prática guiada</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-8">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Quando uma chamada atravessa processos</a></li><li><a href="#secao-2">Timeouts e orçamento de uma operação</a></li><li><a href="#secao-3">Idempotência no contrato HTTP</a></li><li><a href="#secao-4">Resiliência e limites de isolamento</a></li><li><a href="#secao-5">REST, eventos, SSE e WebSocket</a></li><li><a href="#secao-6">Spring MVC e WebFlux</a></li><li><a href="#secao-7">Contratos entre versões e dados pertencentes a cada serviço</a></li><li><a href="#secao-8">Prática: uma integração que admite falha</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. Quando uma chamada atravessa processos</h2>
+<p>Uma integração distribuída envolve componentes que falham e evoluem de forma independente. Uma requisição pode sair do cliente, chegar ao servidor e perder a resposta. O cliente observa timeout e desconhece se a operação terminou. Essa incerteza aparece mesmo numa rede local e precisa fazer parte do contrato.</p>
+<p>O catálogo pode atender uma janela desktop e um aplicativo Android. Ambos convertem suas ações em requisições, mas não compartilham uma transação de memória com o servidor. A validação local orienta o preenchimento; a decisão final permanece no serviço que confirma o estado compartilhado. O cliente precisa representar carregamento, confirmação, conflito e resultado desconhecido.</p>
+<p>Comece com um serviço bem delimitado antes de dividir o programa em vários serviços. Separar processos acrescenta deploy, comunicação, observabilidade e consistência. A divisão deve resolver uma necessidade concreta de domínio ou operação, com responsabilidade clara sobre os dados.</p>
+<h2 id="secao-2">2. Timeouts e orçamento de uma operação</h2>
+<p>Configure limites de conexão e resposta apropriados ao cliente HTTP utilizado. Um timeout muito longo mantém recursos e deixa a pessoa sem retorno; um limite curto demais pode transformar uma operação normal numa sequência de repetições. Meça o comportamento e escolha um orçamento que inclua todas as chamadas necessárias.</p>
+<p>Se uma tela aceita esperar no máximo alguns segundos, cada etapa não pode consumir esse prazo integral várias vezes. Propague um limite de trabalho ou coordene os timeouts conforme a arquitetura. Cancele o que perdeu relevância quando possível, lembrando que cancelamento do cliente não desfaz automaticamente o efeito no servidor.</p>
+<p>No Java local, HttpClient oferece configuração de conexão e timeout por requisição. A biblioteca precisa ser usada fora da thread gráfica. Erros de transporte devem preservar o rascunho e permitir consulta posterior do estado. Não converta qualquer IOException em produto inexistente.</p>
+<h2 id="secao-3">3. Idempotência no contrato HTTP</h2>
+<p>Uma criação pode receber uma chave de operação gerada pelo cliente e válida no escopo daquele usuário e ação. O servidor registra a chave junto ao resultado de forma transacional. Repetir a mesma intenção devolve o resultado conhecido; mudar o conteúdo com a mesma chave deve gerar conflito conforme o contrato.</p>
+<p>A retenção dessa chave precisa ser definida. Se o registro expira cedo demais, uma repetição tardia pode criar outro efeito. Se nunca expira, o armazenamento cresce. Inclua a política na documentação e proteja a associação entre chave, identidade e payload. Uma chave sem escopo de usuário pode revelar ou reutilizar o resultado de outro chamador.</p>
+<p>Não presuma idempotência apenas pelo nome de um método ou pela presença de um cabeçalho que o servidor ignora. O comportamento deve ser implementado e verificado. O catálogo inicial protege versão e código único, mas não implementa uma tabela geral de chaves de operação; essa é uma evolução explícita.</p>
+<h2 id="secao-4">4. Resiliência e limites de isolamento</h2>
+<p>Circuit breaker pode interromper chamadas para uma dependência que está falhando, permitindo um período de recuperação e testes controlados. Ele precisa de métricas e limites coerentes. Um fallback deve ter significado no domínio: devolver saldo zero quando o servidor está indisponível apresenta um dado falso e pode induzir uma decisão errada.</p>
+<p>Bulkheads ou limites de concorrência isolam recursos para que uma dependência lenta não ocupe toda a capacidade. Filas, pools e conexões precisam de tamanhos limitados e política de rejeição. Uma recusa rápida e compreensível pode ser melhor do que acumular trabalho que vai expirar, mas o cliente deve saber que a operação não foi aceita.</p>
+<p>Teste falha, lentidão e recuperação separadamente. Uma integração que funciona apenas quando todos os componentes respondem imediatamente ainda não mostrou como preserva recursos sob problema. Registre duração, erros e trabalho pendente para distinguir dependência lenta de saturação no próprio processo.</p>
+<h2 id="secao-5">5. REST, eventos, SSE e WebSocket</h2>
+<p>REST com requisição e resposta atende bem às operações do catálogo. Eventos comunicam fatos entre componentes com outro acoplamento temporal. SSE fornece um fluxo do servidor para o cliente sobre HTTP e pode servir a notificações simples. WebSocket permite comunicação bidirecional persistente, exigindo tratamento de conexão, autorização e reconexão.</p>
+<p>Escolha a comunicação pelo comportamento necessário. Uma tela que consulta uma vez não exige um canal permanente. Uma notificação não substitui a consulta de estado depois de reconectar, pois mensagens podem ser perdidas conforme a solução. Defina como o cliente retoma a posição e reconhece itens já vistos.</p>
+<p>Eventos precisam de versão e semântica. RetiradaConcluida deve representar algo confirmado, com id estável e dados suficientes. Um consumidor não deve depender de todos os detalhes internos do produtor para interpretar o fato. Documente alterações compatíveis e mantenha exemplos de mensagens para teste de consumidores.</p>
+<h2 id="secao-6">6. Spring MVC e WebFlux</h2>
+<p>Spring MVC utiliza o modelo servlet; WebFlux oferece um modelo reativo com tipos e infraestrutura próprios. Trocar o starter sem revisar chamadas bloqueantes não transforma a aplicação inteira em não bloqueante. Acesso JPA tradicional é bloqueante e precisa de uma estratégia compatível quando entra num fluxo reativo.</p>
+<p>Programação reativa pode ser útil em determinados perfis de I/O e fluxo, mas acrescenta conceitos de composição, cancelamento e pressão. Um catálogo pequeno com transações JPA pode continuar com MVC. Meça e identifique a necessidade antes de migrar apenas para seguir uma tendência.</p>
+<p>Consulte a <a href="https://docs.spring.io/spring-framework/reference/web/webflux.html">documentação de WebFlux</a> para o modelo e os requisitos. O ZIP inicial utiliza MVC e não demonstra uma pilha reativa de ponta a ponta. Essa distinção ajuda a interpretar quais garantias seus testes realmente cobrem.</p>
+<h2 id="secao-7">7. Contratos entre versões e dados pertencentes a cada serviço</h2>
+<p>Um cliente móvel antigo pode permanecer instalado durante meses. Acrescentar um campo opcional costuma ser diferente de renomear um campo obrigatório ou mudar sua unidade. Mantenha contratos que suportem a janela de versões que você promete atender. Testes de consumidor podem conferir exemplos contra uma versão nova do provedor.</p>
+<p>Se houver vários serviços, cada um deve ter uma responsabilidade clara sobre os dados que altera. Compartilhar tabelas para qualquer serviço escrever em qualquer campo dificulta evoluir o esquema e preservar as invariantes. Uma operação que atravessa serviços pode precisar de passos e compensações, com estados intermediários visíveis.</p>
+<p>Uma compensação não é necessariamente o inverso perfeito de uma transação. Cancelar uma reserva pode liberar estoque, enquanto uma notificação já lida não pode ser desvista. Defina o resultado aceitável em cada etapa e ofereça meios de acompanhar pendências. O usuário precisa saber se o processo terminou, foi recusado ou aguarda recuperação.</p>
+<h2 id="secao-8">8. Prática: uma integração que admite falha</h2>
+<p>Implemente um cliente de consulta usando o laboratório HTTP do Extra ou o catálogo Spring. Configure timeout e rode fora da thread gráfica. Simule conexão recusada, resposta lenta, JSON inválido e 409. Para cada caso, apresente uma mensagem distinta e preserve a entrada.</p>
+<p>Depois desenhe o fluxo de retirada com chave de operação e versão. Marque a situação em que a resposta se perde após a confirmação e descreva como o cliente descobre o resultado sem descontar novamente. O trabalho termina quando uma pessoa consegue seguir o roteiro, repetir a falha e explicar o estado confirmado e o estado ainda desconhecido.</p>
+<p>Para fazer esta prática com um serviço local que provoca essas falhas, um ponto de partida que já compila, uma ferramenta que mede tempo e confere o estado do servidor depois de cada chamada e uma possível solução em pasta separada, baixe o <a href="assets/extras/laboratorio-integracao.zip" download>laboratório de integração do tema 29</a>. Ele executa no seu computador, com JDK 17 ou superior, só em 127.0.0.1, e não no Playground.</p>
+<details><summary>Retornar uma lista vazia quando a API falha é um fallback seguro para qualquer consulta?</summary><p>Não. Isso confunde ausência de registros com resultado desconhecido e pode induzir novos cadastros. Mostre a falha ou um dado anterior identificado como desatualizado, conforme uma política explícita.</p></details>
+</article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-28.html">Anterior · Tema 28</a><a class="btn btn-primary" href="tema-30.html">Próximo · Tema 30</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <nav class="footer-links" aria-label="Atalhos do rodapé"><a href="index.html">Início</a><a href="cont.html">Conteúdo</a><a href="playground.html">Playground</a><a href="quiz.html">Quiz</a><a href="faq.html">FAQ</a><a href="extra.html">Extra</a></nav>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/code-blocks.js" defer></script>
+
+
+
+</body>
+</html>

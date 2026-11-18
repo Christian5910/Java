@@ -1,0 +1,1259 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>09 · Encapsulamento e regras de negócio · Java</title>
+<meta name="description" content="Proteja o estado dos objetos com validação, exceções e operações que preservam as regras de negócio.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 9 de 30</span></nav><header class="lesson-header"><h1>09 · Encapsulamento e regras de negócio</h1><p class="lead">Proteja o estado dos objetos com validação, exceções e operações que preservam as regras de negócio.</p><p class="text-muted">Java 17 como referência · Teoria, exemplos e prática guiada</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-24">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Um objeto que qualquer código pode quebrar</a></li><li><a href="#secao-2">Invariantes, pré-condições e pós-condições</a></li><li><a href="#secao-3">Private e a interface pública</a></li><li><a href="#secao-4">Construtores que só criam objetos válidos</a></li><li><a href="#secao-5">Getters e setters são métodos, não campos disfarçados</a></li><li><a href="#secao-6">Recusar: lançar exceção ou devolver um resultado</a></li><li><a href="#secao-7">Dinheiro e unidade: por que centavos inteiros</a></li><li><a href="#secao-8">Operações do negócio no lugar de setters</a></li><li><a href="#secao-9">Validar antes de alterar: operações com duas partes</a></li><li><a href="#secao-10">Exceções: throw, throws, try, catch e a hierarquia</a></li><li><a href="#secao-11">Escolher o tipo da exceção e criar a sua</a></li><li><a href="#secao-12">finally, try-with-resources e exceções suprimidas</a></li><li><a href="#secao-13">Preservar a causa ao traduzir uma falha</a></li><li><a href="#secao-14">Vazamento de representação: devolver o estado mutável</a></li><li><a href="#secao-15">Cópia defensiva na entrada e a armadilha da cópia rasa</a></li><li><a href="#secao-16">Imutabilidade: eliminar a classe inteira de problemas</a></li><li><a href="#secao-17">Records: imutabilidade com menos código, e o que continuam não garantindo</a></li><li><a href="#secao-18">Entidade ou objeto de valor: duas famílias de classes</a></li><li><a href="#secao-19">Encapsulamento não é segurança</a></li><li><a href="#secao-20">Testar invariantes sem framework</a></li><li><a href="#secao-21">Separar entidade, regra entre objetos e interface</a></li><li><a href="#secao-22">Diagnosticar: sintomas, causas e correções</a></li><li><a href="#secao-23">Revisar uma classe: dez perguntas</a></li><li><a href="#secao-24">Aplicar e conferir</a></li><li><a href="#secao-25">Prática progressiva, resoluções e revisão final</a></li><li><a href="#fontes">Fontes e próximos passos</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. Um objeto que qualquer código pode quebrar</h2>
+<p>Comece pelo problema, não pela definição. Imagine uma conta bancária didática escrita com campos sem proteção. A linguagem aceita o programa, o compilador não reclama e o resultado ainda assim é uma conta com saldo negativo, um número que nem é número e um titular inexistente. Nada disso viola a sintaxe de Java. Viola uma <strong>regra de negócio</strong>, e a regra só existe na cabeça de quem escreveu a classe.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-aberta" data-java-program>class ContaAberta {
+    String titular;
+    double saldo;
+}
+
+public class Main {
+    public static void main(String[] args) {
+        ContaAberta conta = new ContaAberta();
+        conta.titular = "Ana";
+        conta.saldo = 100;
+
+        conta.saldo -= 250;
+        System.out.println(conta.titular + ": " + conta.saldo);
+
+        conta.saldo = Double.NaN;
+        System.out.println(conta.titular + ": " + conta.saldo);
+
+        conta.titular = null;
+        System.out.println(conta.titular);
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-aberta">Ana: -150.0
+Ana: NaN
+null</samp></pre></figure>
+<p>Três chamadores diferentes poderiam ter feito essas três escritas, em arquivos diferentes, em meses diferentes. Para impedir o saldo negativo seria preciso que <em>todos</em> lembrassem da regra e a repetissem do mesmo jeito. Quando a regra mudar, será preciso encontrar todos de novo. O custo cresce com o tamanho do programa, e o defeito só aparece onde alguém esqueceu.</p>
+<p><strong>Encapsulamento</strong> é a resposta de projeto a esse problema. Ele combina duas decisões: <em>ocultar a representação</em> (como o saldo é guardado é assunto da classe) e <em>oferecer operações com contrato</em> (quem quiser mexer no saldo usa <code>depositar</code> e <code>sacar</code>, que conhecem as regras). A palavra-chave <code>private</code> é uma ferramenta dessa decisão, não a decisão inteira. Uma classe cheia de campos privados e de <code>setX</code> públicos para todos eles continua aberta; só ganhou mais código.</p>
+<h2 id="secao-2">2. Invariantes, pré-condições e pós-condições</h2>
+<p>Para saber o que proteger é preciso dizer o que está certo. Uma <strong>invariante</strong> é uma condição que deve ser verdadeira sempre que o objeto estiver visível para outro código: depois do construtor e depois de cada chamada pública que termina. Na conta do exemplo, as invariantes poderiam ser: o titular não é vazio; o saldo é um inteiro não negativo em centavos. Dentro de um método, no meio de uma alteração, a invariante pode ficar temporariamente falsa; o contrato é que ela volte a valer antes de o método devolver o controle.</p>
+<p>Uma <strong>pré-condição</strong> é o que o chamador precisa garantir para a chamada fazer sentido (o valor do depósito é positivo). Uma <strong>pós-condição</strong> é o que o método garante quando termina (o saldo aumentou exatamente pelo valor depositado). Java não verifica nenhuma dessas ideias sozinho. Quem escreve a classe as transforma em código: valida as pré-condições na entrada, cuida para que o corpo preserve as invariantes e escreve testes para as pós-condições.</p>
+<div class="table-responsive"><table class="table"><caption>Três perguntas que descrevem um contrato</caption><thead><tr><th>Conceito</th><th>Pergunta que responde</th><th>Exemplo na conta</th></tr></thead><tbody><tr><td>Invariante</td><td>O que é sempre verdade sobre o objeto?</td><td><code>saldoCentavos &gt;= 0</code>; titular não vazio</td></tr><tr><td>Pré-condição</td><td>O que o chamador precisa fornecer?</td><td>Valor de depósito maior que zero</td></tr><tr><td>Pós-condição</td><td>O que o método promete ao terminar?</td><td>Saldo novo = saldo antigo + valor; nada mais mudou</td></tr></tbody></table></div>
+<p>Escrever as três frases antes do código tem um efeito prático: transforma “validar direito” em uma lista que dá para testar. Se você não consegue dizer qual é a invariante de uma classe, ainda não sabe o que ela deveria proteger.</p>
+<h2 id="secao-3">3. Private e a interface pública</h2>
+<p><code>private</code> restringe o acesso a um membro ao corpo da própria classe; <code>public</code> o libera para todo o programa. Os outros níveis (pacote e <code>protected</code>) são estudados no tema 10. O ponto de projeto é a <strong>superfície</strong>: tudo que é público é um compromisso. Cada método público pode ser chamado por código que você não vê, e mudar seu significado depois quebra esses chamadores. Por isso a regra de partida é expor o mínimo necessário e abrir mais somente quando houver um motivo.</p>
+<p>Um detalhe que costuma surpreender: em Java, <code>private</code> vale por <em>classe</em>, não por <em>objeto</em>. Um método da classe pode ler o campo privado de outra instância da mesma classe. Isso é útil em comparações, e deixa claro que o limite protegido é o texto da classe, onde as regras vivem.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-private-classe" data-java-program>class Saldo {
+    private final long centavos;
+
+    Saldo(long centavos) {
+        this.centavos = centavos;
+    }
+
+    boolean maiorQue(Saldo outro) {
+        return this.centavos &gt; outro.centavos;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Saldo a = new Saldo(500);
+        Saldo b = new Saldo(300);
+        System.out.println(a.maiorQue(b));
+        System.out.println(b.maiorQue(a));
+        // System.out.println(a.centavos);   // erro de compilação: centavos tem acesso privado
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-private-classe">true
+false</samp></pre></figure>
+<p>A linha comentada não compila, porque <code>Main</code> é outra classe. O compilador transforma a decisão de projeto em erro: ninguém de fora lê o campo por acidente.</p>
+<h2 id="secao-4">4. Construtores que só criam objetos válidos</h2>
+<p>A primeira oportunidade de proteger uma invariante é o construtor. Um objeto que nasce inválido obriga todos os métodos a lidar com a possibilidade de o estado estar quebrado desde o início. A alternativa é <strong>falhar cedo</strong> (<em>fail fast</em>): se os argumentos violam a pré-condição, o construtor lança uma exceção e o objeto simplesmente não existe. Assim, qualquer referência que chegue a outro método aponta para um objeto que já passou pela verificação.</p>
+<p>Para argumentos nulos, <code>Objects.requireNonNull(valor, "nome")</code> lança <code>NullPointerException</code> com uma mensagem que identifica o parâmetro. Para texto, decida o que significa “vazio”: <code>isBlank()</code> trata espaços como ausência de conteúdo, enquanto <code>isEmpty()</code> só aceita comprimento zero. <code>isBlank()</code> existe a partir do Java 11; no Playground, cujas assinaturas são de Java 8, use <code>nome.trim().isEmpty()</code>.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-aluno" data-java-program>import java.util.Objects;
+
+class Aluno {
+    private final String nome;
+    private final int matricula;
+
+    Aluno(String nome, int matricula) {
+        Objects.requireNonNull(nome, "nome");
+        if (nome.isBlank()) {
+            throw new IllegalArgumentException("nome vazio");
+        }
+        if (matricula &lt;= 0) {
+            throw new IllegalArgumentException("matrícula deve ser positiva: " + matricula);
+        }
+        this.nome = nome.trim();
+        this.matricula = matricula;
+    }
+
+    @Override
+    public String toString() {
+        return matricula + " " + nome;
+    }
+}
+
+public class Main {
+    static void tentar(String rotulo, Runnable acao) {
+        try {
+            acao.run();
+            System.out.println(rotulo + ": ok");
+        } catch (RuntimeException erro) {
+            System.out.println(rotulo + ": recusado (" + erro.getClass().getSimpleName() + ": " + erro.getMessage() + ")");
+        }
+    }
+
+    public static void main(String[] args) {
+        tentar("válido", () -&gt; System.out.println(new Aluno("  Ana Silva ", 7)));
+        tentar("nome nulo", () -&gt; new Aluno(null, 7));
+        tentar("nome em branco", () -&gt; new Aluno("   ", 7));
+        tentar("matrícula zero", () -&gt; new Aluno("Bia", 0));
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-aluno">7 Ana Silva
+válido: ok
+nome nulo: recusado (NullPointerException: nome)
+nome em branco: recusado (IllegalArgumentException: nome vazio)
+matrícula zero: recusado (IllegalArgumentException: matrícula deve ser positiva: 0)</samp></pre></figure>
+<p>Observe duas decisões. O construtor normaliza o nome com <code>trim()</code> antes de guardar: a invariante passa a dizer “o nome não tem espaços nas bordas”, e o resto da classe pode confiar nela. E o helper <code>tentar</code> mostra o tipo da exceção junto com a mensagem; ao testar uma regra, o tipo faz parte do contrato tanto quanto o texto. Os campos são <code>final</code>: depois do construtor, o valor não muda, e a invariante estabelecida ali dura toda a vida do objeto.</p>
+<h2 id="secao-5">5. Getters e setters são métodos, não campos disfarçados</h2>
+<p>Um <em>getter</em> consulta uma informação, como <code>getNome()</code>; um <em>setter</em> solicita uma alteração, como <code>setNome(String)</code>. Esses nomes seguem a convenção de classes de componentes (os JavaBeans) e são lidos por muitas bibliotecas e ferramentas, mas <code>get</code> e <code>set</code> não são palavras reservadas. Para propriedades booleanas, a convenção usa <code>isAtivo()</code>.</p>
+<p>A consequência de projeto mais importante é esta: <strong>nenhuma regra obriga a existir um getter e um setter para cada atributo</strong>. Gerar os dois pares automaticamente para todos os campos reproduz o problema original com um passo a mais. Pergunte, para cada atributo: alguém de fora precisa <em>ler</em> isso? Alguém de fora precisa <em>alterar</em> isso diretamente, ou existe uma operação do negócio (depositar, cancelar, aprovar) que representa a mudança? Em muitos casos a resposta para o setter é “não”.</p>
+<p>Um getter também pode <em>calcular</em> uma informação sem que exista um campo com o nome dela. Isso é bom: o chamador não sabe, e não precisa saber, se o valor é guardado ou derivado. Se você guardar também a área em um campo, passa a ter duas verdades que precisam ser mantidas em sincronia.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-derivado" data-java-program>class Retangulo {
+    private final int largura;
+    private final int altura;
+
+    Retangulo(int largura, int altura) {
+        if (largura &lt;= 0 || altura &lt;= 0) {
+            throw new IllegalArgumentException("lados devem ser positivos");
+        }
+        this.largura = largura;
+        this.altura = altura;
+    }
+
+    int getLargura() { return largura; }
+    int getAltura() { return altura; }
+
+    int getArea() { return largura * altura; }
+
+    boolean isQuadrado() { return largura == altura; }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Retangulo r = new Retangulo(4, 3);
+        System.out.println("Área: " + r.getArea());
+        System.out.println("Quadrado? " + r.isQuadrado());
+        System.out.println("Quadrado? " + new Retangulo(5, 5).isQuadrado());
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-derivado">Área: 12
+Quadrado? false
+Quadrado? true</samp></pre></figure>
+<p>Não existe <code>setArea</code>: não faria sentido alterar a área sem decidir qual lado muda. A classe expõe o que é verdade sobre o retângulo e esconde a forma de obtê-lo. Se amanhã a área passar a ser guardada em cache, nenhum chamador percebe.</p>
+<h2 id="secao-6">6. Recusar: lançar exceção ou devolver um resultado</h2>
+<p>Quando uma alteração é inválida, o método precisa fazer duas coisas: <em>não alterar o estado</em> e <em>avisar</em> o chamador. Há dois contratos comuns. Pode lançar uma exceção, que interrompe o caminho normal e não pode ser ignorada por distração. Ou pode devolver um resultado (um <code>boolean</code>, por exemplo) e deixar o valor anterior intacto, o que exige que o chamador leia o resultado. O erro mais frequente em código de iniciante é um terceiro caminho, que parece validar e não valida: imprimir uma mensagem e continuar para a atribuição.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-politicas" data-java-program>class NivelRuim {
+    private int valor = 1;
+
+    void setValor(int novo) {
+        if (novo &lt; 1 || novo &gt; 10) {
+            System.out.println("valor inválido");
+        }
+        valor = novo;   // executa mesmo depois do aviso
+    }
+
+    int getValor() { return valor; }
+}
+
+class NivelExcecao {
+    private int valor = 1;
+
+    void setValor(int novo) {
+        if (novo &lt; 1 || novo &gt; 10) {
+            throw new IllegalArgumentException("nível deve estar entre 1 e 10: " + novo);
+        }
+        valor = novo;
+    }
+
+    int getValor() { return valor; }
+}
+
+class NivelResultado {
+    private int valor = 1;
+
+    boolean tentarDefinir(int novo) {
+        if (novo &lt; 1 || novo &gt; 10) {
+            return false;
+        }
+        valor = novo;
+        return true;
+    }
+
+    int getValor() { return valor; }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        NivelRuim a = new NivelRuim();
+        a.setValor(99);
+        System.out.println("ruim: " + a.getValor());
+
+        NivelExcecao b = new NivelExcecao();
+        try {
+            b.setValor(99);
+        } catch (IllegalArgumentException erro) {
+            System.out.println("exceção: " + erro.getMessage());
+        }
+        System.out.println("exceção, valor mantido: " + b.getValor());
+
+        NivelResultado c = new NivelResultado();
+        boolean aceito = c.tentarDefinir(99);
+        System.out.println("resultado: " + aceito + ", valor mantido: " + c.getValor());
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-politicas">valor inválido
+ruim: 99
+exceção: nível deve estar entre 1 e 10: 99
+exceção, valor mantido: 1
+resultado: false, valor mantido: 1</samp></pre></figure>
+<p>A primeira classe avisa e armazena 99 do mesmo jeito. As outras duas preservam o valor anterior. Qual escolher? Use <strong>exceção</strong> quando a entrada inválida indica um erro de quem chamou (o chamador violou a pré-condição). Use <strong>resultado</strong> quando a recusa é um desfecho normal do negócio e o chamador precisa decidir o que fazer (tentar de novo, escolher outra opção). Misturar os dois estilos na mesma classe, sem critério, deixa o contrato imprevisível.</p>
+<h2 id="secao-7">7. Dinheiro e unidade: por que centavos inteiros</h2>
+<p>O saldo precisa de um tipo que represente valores exatos. <code>double</code> guarda uma aproximação binária: muitos decimais simples, como 0,1, não têm representação exata, e as pequenas diferenças se acumulam. Para uma conta didática, a solução mais simples é guardar a quantia como <strong>inteiro de centavos</strong> em um <code>long</code>. A unidade passa a fazer parte do nome do campo (<code>saldoCentavos</code>), para que 10000 nunca seja lido como R$ 10.000,00 por engano. Tipos decimais exatos, como <code>BigDecimal</code>, aparecem no tema 2 e são apropriados quando há taxas, juros e arredondamentos.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-dinheiro" data-java-program>public class Main {
+    static String formatar(long centavos) {
+        String sinal = centavos &lt; 0 ? "-" : "";
+        long abs = Math.abs(centavos);
+        return String.format("%sR$ %d,%02d", sinal, abs / 100, abs % 100);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(0.1 + 0.2);
+        double soma = 0;
+        for (int i = 0; i &lt; 10; i++) {
+            soma += 0.1;
+        }
+        System.out.println(soma);
+
+        long a = 10;           // 10 centavos
+        long b = 20;           // 20 centavos
+        System.out.println(formatar(a + b));
+        System.out.println(formatar(9500));
+        System.out.println(formatar(5));
+
+        long grande = Long.MAX_VALUE;
+        System.out.println(grande + 1);
+        try {
+            Math.addExact(grande, 1);
+        } catch (ArithmeticException erro) {
+            System.out.println("addExact: " + erro.getMessage());
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-dinheiro">0.30000000000000004
+0.9999999999999999
+R$ 0,30
+R$ 95,00
+R$ 0,05
+-9223372036854775808
+addExact: long overflow</samp></pre></figure>
+<p>As duas primeiras linhas mostram o acúmulo de erro em <code>double</code>. O inteiro não tem esse problema, mas tem outro: quando passa do limite, <code>+</code> dá a volta silenciosamente e produz um número negativo enorme. <code>Math.addExact</code> (e <code>multiplyExact</code>, <code>subtractExact</code>) lança <code>ArithmeticException</code> no lugar. Para saldos de conta o limite de <code>long</code> está muito longe, mas a pergunta correta sobre qualquer soma é: “o que acontece se o resultado não couber?”. Prefira uma falha visível a um valor errado que parece plausível.</p>
+<h2 id="secao-8">8. Operações do negócio no lugar de setters</h2>
+<p>Agora a conta completa. Em vez de <code>setSaldo</code>, a classe oferece <code>depositar</code> e <code>sacar</code>, que correspondem ao vocabulário do negócio e carregam as regras. O contrato escolhido segue a regra da seção 6: valor não positivo é erro do chamador e lança exceção; saldo insuficiente é um desfecho esperado do negócio e devolve <code>false</code> sem alterar nada.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-conta" data-java-program>class Conta {
+    private final String titular;
+    private long saldoCentavos;
+
+    Conta(String titular, long saldoInicialCentavos) {
+        if (titular == null || titular.isBlank()) {
+            throw new IllegalArgumentException("titular obrigatório");
+        }
+        if (saldoInicialCentavos &lt; 0) {
+            throw new IllegalArgumentException("saldo inicial negativo");
+        }
+        this.titular = titular.trim();
+        this.saldoCentavos = saldoInicialCentavos;
+    }
+
+    String getTitular() { return titular; }
+
+    long getSaldoCentavos() { return saldoCentavos; }
+
+    void depositar(long valorCentavos) {
+        if (valorCentavos &lt;= 0) {
+            throw new IllegalArgumentException("depósito deve ser positivo");
+        }
+        saldoCentavos = Math.addExact(saldoCentavos, valorCentavos);
+    }
+
+    boolean sacar(long valorCentavos) {
+        if (valorCentavos &lt;= 0) {
+            throw new IllegalArgumentException("saque deve ser positivo");
+        }
+        if (valorCentavos &gt; saldoCentavos) {
+            return false;
+        }
+        saldoCentavos -= valorCentavos;
+        return true;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Conta conta = new Conta("Ana", 10000);
+        conta.depositar(2500);
+        System.out.println("saque 3000: " + conta.sacar(3000) + ", saldo " + conta.getSaldoCentavos());
+        System.out.println("saque 99999: " + conta.sacar(99999) + ", saldo " + conta.getSaldoCentavos());
+        System.out.println("saque exato: " + conta.sacar(9500) + ", saldo " + conta.getSaldoCentavos());
+        try {
+            conta.depositar(-50);
+        } catch (IllegalArgumentException erro) {
+            System.out.println("recusado: " + erro.getMessage() + ", saldo " + conta.getSaldoCentavos());
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-conta">saque 3000: true, saldo 9500
+saque 99999: false, saldo 9500
+saque exato: true, saldo 0
+recusado: depósito deve ser positivo, saldo 0</samp></pre></figure>
+<p>Confira o que o programa prova e o que não prova. O saque recusado devolve <code>false</code> <em>e</em> o saldo continua 9500: são duas verificações distintas, e uma mensagem de sucesso sem conferir o estado depois não comprova a regra. O saque exato do saldo (9500) é uma <strong>fronteira</strong> e é aceito, deixando zero. O depósito negativo lança exceção antes de tocar no saldo. Nenhuma linha do chamador conhece a regra de saldo mínimo: ela vive em um lugar só, e a invariante <code>saldoCentavos &gt;= 0</code> vale por construção.</p>
+<h2 id="secao-9">9. Validar antes de alterar: operações com duas partes</h2>
+<p>Até aqui cada operação mudava um único campo. Operações que mudam <em>dois</em> objetos, como a transferência entre contas, introduzem um risco novo: a falha no meio deixa o sistema em um estado que nunca foi desejado. Se o programa retira o dinheiro da origem e só depois descobre que o destino não existe, o dinheiro desapareceu. A regra prática é separar a operação em duas fases: primeiro <strong>verificar tudo</strong> que pode falhar; só depois <strong>alterar</strong>. Se as verificações passaram e as alterações não podem falhar, não há estado parcial.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-transferencia" data-java-program>class Conta {
+    private long saldo;
+
+    Conta(long saldo) { this.saldo = saldo; }
+
+    long getSaldo() { return saldo; }
+
+    boolean sacar(long valor) {
+        if (valor &lt;= 0 || valor &gt; saldo) {
+            return false;
+        }
+        saldo -= valor;
+        return true;
+    }
+
+    void depositar(long valor) {
+        if (valor &lt;= 0) {
+            throw new IllegalArgumentException("depósito deve ser positivo");
+        }
+        saldo += valor;
+    }
+}
+
+class Banco {
+    // Versão ingênua: altera a origem antes de verificar o destino.
+    static boolean transferirIngenuo(Conta origem, Conta destino, long valor) {
+        if (!origem.sacar(valor)) {
+            return false;
+        }
+        destino.depositar(valor);          // NullPointerException se destino == null
+        return true;
+    }
+
+    // Versão em duas fases: verifica tudo, depois altera.
+    static boolean transferir(Conta origem, Conta destino, long valor) {
+        if (origem == null || destino == null || origem == destino || valor &lt;= 0) {
+            return false;
+        }
+        if (origem.getSaldo() &lt; valor) {
+            return false;
+        }
+        origem.sacar(valor);
+        destino.depositar(valor);
+        return true;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Conta a = new Conta(10000);
+        try {
+            Banco.transferirIngenuo(a, null, 3000);
+        } catch (NullPointerException erro) {
+            System.out.println("ingênua falhou; saldo da origem: " + a.getSaldo());
+        }
+
+        Conta b = new Conta(10000);
+        Conta c = new Conta(500);
+        System.out.println("destino nulo: " + Banco.transferir(b, null, 3000) + ", origem " + b.getSaldo());
+        System.out.println("saldo insuficiente: " + Banco.transferir(b, c, 99999) + ", origem " + b.getSaldo());
+        System.out.println("válida: " + Banco.transferir(b, c, 3000) + ", origem " + b.getSaldo() + ", destino " + c.getSaldo());
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-transferencia">ingênua falhou; saldo da origem: 7000
+destino nulo: false, origem 10000
+saldo insuficiente: false, origem 10000
+válida: true, origem 7000, destino 3500</samp></pre></figure>
+<p>A versão ingênua “perdeu” 3000 centavos: a origem ficou com 7000 e o destino nunca recebeu. A segunda versão mantém a <strong>soma</strong> dos saldos constante, outra invariante, agora do <em>conjunto</em> de contas. Essa técnica resolve o caso simples em uma única thread e sem armazenamento externo. Quando as alterações envolvem arquivos, bancos de dados ou várias threads, validar antes não basta: surgem as transações e a concorrência, estudadas nos temas 13 e 24. A ideia, porém, é a mesma: o chamador nunca deve conseguir observar a metade de uma operação.</p>
+<h2 id="secao-10">10. Exceções: throw, throws, try, catch e a hierarquia</h2>
+<p><code>throw</code> lança um objeto de exceção e interrompe o fluxo normal naquele ponto. <code>try</code> delimita o código observado e <code>catch</code> trata os tipos compatíveis. <code>throws</code>, na assinatura de um método, declara tipos de exceção que podem sair dele. Todas as exceções são objetos de classes que descendem de <code>Throwable</code>, e a posição na hierarquia define a exigência do compilador.</p>
+<div class="table-responsive"><table class="table"><caption>Categorias de Throwable</caption><thead><tr><th>Categoria</th><th>Exemplos</th><th>O compilador exige tratar ou declarar?</th><th>Uso típico</th></tr></thead><tbody><tr><td><code>Error</code></td><td><code>OutOfMemoryError</code>, <code>StackOverflowError</code></td><td>Não</td><td>Falha grave da JVM; em geral não se tenta recuperar</td></tr><tr><td><code>RuntimeException</code> e subclasses</td><td><code>IllegalArgumentException</code>, <code>NullPointerException</code>, <code>ArithmeticException</code></td><td>Não</td><td>Erro de programação ou violação de pré-condição</td></tr><tr><td><code>Exception</code> que não é <code>RuntimeException</code> (verificadas)</td><td><code>IOException</code>, <code>java.sql.SQLException</code></td><td>Sim</td><td>Falha esperada do ambiente que o chamador pode tratar</td></tr></tbody></table></div>
+<p>“Não exigido” não significa “inofensivo”: uma <code>IllegalArgumentException</code> não tratada encerra o programa com um rastro da pilha, que é a reação certa a um erro de programação. Capturar <code>Throwable</code> ou <code>Exception</code> de forma genérica para “fazer o erro sumir” é um mecanismo ruim de validação, porque esconde os defeitos que você mais precisa ver. O <a href="https://docs.oracle.com/javase/tutorial/essential/exceptions/">guia de exceções</a> da Oracle descreve cada categoria.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="research-exceptions">public class Main {
+    static int lerQuantidade(String texto) {
+        int quantidade = Integer.parseInt(texto);
+        if (quantidade &lt;= 0) {
+            throw new IllegalArgumentException("Quantidade deve ser positiva");
+        }
+        return quantidade;
+    }
+
+    public static void main(String[] args) {
+        String[] entradas = {"3", "zero", "0"};
+        for (String texto : entradas) {
+            try {
+                System.out.println("Quantidade: " + lerQuantidade(texto));
+            } catch (NumberFormatException erro) {
+                System.out.println("Formato inválido: " + texto);
+            } catch (IllegalArgumentException erro) {
+                System.out.println(erro.getMessage());
+            }
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp>Quantidade: 3
+Formato inválido: zero
+Quantidade deve ser positiva</samp></pre></figure>
+<p><code>NumberFormatException</code> é subclasse de <code>IllegalArgumentException</code>. Por isso o <code>catch</code> específico vem primeiro: se a ordem fosse invertida, o compilador recusaria o programa, porque o segundo bloco seria inalcançável. O tratamento está <em>dentro</em> do laço, então uma entrada ruim não impede as seguintes. Para tratar vários tipos da mesma forma sem relação de herança, use a captura múltipla: <code>catch (IOException | SQLException erro)</code>. <a href="playground.html?ex=validar-quantidade">Praticar este programa no Playground</a>.</p>
+<h2 id="secao-11">11. Escolher o tipo da exceção e criar a sua</h2>
+<p>Antes de criar uma classe de exceção, procure uma da biblioteca padrão. <code>IllegalArgumentException</code> descreve argumento inválido; <code>IllegalStateException</code> descreve uma chamada feita em um momento em que o objeto não pode atendê-la (sacar de uma conta já encerrada); <code>NullPointerException</code> (via <code>requireNonNull</code>) descreve referência nula; <code>UnsupportedOperationException</code> descreve uma operação que o tipo não oferece. Quem lê o código conhece essas classes, e as ferramentas também. A escolha é um recurso de comunicação: o tipo diz <em>o que deu errado</em> antes de a mensagem dizer os detalhes.</p>
+<p>Uma exceção própria vale a pena quando o chamador precisa <strong>distinguir</strong> a falha das demais e agir sobre ela, ou quando carrega dados que a mensagem sozinha não transmite. Se a falha é uma situação esperada e recuperável, uma exceção <em>verificada</em> (que estende <code>Exception</code>) obriga o chamador a decidir. Se é uma violação de contrato, uma <em>não verificada</em> (que estende <code>RuntimeException</code>) evita poluir todas as assinaturas. Não existe resposta única; o importante é escolher um critério e aplicá-lo de forma consistente na base de código.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-excecao-propria" data-java-program>class SaldoInsuficienteException extends Exception {
+    private final long saldoCentavos;
+    private final long pedidoCentavos;
+
+    SaldoInsuficienteException(long saldoCentavos, long pedidoCentavos) {
+        super("saldo " + saldoCentavos + " menor que o pedido " + pedidoCentavos);
+        this.saldoCentavos = saldoCentavos;
+        this.pedidoCentavos = pedidoCentavos;
+    }
+
+    long faltaCentavos() {
+        return pedidoCentavos - saldoCentavos;
+    }
+}
+
+class Conta {
+    private long saldoCentavos;
+
+    Conta(long saldoCentavos) { this.saldoCentavos = saldoCentavos; }
+
+    long getSaldoCentavos() { return saldoCentavos; }
+
+    void sacar(long valor) throws SaldoInsuficienteException {
+        if (valor &lt;= 0) {
+            throw new IllegalArgumentException("saque deve ser positivo");
+        }
+        if (valor &gt; saldoCentavos) {
+            throw new SaldoInsuficienteException(saldoCentavos, valor);
+        }
+        saldoCentavos -= valor;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Conta conta = new Conta(5000);
+        long[] pedidos = {2000, 4000, 3000};
+        for (long pedido : pedidos) {
+            try {
+                conta.sacar(pedido);
+                System.out.println("sacou " + pedido + "; saldo " + conta.getSaldoCentavos());
+            } catch (SaldoInsuficienteException erro) {
+                System.out.println("recusado: faltam " + erro.faltaCentavos() + " (" + erro.getMessage() + ")");
+            }
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-excecao-propria">sacou 2000; saldo 3000
+recusado: faltam 1000 (saldo 3000 menor que o pedido 4000)
+sacou 3000; saldo 0</samp></pre></figure>
+<p>Como <code>SaldoInsuficienteException</code> é verificada, o método <code>sacar</code> a declara com <code>throws</code> e o chamador não consegue esquecê-la: o código não compila sem um <code>catch</code> ou sem repassar a declaração. A exceção carrega os valores envolvidos e calcula quanto falta, de modo que a interface pode orientar o usuário sem analisar texto. Note que o saque de 4000 foi recusado e o de 3000 depois dele foi aceito: a falha não deixou a conta em um estado quebrado.</p>
+<h2 id="secao-12">12. finally, try-with-resources e exceções suprimidas</h2>
+<p>Alguns objetos precisam ser <strong>fechados</strong> quando deixam de ser usados: arquivos, conexões, leitores. Se o programa esquecer, o recurso fica preso. O comando <code>try-with-resources</code> resolve isso para tipos que implementam <code>AutoCloseable</code>: os recursos declarados entre parênteses são fechados ao sair do bloco, na ordem <em>inversa</em> da abertura, inclusive quando há exceção. O bloco <code>finally</code> também executa sempre, mas obriga o programador a escrever o fechamento à mão e a lembrar de cada caso.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-recursos" data-java-program>class Recurso implements AutoCloseable {
+    private final String nome;
+    private final boolean falhaAoFechar;
+
+    Recurso(String nome, boolean falhaAoFechar) {
+        this.nome = nome;
+        this.falhaAoFechar = falhaAoFechar;
+        System.out.println("abrir " + nome);
+    }
+
+    void usar(boolean falhar) {
+        System.out.println("usar " + nome);
+        if (falhar) {
+            throw new IllegalStateException("falha ao usar " + nome);
+        }
+    }
+
+    @Override
+    public void close() {
+        System.out.println("fechar " + nome);
+        if (falhaAoFechar) {
+            throw new IllegalStateException("falha ao fechar " + nome);
+        }
+    }
+}
+
+public class Main {
+    @SuppressWarnings("finally")
+    static int retornoEngolido() {
+        try {
+            throw new IllegalStateException("falha original");
+        } finally {
+            return 2;   // descarta a exceção: evite
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println("-- fluxo normal");
+        try (Recurso a = new Recurso("A", false); Recurso b = new Recurso("B", false)) {
+            a.usar(false);
+            b.usar(false);
+        }
+
+        System.out.println("-- falha no corpo e no fechamento");
+        try (Recurso a = new Recurso("A", false); Recurso b = new Recurso("B", true)) {
+            b.usar(true);
+        } catch (IllegalStateException erro) {
+            System.out.println("principal: " + erro.getMessage());
+            for (Throwable suprimida : erro.getSuppressed()) {
+                System.out.println("suprimida: " + suprimida.getMessage());
+            }
+        }
+
+        System.out.println("-- return em finally");
+        System.out.println(retornoEngolido());
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-recursos">-- fluxo normal
+abrir A
+abrir B
+usar A
+usar B
+fechar B
+fechar A
+-- falha no corpo e no fechamento
+abrir A
+abrir B
+usar B
+fechar B
+fechar A
+principal: falha ao usar B
+suprimida: falha ao fechar B
+-- return em finally
+2</samp></pre></figure>
+<p>Leia a saída de cima para baixo. No fluxo normal, B fecha antes de A, porque foi aberto depois. No segundo caso há <strong>duas</strong> falhas: o corpo falhou e, em seguida, o fechamento de B também falhou. Java preserva a primeira como exceção principal e anexa a segunda a ela como <em>suprimida</em>; sem esse mecanismo, a falha do <code>close</code> esconderia a causa real. A última linha mostra o motivo de evitar <code>return</code> dentro de <code>finally</code>: a exceção original desapareceu e o método devolveu 2 como se nada tivesse acontecido.</p>
+<h2 id="secao-13">13. Preservar a causa ao traduzir uma falha</h2>
+<p>Camadas diferentes falam línguas diferentes. Uma rotina de leitura de configuração enfrenta <code>NumberFormatException</code>; quem chama só precisa saber que “a configuração é inválida”. Traduzir a exceção para um tipo da camada acima evita vazar detalhes internos, mas <strong>perder a exceção original</strong> destrói a informação mais útil para quem vai investigar. A solução é encadear: o construtor da nova exceção recebe a original como <em>causa</em>. O rastro completo mostra as duas.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-causa" data-java-program>class ConfiguracaoInvalidaException extends RuntimeException {
+    ConfiguracaoInvalidaException(String mensagem, Throwable causa) {
+        super(mensagem, causa);
+    }
+}
+
+class Configuracao {
+    static int lerPorta(String texto) {
+        try {
+            int porta = Integer.parseInt(texto.trim());
+            if (porta &lt; 1 || porta &gt; 65535) {
+                throw new IllegalArgumentException("fora da faixa: " + porta);
+            }
+            return porta;
+        } catch (IllegalArgumentException erro) {      // inclui NumberFormatException
+            throw new ConfiguracaoInvalidaException("porta inválida: '" + texto + "'", erro);
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        String[] entradas = {"8080", "oito", "70000"};
+        for (String texto : entradas) {
+            try {
+                System.out.println("porta " + Configuracao.lerPorta(texto));
+            } catch (ConfiguracaoInvalidaException erro) {
+                System.out.println(erro.getMessage()
+                        + " | causa: " + erro.getCause().getClass().getSimpleName()
+                        + ": " + erro.getCause().getMessage());
+            }
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-causa">porta 8080
+porta inválida: 'oito' | causa: NumberFormatException: For input string: "oito"
+porta inválida: '70000' | causa: IllegalArgumentException: fora da faixa: 70000</samp></pre></figure>
+<p>A mensagem da exceção externa fala a língua do chamador; a causa guarda o tipo e a mensagem técnicos. A interface pode mostrar só a primeira ao usuário e registrar as duas no diagnóstico. Dois erros de estilo contrários merecem nome. <em>Engolir</em> a exceção (um <code>catch</code> vazio) apaga o problema. <em>Registrar e relançar</em> em todas as camadas duplica a mesma falha no registro de execução várias vezes. Uma regra simples: trate a exceção na camada que sabe o que fazer com ela; nas outras, deixe-a passar ou traduza-a preservando a causa.</p>
+<h2 id="secao-14">14. Vazamento de representação: devolver o estado mutável</h2>
+<p>Um campo <code>private final List&lt;String&gt; alunos</code> parece protegido. Mas <code>final</code> impede apenas trocar a <em>referência</em>; a lista continua mutável. Se um getter devolver essa referência, o chamador recebe um controle remoto do interior do objeto e pode adicionar, remover e embaralhar sem passar por nenhuma regra. Isso se chama <strong>vazamento de representação</strong>, e é uma das formas mais comuns de quebrar uma invariante em código que “usa private direito”.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-vazamento" data-java-program>import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+class Turma {
+    private static final int LIMITE = 3;
+    private final List&lt;String&gt; alunos = new ArrayList&lt;&gt;();
+
+    void matricular(String nome) {
+        if (alunos.size() &gt;= LIMITE) {
+            throw new IllegalStateException("turma cheia");
+        }
+        alunos.add(nome);
+    }
+
+    List&lt;String&gt; getAlunosVazando() {
+        return alunos;                                  // devolve o interior
+    }
+
+    List&lt;String&gt; getAlunosVisao() {
+        return Collections.unmodifiableList(alunos);    // visão somente leitura
+    }
+
+    List&lt;String&gt; getAlunosCopia() {
+        return new ArrayList&lt;&gt;(alunos);                 // cópia independente
+    }
+
+    int total() { return alunos.size(); }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Turma turma = new Turma();
+        turma.matricular("Ana");
+        turma.matricular("Bia");
+        turma.matricular("Caio");
+
+        List&lt;String&gt; vazada = turma.getAlunosVazando();
+        vazada.add("Davi");
+        vazada.add("Eva");
+        System.out.println("vazando: total " + turma.total() + " (limite 3)");
+
+        List&lt;String&gt; visao = turma.getAlunosVisao();
+        try {
+            visao.add("Fabi");
+        } catch (UnsupportedOperationException erro) {
+            System.out.println("visão: alteração recusada");
+        }
+
+        List&lt;String&gt; copia = turma.getAlunosCopia();
+        copia.clear();
+        System.out.println("cópia limpa; turma ainda tem " + turma.total());
+
+        List&lt;String&gt; visao2 = turma.getAlunosVisao();
+        List&lt;String&gt; copia2 = turma.getAlunosCopia();
+        vazada.add("Gil");
+        System.out.println("visão vê " + visao2.size() + ", cópia vê " + copia2.size());
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-vazamento">vazando: total 5 (limite 3)
+visão: alteração recusada
+cópia limpa; turma ainda tem 5
+visão vê 6, cópia vê 5</samp></pre></figure>
+<p>A classe tem um limite de três alunos e uma exceção para impedir o quarto, mas o getter ingênuo deixou o chamador chegar a cinco. Há três respostas, com custos diferentes. A <strong>visão somente leitura</strong> (<code>Collections.unmodifiableList</code>) é barata e recusa alterações, mas continua <em>viva</em>: se a turma mudar depois, quem guardou a visão enxerga a mudança. A <strong>cópia</strong> (<code>new ArrayList&lt;&gt;(alunos)</code>) é independente, mas custa memória e tempo proporcionais ao tamanho. A terceira é não expor a coleção: oferecer <code>total()</code>, <code>contem(String)</code> ou uma operação de consulta específica. Em Java 10 ou superior existe também <code>List.copyOf</code>, que devolve uma cópia imutável; o Playground, cujas assinaturas são de Java 8, não a oferece.</p>
+<p>As últimas linhas mostram a diferença entre visão e cópia: depois de uma nova inclusão por um canal indevido, a visão acompanha o total real e a cópia, tirada antes, permanece como estava. Escolha pela pergunta “o chamador precisa de um instantâneo ou de uma janela?”. A atividade <a href="playground.html?ex=copia-defensiva">Proteger um array interno</a> pratica o mesmo problema com vetores.</p>
+<h2 id="secao-15">15. Cópia defensiva na entrada e a armadilha da cópia rasa</h2>
+<p>O vazamento também ocorre no sentido contrário. Se o construtor guarda a referência recebida, o chamador mantém uma alça para o interior do objeto e pode alterá-lo mais tarde. A defesa é copiar <em>na entrada</em> e copiar <em>na saída</em>. Para vetores, use <code>clone()</code> ou <code>Arrays.copyOf</code>. Há uma segunda armadilha: a cópia de um vetor de objetos é <strong>rasa</strong>. Os elementos copiados são as mesmas referências, e um objeto mutável compartilhado continua compartilhado.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-entrada" data-java-program>import java.util.Arrays;
+
+class Placar {
+    private final int[] pontos;
+
+    Placar(int[] pontos) {
+        this.pontos = pontos.clone();      // cópia na entrada
+    }
+
+    int[] getPontos() {
+        return pontos.clone();             // cópia na saída
+    }
+
+    int soma() {
+        int total = 0;
+        for (int p : pontos) {
+            total += p;
+        }
+        return total;
+    }
+}
+
+class PlacarAberto {
+    private final int[] pontos;
+
+    PlacarAberto(int[] pontos) { this.pontos = pontos; }   // guarda a referência
+
+    int soma() {
+        int total = 0;
+        for (int p : pontos) {
+            total += p;
+        }
+        return total;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        int[] origem = {10, 20, 30};
+
+        PlacarAberto aberto = new PlacarAberto(origem);
+        Placar seguro = new Placar(origem);
+        origem[0] = 1000;
+        System.out.println("aberto: " + aberto.soma());
+        System.out.println("seguro: " + seguro.soma());
+
+        int[] saida = seguro.getPontos();
+        saida[1] = -5;
+        System.out.println("seguro após alterar a saída: " + seguro.soma());
+
+        StringBuilder[] nomes = {new StringBuilder("Ana"), new StringBuilder("Bia")};
+        StringBuilder[] rasa = nomes.clone();
+        rasa[0].append("!");
+        System.out.println("original após alterar a cópia rasa: " + Arrays.toString(nomes));
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-entrada">aberto: 1050
+seguro: 60
+seguro após alterar a saída: 60
+original após alterar a cópia rasa: [Ana!, Bia]</samp></pre></figure>
+<p>O placar aberto mudou quando o vetor de origem mudou (1050 em vez de 60); o seguro continuou com 60, e alterar o vetor devolvido não afetou o interior. O último trecho é o aviso: <code>nomes.clone()</code> copiou o vetor, não os <code>StringBuilder</code>. Alterar o primeiro elemento da “cópia” alterou o original, porque ambos apontam para o mesmo objeto. Para copiar em profundidade é preciso copiar cada elemento (ou usar elementos imutáveis, como <code>String</code>, caso em que a cópia rasa já basta).</p>
+<h2 id="secao-16">16. Imutabilidade: eliminar a classe inteira de problemas</h2>
+<p>A forma mais forte de encapsulamento é tornar o objeto <strong>imutável</strong>: depois do construtor, nada o altera. Nenhuma invariante pode ser quebrada, porque ninguém tem como escrever. Objetos imutáveis podem ser compartilhados sem cópia, usados com segurança em várias threads (tema 13) e armazenados como chaves de mapas (tema 11). <code>String</code>, os invólucros numéricos e <code>LocalDate</code> são exemplos da biblioteca. A receita clássica tem cinco pontos: campos <code>final</code>; sem métodos que alterem estado; classe que não pode ser estendida de forma que quebre o contrato (<code>final</code>); cópia defensiva de componentes mutáveis na entrada e na saída; construtor que valida tudo.</p>
+<p>Uma operação “de alteração” em um tipo imutável <strong>devolve um novo objeto</strong>. É o que <code>String.toUpperCase()</code> faz: o original continua igual.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-imutavel" data-java-program>final class Intervalo {
+    private final int inicio;
+    private final int fim;
+
+    Intervalo(int inicio, int fim) {
+        if (inicio &gt; fim) {
+            throw new IllegalArgumentException("início maior que o fim: " + inicio + " &gt; " + fim);
+        }
+        this.inicio = inicio;
+        this.fim = fim;
+    }
+
+    int getInicio() { return inicio; }
+    int getFim() { return fim; }
+    int tamanho() { return fim - inicio; }
+
+    Intervalo deslocar(int delta) {
+        return new Intervalo(inicio + delta, fim + delta);
+    }
+
+    boolean contem(int valor) {
+        return valor &gt;= inicio &amp;&amp; valor &lt;= fim;
+    }
+
+    @Override
+    public String toString() {
+        return "[" + inicio + ", " + fim + "]";
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Intervalo original = new Intervalo(10, 20);
+        Intervalo movido = original.deslocar(5);
+        System.out.println("original: " + original + " tamanho " + original.tamanho());
+        System.out.println("movido:   " + movido + " tamanho " + movido.tamanho());
+        System.out.println("contém 22? original " + original.contem(22) + ", movido " + movido.contem(22));
+        try {
+            new Intervalo(5, 1);
+        } catch (IllegalArgumentException erro) {
+            System.out.println("recusado: " + erro.getMessage());
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-imutavel">original: [10, 20] tamanho 10
+movido:   [15, 25] tamanho 10
+contém 22? original false, movido true
+recusado: início maior que o fim: 5 &gt; 1</samp></pre></figure>
+<p>O custo é real: cada “alteração” cria um objeto, e uma sequência longa de alterações em um objeto grande pode ser cara. Quando isso importa, a prática usual é combinar um construtor mutável de curta vida (como <code>StringBuilder</code> para <code>String</code>) com um resultado imutável. Para objetos pequenos, a simplicidade de raciocínio compensa com folga: um método que recebe um <code>Intervalo</code> não precisa temer que ele mude no meio do cálculo.</p>
+<h2 id="secao-17">17. Records: imutabilidade com menos código, e o que continuam não garantindo</h2>
+<p>A partir do Java 16, um <code>record</code> declara em uma linha um tipo de dados imutável: o compilador gera campos <code>final</code>, construtor canônico, métodos de acesso (<code>centavos()</code>, sem prefixo <code>get</code>), <code>equals</code>, <code>hashCode</code> e <code>toString</code>. Um <strong>construtor compacto</strong> permite validar sem repetir a atribuição dos campos. Records exigem um JDK 16 ou superior e não executam no Playground deste guia (que usa sintaxe e bibliotecas anteriores); rode-os no computador, como nos exemplos do tema 1.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-record" data-java-program>import java.util.Arrays;
+
+record Dinheiro(long centavos) {
+    Dinheiro {
+        if (centavos &lt; 0) {
+            throw new IllegalArgumentException("valor negativo: " + centavos);
+        }
+    }
+
+    Dinheiro somar(Dinheiro outro) {
+        return new Dinheiro(Math.addExact(centavos, outro.centavos));
+    }
+}
+
+record Lote(int[] valores) { }
+
+public class Main {
+    public static void main(String[] args) {
+        Dinheiro a = new Dinheiro(1500);
+        Dinheiro b = new Dinheiro(1500);
+        System.out.println(a);
+        System.out.println("equals: " + a.equals(b) + ", ==: " + (a == b));
+        System.out.println("soma: " + a.somar(new Dinheiro(250)));
+
+        try {
+            new Dinheiro(-1);
+        } catch (IllegalArgumentException erro) {
+            System.out.println("recusado: " + erro.getMessage());
+        }
+
+        int[] dados = {1, 2, 3};
+        Lote lote = new Lote(dados);
+        dados[0] = 99;
+        System.out.println("lote após alterar o vetor de origem: " + Arrays.toString(lote.valores()));
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-record">Dinheiro[centavos=1500]
+equals: true, ==: false
+soma: Dinheiro[centavos=1750]
+recusado: valor negativo: -1
+lote após alterar o vetor de origem: [99, 2, 3]</samp></pre></figure>
+<p>O <code>equals</code> do record compara o conteúdo dos componentes, enquanto <code>==</code> compara as referências: dois objetos com os mesmos centavos são “iguais” e continuam sendo dois objetos. Esse tema é aprofundado no tema 11. A última linha é a ressalva importante: o record é imutável <em>rasamente</em>. O campo <code>valores</code> é <code>final</code>, mas o vetor para o qual aponta pode ser alterado, e o record não copia nada sozinho. Para um componente mutável, escreva o construtor compacto fazendo a cópia (<code>valores = valores.clone();</code>) e um método de acesso que também copie. O record poupa o código repetitivo, não a análise de projeto.</p>
+<h2 id="secao-18">18. Entidade ou objeto de valor: duas famílias de classes</h2>
+<p>Nem toda classe do domínio tem o mesmo papel, e a diferença orienta quase todas as decisões deste tema. Uma <strong>entidade</strong> tem identidade que persiste enquanto seus dados mudam: a conta de Ana continua sendo a mesma conta depois de receber um depósito. Um <strong>objeto de valor</strong> é definido apenas por seu conteúdo: R$ 15,00 são R$ 15,00, não importa de onde vieram, e não faz sentido “alterar” um valor, só substituí-lo por outro.</p>
+<div class="table-responsive"><table class="table"><caption>Entidade e objeto de valor</caption><thead><tr><th>Aspecto</th><th>Entidade (<code>Conta</code>)</th><th>Objeto de valor (<code>Dinheiro</code>, <code>Intervalo</code>)</th></tr></thead><tbody><tr><td>O que a define</td><td>Uma identidade (número da conta)</td><td>O conteúdo dos seus campos</td></tr><tr><td>Mutável?</td><td>Sim, por operações do negócio</td><td>Não; operações devolvem novo valor</td></tr><tr><td>Igualdade</td><td>Mesma identidade</td><td>Mesmos componentes</td></tr><tr><td>Cópia defensiva</td><td>Não se copia a entidade; protege-se o que ela expõe</td><td>Dispensada (se os componentes forem imutáveis)</td></tr><tr><td>Forma comum em Java</td><td>Classe com campos privados e operações</td><td>Classe final imutável ou <code>record</code></td></tr></tbody></table></div>
+<p>Uma boa regra de partida: <strong>modele como valor tudo o que puder</strong> (quantias, períodos, endereços, coordenadas) e reserve a mutabilidade controlada para as poucas entidades que realmente mudam ao longo do tempo. Isso reduz a quantidade de código que precisa defender invariantes.</p>
+<h2 id="secao-19">19. Encapsulamento não é segurança</h2>
+<p>É comum ouvir que <code>private</code> “protege” os dados. Ele protege o programador de um <em>uso acidental</em> e comunica o contrato; não impede que código determinado leia ou altere o campo. A reflexão, mecanismo da própria biblioteca, consegue acessar membros privados de classes do mesmo programa.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-reflexao" data-java-program>import java.lang.reflect.Field;
+
+class Conta {
+    private long saldoCentavos = 10000;
+
+    long getSaldoCentavos() { return saldoCentavos; }
+}
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Conta conta = new Conta();
+        System.out.println("pela API: " + conta.getSaldoCentavos());
+
+        Field campo = Conta.class.getDeclaredField("saldoCentavos");
+        campo.setAccessible(true);
+        campo.setLong(conta, 999999);
+        System.out.println("após reflexão: " + conta.getSaldoCentavos());
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-reflexao">pela API: 10000
+após reflexão: 999999</samp></pre></figure>
+<p>Isso não é uma falha de Java: é a distinção entre <em>proteção de projeto</em> e <em>proteção contra um adversário</em>. Quem controla a execução do programa controla seus objetos. Impedir uma operação de ser feita por quem não tem permissão exige autenticação e autorização no limite do sistema (tema 25) e, quando há dados sensíveis, controles do ambiente. O <code>SecurityManager</code>, que tentou isolar código não confiável dentro da mesma JVM, está obsoleto desde o Java 17 (JEP 411). Use o encapsulamento para proteger as invariantes contra erros honestos; use outras ferramentas para proteger contra má-fé.</p>
+<h2 id="secao-20">20. Testar invariantes sem framework</h2>
+<p>Uma regra que você não testou é uma opinião. Antes de conhecer JUnit (tema 14), dá para escrever um verificador de poucas linhas que torna cada decisão desta lição conferível. A ideia é montar uma <strong>matriz de casos</strong>: entradas válidas, fronteiras, valores inválidos e, para operações que alteram estado, o estado <em>depois</em> da recusa. O exemplo testa uma classe de estoque, que tem a invariante “a quantidade nunca é negativa”.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-testes" data-java-program>class Estoque {
+    private int quantidade;
+
+    Estoque(int quantidade) {
+        if (quantidade &lt; 0) {
+            throw new IllegalArgumentException("quantidade negativa");
+        }
+        this.quantidade = quantidade;
+    }
+
+    int getQuantidade() { return quantidade; }
+
+    void repor(int n) {
+        if (n &lt;= 0) {
+            throw new IllegalArgumentException("reposição deve ser positiva");
+        }
+        quantidade += n;
+    }
+
+    boolean retirar(int n) {
+        if (n &lt;= 0) {
+            throw new IllegalArgumentException("retirada deve ser positiva");
+        }
+        if (n &gt; quantidade) {
+            return false;
+        }
+        quantidade -= n;
+        return true;
+    }
+}
+
+public class Main {
+    static int falhas = 0;
+
+    static void verificar(String caso, boolean condicao) {
+        System.out.println((condicao ? "OK    " : "FALHA ") + caso);
+        if (!condicao) {
+            falhas++;
+        }
+    }
+
+    static boolean lanca(Runnable acao) {
+        try {
+            acao.run();
+            return false;
+        } catch (IllegalArgumentException erro) {
+            return true;
+        }
+    }
+
+    public static void main(String[] args) {
+        Estoque e = new Estoque(10);
+        verificar("estado inicial", e.getQuantidade() == 10);
+
+        verificar("retirar parte", e.retirar(4) &amp;&amp; e.getQuantidade() == 6);
+        verificar("retirar exatamente o restante", e.retirar(6) &amp;&amp; e.getQuantidade() == 0);
+        verificar("retirar de estoque vazio recusa", !e.retirar(1) &amp;&amp; e.getQuantidade() == 0);
+
+        e.repor(3);
+        verificar("repor após esvaziar", e.getQuantidade() == 3);
+        verificar("retirada zero lança", lanca(() -&gt; e.retirar(0)));
+        verificar("retirada negativa lança", lanca(() -&gt; e.retirar(-2)));
+        verificar("estado intacto após as recusas", e.getQuantidade() == 3);
+        verificar("construtor recusa negativo", lanca(() -&gt; new Estoque(-1)));
+        verificar("construtor aceita zero", new Estoque(0).getQuantidade() == 0);
+
+        System.out.println(falhas == 0 ? "Todos os casos passaram" : falhas + " caso(s) falharam");
+    }
+
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-testes">OK    estado inicial
+OK    retirar parte
+OK    retirar exatamente o restante
+OK    retirar de estoque vazio recusa
+OK    repor após esvaziar
+OK    retirada zero lança
+OK    retirada negativa lança
+OK    estado intacto após as recusas
+OK    construtor recusa negativo
+OK    construtor aceita zero
+Todos os casos passaram</samp></pre></figure>
+<p>Cada linha testa uma decisão: a fronteira (retirar exatamente o restante é aceito, retirar uma unidade a mais é recusado), o estado preservado depois da recusa e a validação do construtor. O verificador falha de forma visível, linha por linha, em vez de interromper no primeiro erro. A palavra <code>assert</code> da linguagem faz algo parecido, mas só atua quando a JVM é iniciada com <code>-ea</code>; sem a opção, é ignorada. Para uma conferência que precisa valer sempre, use uma condição explícita que lança <code>AssertionError</code>. A matriz desta seção, escrita antes da classe, é o equivalente a um contrato executável.</p>
+<h2 id="secao-21">21. Separar entidade, regra entre objetos e interface</h2>
+<p>Um programa de console cresce em três camadas que mudam por razões diferentes. A <strong>entidade</strong> (<code>Conta</code>) guarda o estado e aplica as regras de uma conta. O <strong>serviço</strong> (<code>Banco</code>) mantém o conjunto de contas, localiza uma conta pelo titular e aplica regras que envolvem mais de uma. O <strong>terminal</strong> (<code>Terminal</code>) lê comandos, converte texto em números e mostra mensagens. A vantagem prática aparece ao testar: a entidade e o serviço funcionam sem teclado, e o terminal pode mudar (menu, interface gráfica, API) sem mexer nas regras. Um detalhe de projeto: o <code>Scanner</code> pertence à interface; as regras nunca leem do teclado.</p>
+<figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-terminal" data-java-program>import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+class Conta {
+    private final String titular;
+    private long saldoCentavos;
+
+    Conta(String titular, long saldoInicial) {
+        if (saldoInicial &lt; 0) {
+            throw new IllegalArgumentException("saldo inicial negativo");
+        }
+        this.titular = titular;
+        this.saldoCentavos = saldoInicial;
+    }
+
+    String getTitular() { return titular; }
+    long getSaldoCentavos() { return saldoCentavos; }
+
+    void depositar(long valor) {
+        if (valor &lt;= 0) {
+            throw new IllegalArgumentException("depósito deve ser positivo");
+        }
+        saldoCentavos += valor;
+    }
+
+    boolean sacar(long valor) {
+        if (valor &lt;= 0) {
+            throw new IllegalArgumentException("saque deve ser positivo");
+        }
+        if (valor &gt; saldoCentavos) {
+            return false;
+        }
+        saldoCentavos -= valor;
+        return true;
+    }
+}
+
+class Banco {
+    private final Map&lt;String, Conta&gt; contas = new HashMap&lt;&gt;();
+
+    void abrir(String titular, long saldoInicial) {
+        if (contas.containsKey(titular)) {
+            throw new IllegalStateException("já existe conta para " + titular);
+        }
+        contas.put(titular, new Conta(titular, saldoInicial));
+    }
+
+    Conta buscar(String titular) {
+        Conta conta = contas.get(titular);
+        if (conta == null) {
+            throw new IllegalArgumentException("conta inexistente: " + titular);
+        }
+        return conta;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Banco banco = new Banco();
+        Scanner entrada = new Scanner(System.in);
+        while (entrada.hasNextLine()) {
+            String linha = entrada.nextLine().trim();
+            if (linha.isEmpty()) {
+                continue;
+            }
+            String[] partes = linha.split("\\s+");
+            try {
+                switch (partes[0]) {
+                    case "abrir" -&gt; {
+                        banco.abrir(partes[1], Long.parseLong(partes[2]));
+                        System.out.println("conta aberta para " + partes[1]);
+                    }
+                    case "depositar" -&gt; {
+                        banco.buscar(partes[1]).depositar(Long.parseLong(partes[2]));
+                        System.out.println("saldo: " + banco.buscar(partes[1]).getSaldoCentavos());
+                    }
+                    case "sacar" -&gt; {
+                        boolean ok = banco.buscar(partes[1]).sacar(Long.parseLong(partes[2]));
+                        System.out.println(ok ? "saque feito; saldo: " + banco.buscar(partes[1]).getSaldoCentavos()
+                                              : "saldo insuficiente");
+                    }
+                    case "sair" -&gt; {
+                        System.out.println("encerrado");
+                        return;
+                    }
+                    default -&gt; System.out.println("comando desconhecido: " + partes[0]);
+                }
+            } catch (NumberFormatException erro) {
+                System.out.println("número inválido");
+            } catch (ArrayIndexOutOfBoundsException erro) {
+                System.out.println("faltam argumentos");
+            } catch (RuntimeException erro) {
+                System.out.println("recusado: " + erro.getMessage());
+            }
+        }
+    }
+}</code></pre><p class="small text-muted">Entrada de teste</p><pre tabindex="0"><samp data-input-for="t9-terminal">abrir ana 10000
+depositar ana 2500
+sacar ana 3000
+sacar ana 99999
+sacar bia 100
+depositar ana -5
+depositar ana dez
+abrir ana 1
+sacar ana
+voar
+sair
+</samp></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-terminal">conta aberta para ana
+saldo: 12500
+saque feito; saldo: 9500
+saldo insuficiente
+recusado: conta inexistente: bia
+recusado: depósito deve ser positivo
+número inválido
+recusado: já existe conta para ana
+faltam argumentos
+comando desconhecido: voar
+encerrado</samp></pre></figure>
+<p>Cada linha da entrada de teste exercita um caminho: sucesso, saque recusado por saldo, conta inexistente, valor inválido, texto onde se esperava número, conta duplicada, argumento ausente e comando desconhecido. Note a ordem dos <code>catch</code>: as exceções específicas (<code>NumberFormatException</code>, <code>ArrayIndexOutOfBoundsException</code>) vêm antes da genérica <code>RuntimeException</code>. Note também que o terminal <em>traduz</em>: converte texto em <code>long</code> e mensagens de exceção em frases, mas não decide nenhuma regra. O <code>switch</code> com seta exige Java 14 ou superior. <a href="playground.html?ex=banco">O menu bancário do Playground</a> permite observar esse fluxo.</p>
+<h2 id="secao-22">22. Diagnosticar: sintomas, causas e correções</h2>
+<p>Quando uma regra de negócio é violada, o sintoma raramente aponta para a causa. A tabela abaixo reúne os defeitos mais frequentes desta lição como um roteiro de investigação.</p>
+<div class="table-responsive"><table class="table"><caption>Do sintoma à correção</caption><thead><tr><th>Sintoma</th><th>Causa provável</th><th>Correção</th></tr></thead><tbody><tr><td>Saldo ou quantidade negativos aparecem sem erro</td><td>Setter público ou campo acessível sem regra</td><td>Substituir o setter por operações do negócio; validar na operação</td></tr><tr><td>A mensagem “inválido” aparece, mas o valor mesmo assim é guardado</td><td>Validação que imprime e não interrompe</td><td>Lançar exceção ou devolver resultado antes da atribuição</td></tr><tr><td>O objeto muda “sozinho” depois de passar por outro código</td><td>Getter ou construtor que expõe uma referência mutável</td><td>Copiar na entrada e na saída, ou devolver visão imutável</td></tr><tr><td>Dinheiro desaparece depois de uma falha no meio de uma operação</td><td>Alteração feita antes de verificar todas as condições</td><td>Verificar tudo primeiro; só então alterar</td></tr><tr><td>O erro mostrado ao usuário não ajuda a investigar</td><td>Exceção traduzida sem a causa</td><td>Passar a exceção original ao construtor da nova</td></tr><tr><td>Um erro importante nunca aparece no registro</td><td><code>catch</code> vazio ou genérico demais</td><td>Tratar o tipo específico; deixar o resto propagar</td></tr><tr><td>Um método retorna um valor mesmo quando devia ter falhado</td><td><code>return</code> dentro de <code>finally</code></td><td>Retirar o <code>return</code>; deixar o fluxo normal decidir</td></tr></tbody></table></div>
+<h2 id="secao-23">23. Revisar uma classe: dez perguntas</h2>
+<p>Use a lista como uma revisão de código que você pode aplicar às classes que escrever nos próximos temas.</p>
+<ol><li>Qual é a invariante desta classe, dita em uma frase?</li><li>O construtor deixa o objeto válido ou aceita qualquer coisa?</li><li>Todo campo precisa mesmo ser alterável? Quais podem ser <code>final</code>?</li><li>Para cada setter, existe uma operação do negócio que o substituiria?</li><li>Cada método que recusa uma entrada deixa o estado exatamente como estava?</li><li>Algum método devolve ou recebe uma coleção ou vetor sem copiar?</li><li>As unidades (centavos, segundos, metros) estão no nome ou no tipo?</li><li>Uma operação que muda dois objetos verifica tudo antes de alterar o primeiro?</li><li>As exceções escolhidas comunicam o que aconteceu e preservam a causa?</li><li>Existe um teste para cada fronteira e para o estado depois de cada recusa?</li></ol>
+<h2 id="secao-24">24. Aplicar e conferir</h2>
+<p>Explique por que a classe da conta não oferece <code>setSaldo</code>. Proponha uma regra de depósito e mostre em que lugar ela precisa ser aplicada para valer para todos os chamadores. Faça um saque recusado e prove, com uma segunda consulta, que o saldo não mudou. Crie duas contas e confira que os estados são independentes. Compare essa solução com uma conta cujo saldo fosse <code>static</code>, relacionando a diferença à quantidade de contas do modelo. Use apenas nomes e credenciais fictícios.</p>
+<p><a href="playground.html?ex=conta">Executar a conta encapsulada</a>, <a href="playground.html?ex=validacao">testar validação e exceções</a>, <a href="playground.html?ex=excecoes">conferir o tratamento de exceções</a> e <a href="playground.html?ex=banco">praticar o menu bancário</a>. Só o Playground executa esses programas no navegador; os exemplos desta lição com <code>record</code> ou <code>switch</code> com seta pedem um JDK 17 local.</p>
+<p id="extraActivities9">Outras atividades deste tema: <a href="playground.html?ex=copia-defensiva">Proteger um array interno</a>.</p>
+<h2 id="secao-25">25. Prática progressiva, resoluções e revisão final</h2>
+<ol><li><strong>Invariantes:</strong> uma classe <code>Termostato</code> guarda temperatura atual, mínimo e máximo permitidos. Escreva em frases as invariantes e as pré-condições de <code>ajustar(int)</code>, antes de qualquer código.</li><li><strong>Implementação:</strong> escreva <code>Termostato</code> com essas regras. Ajustes fora da faixa devem ser recusados sem alterar o estado. Teste a temperatura exatamente no mínimo e no máximo.</li><li><strong>Vazamento:</strong> uma classe <code>Agenda</code> guarda uma lista de compromissos e devolve a própria lista no getter. Mostre o defeito e corrija de duas formas diferentes, comparando custo e comportamento.</li><li><strong>Operação em duas partes:</strong> implemente <code>reservar</code> e <code>confirmar</code> em um estoque, de modo que uma confirmação sem reserva seja recusada e nenhuma falha deixe a quantidade disponível inconsistente.</li><li><strong>Exceções:</strong> crie uma exceção própria para a reserva inexistente e uma tradução que preserve a causa. Mostre no terminal a mensagem para o usuário e a causa técnica.</li><li><strong>Investigação:</strong> explique por que <code>record Lote(int[] valores)</code> não é imutável. Corrija-o e escreva um teste que prove a correção.</li></ol>
+<details><summary>Conferir respostas do item 1</summary><p>Invariantes: <code>minimo &lt;= atual &lt;= maximo</code> e <code>minimo &lt;= maximo</code>. Pré-condição de <code>ajustar(int t)</code>: <code>t</code> dentro da faixa, ambos os extremos incluídos. Pós-condição: em caso de sucesso, a temperatura atual passa a ser <code>t</code>; em caso de recusa, nenhum campo muda. A faixa é validada no construtor e nunca se altera, o que dispensa conferir a invariante dos limites em cada ajuste.</p></details>
+<details><summary>Conferir solução: Termostato</summary><figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-termostato" data-java-program>class Termostato {
+    private final int minimo;
+    private final int maximo;
+    private int atual;
+
+    Termostato(int minimo, int maximo, int atual) {
+        if (minimo &gt; maximo) {
+            throw new IllegalArgumentException("faixa invertida");
+        }
+        if (atual &lt; minimo || atual &gt; maximo) {
+            throw new IllegalArgumentException("temperatura inicial fora da faixa");
+        }
+        this.minimo = minimo;
+        this.maximo = maximo;
+        this.atual = atual;
+    }
+
+    int getAtual() { return atual; }
+
+    boolean ajustar(int nova) {
+        if (nova &lt; minimo || nova &gt; maximo) {
+            return false;
+        }
+        atual = nova;
+        return true;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Termostato t = new Termostato(16, 30, 22);
+        System.out.println("ajustar 30: " + t.ajustar(30) + ", atual " + t.getAtual());
+        System.out.println("ajustar 31: " + t.ajustar(31) + ", atual " + t.getAtual());
+        System.out.println("ajustar 16: " + t.ajustar(16) + ", atual " + t.getAtual());
+        System.out.println("ajustar 15: " + t.ajustar(15) + ", atual " + t.getAtual());
+        try {
+            new Termostato(30, 16, 20);
+        } catch (IllegalArgumentException erro) {
+            System.out.println("construtor: " + erro.getMessage());
+        }
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-termostato">ajustar 30: true, atual 30
+ajustar 31: false, atual 30
+ajustar 16: true, atual 16
+ajustar 15: false, atual 16
+construtor: faixa invertida</samp></pre></figure><p>Os dois extremos são aceitos e os valores logo fora deles são recusados com o estado intacto. A faixa não tem setters: o objeto nunca pode chegar a um intervalo invertido depois de criado.</p></details>
+<details><summary>Conferir solução: Agenda sem vazamento</summary><figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-agenda" data-java-program>import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+class Agenda {
+    private final List&lt;String&gt; compromissos = new ArrayList&lt;&gt;();
+
+    void adicionar(String compromisso) {
+        if (compromisso == null || compromisso.isBlank()) {
+            throw new IllegalArgumentException("compromisso vazio");
+        }
+        compromissos.add(compromisso.trim());
+    }
+
+    List&lt;String&gt; visao() {
+        return Collections.unmodifiableList(compromissos);
+    }
+
+    List&lt;String&gt; copia() {
+        return new ArrayList&lt;&gt;(compromissos);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Agenda agenda = new Agenda();
+        agenda.adicionar("Prova de Java");
+        agenda.adicionar("Entrega do projeto");
+
+        List&lt;String&gt; visao = agenda.visao();
+        List&lt;String&gt; copia = agenda.copia();
+        copia.clear();
+        try {
+            visao.add("Invasor");
+        } catch (UnsupportedOperationException erro) {
+            System.out.println("visão recusa alteração");
+        }
+        System.out.println("cópia limpa; visão ainda tem " + visao.size());
+
+        agenda.adicionar("Revisão");
+        System.out.println("visão acompanha: " + visao.size() + "; cópia ficou com " + copia.size());
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-agenda">visão recusa alteração
+cópia limpa; visão ainda tem 2
+visão acompanha: 3; cópia ficou com 0</samp></pre></figure><p>A visão é barata e acompanha a agenda; a cópia é independente. Para entregar a um relatório que será impresso e descartado, a cópia é a melhor escolha. Para uma tela que precisa refletir mudanças, a visão basta, desde que ninguém dependa de a lista ficar parada.</p></details>
+<details><summary>Conferir solução: reservar e confirmar</summary><figure class="lesson-example"><figcaption>Programa completo · Main.java</figcaption><pre tabindex="0" aria-label="Código Java"><code id="t9-reserva" data-java-program>class ReservaInexistenteException extends RuntimeException {
+    ReservaInexistenteException(String mensagem, Throwable causa) {
+        super(mensagem, causa);
+    }
+}
+
+class Estoque {
+    private int disponivel;
+    private int reservado;
+
+    Estoque(int disponivel) {
+        if (disponivel &lt; 0) {
+            throw new IllegalArgumentException("quantidade negativa");
+        }
+        this.disponivel = disponivel;
+    }
+
+    int getDisponivel() { return disponivel; }
+    int getReservado() { return reservado; }
+
+    boolean reservar(int n) {
+        if (n &lt;= 0) {
+            throw new IllegalArgumentException("reserva deve ser positiva");
+        }
+        if (n &gt; disponivel) {
+            return false;
+        }
+        disponivel -= n;
+        reservado += n;
+        return true;
+    }
+
+    void confirmar(int n) {
+        if (n &lt;= 0 || n &gt; reservado) {
+            throw new IllegalStateException("não há " + n + " unidade(s) reservada(s)");
+        }
+        reservado -= n;
+    }
+}
+
+public class Main {
+    static void confirmarTraduzindo(Estoque e, int n) {
+        try {
+            e.confirmar(n);
+        } catch (IllegalStateException erro) {
+            throw new ReservaInexistenteException("reserva não encontrada", erro);
+        }
+    }
+
+    public static void main(String[] args) {
+        Estoque e = new Estoque(10);
+        System.out.println("reservar 4: " + e.reservar(4) + " -&gt; " + e.getDisponivel() + "/" + e.getReservado());
+        System.out.println("reservar 9: " + e.reservar(9) + " -&gt; " + e.getDisponivel() + "/" + e.getReservado());
+        try {
+            confirmarTraduzindo(e, 5);
+        } catch (ReservaInexistenteException erro) {
+            System.out.println(erro.getMessage() + " | causa: " + erro.getCause().getMessage());
+        }
+        System.out.println("estado após a recusa: " + e.getDisponivel() + "/" + e.getReservado());
+        confirmarTraduzindo(e, 4);
+        System.out.println("estado após confirmar 4: " + e.getDisponivel() + "/" + e.getReservado());
+    }
+}</code></pre><p class="small text-muted">Saída esperada</p><pre tabindex="0" aria-label="Saída esperada"><samp data-output-for="t9-reserva">reservar 4: true -&gt; 6/4
+reservar 9: false -&gt; 6/4
+reserva não encontrada | causa: não há 5 unidade(s) reservada(s)
+estado após a recusa: 6/4
+estado após confirmar 4: 6/0</samp></pre></figure><p>Disponível mais reservado mais confirmado é constante: nenhuma operação deixa unidades “flutuando” entre os campos. A recusa da confirmação indevida preserva os dois contadores, e a tradução mantém a causa técnica acessível.</p></details>
+<details><summary>Conferir respostas dos itens 5 e 6</summary><p>Item 5: a mensagem “reserva não encontrada” é para o usuário; <code>getCause().getMessage()</code> traz o detalhe técnico para o registro. Item 6: <code>final</code> impede trocar o vetor, não alterar seus elementos. Corrija com construtor compacto que faz <code>valores = valores.clone();</code> e um método <code>valores()</code> que devolve outra cópia. Um teste que prova a correção altera o vetor de origem <em>depois</em> da criação e confere que o record não mudou, e altera o vetor devolvido e confere o mesmo.</p></details>
+<p><strong>Desafio posterior:</strong> a conta passa a registrar um histórico de movimentações (data, tipo, valor em centavos). O histórico precisa ser consultável por quem usa a conta, mas ninguém de fora pode alterá-lo ou apagá-lo. Defina o tipo imutável de cada movimentação, a forma de expor a lista e as invariantes (o saldo é sempre a soma dos movimentos). Escreva a matriz de testes antes do código e inclua o caso do histórico que um chamador tenta alterar.</p>
+<h2 id="fontes">Fontes e próximos passos</h2>
+<p>Esta lição consolida decisões que reaparecem em todos os temas seguintes: a invariante guia a classe, a validação acontece antes da alteração e os componentes mutáveis nunca saem nem entram sem cópia. Para aprofundar, consulte as referências oficiais e os livros indicados no Extra.</p>
+<ul class="link-grid"><li><a href="https://docs.oracle.com/javase/tutorial/java/javaOO/accesscontrol.html">Tutorial Java · controle de acesso</a></li><li><a href="https://docs.oracle.com/javase/tutorial/essential/exceptions/">Tutorial Java · exceções</a></li><li><a href="https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html">Tutorial Java · try-with-resources</a></li><li><a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-11.html">Especificação da linguagem · exceções (cap. 11)</a></li><li><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Objects.html">API Java 17 · Objects</a></li><li><a href="tema-10.html">Próximo: modificadores de acesso e organização</a></li><li><a href="extra.html">Materiais, projetos e laboratórios da trilha</a></li></ul>
+</article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-08.html">Anterior · Tema 8</a><a class="btn btn-primary" href="tema-10.html">Próximo · Tema 10</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <nav class="footer-links" aria-label="Atalhos do rodapé"><a href="index.html">Início</a><a href="cont.html">Conteúdo</a><a href="playground.html">Playground</a><a href="quiz.html">Quiz</a><a href="faq.html">FAQ</a><a href="extra.html">Extra</a></nav>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/code-blocks.js" defer></script>
+
+
+
+</body>
+</html>

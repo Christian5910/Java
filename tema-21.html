@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>21 · Android avançado: arquitetura, dados e trabalho em segundo plano · Java</title>
+<meta name="description" content="Organize um aplicativo Android com ViewModel, repositório, Room, rede e trabalho persistente que sobrevive a interrupções.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 21 de 30</span></nav><header class="lesson-header"><h1>21 · Android avançado: arquitetura, dados e trabalho em segundo plano</h1><p class="lead">Organize um aplicativo Android com ViewModel, repositório, Room, rede e trabalho persistente que sobrevive a interrupções.</p><p class="text-muted">Java 17 como referência · Teoria, exemplos e prática guiada</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-8">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Organizar uma aplicação que pode ser interrompida</a></li><li><a href="#secao-2">ViewModel, estado salvo e tempo de vida</a></li><li><a href="#secao-3">Repositório e fonte de verdade</a></li><li><a href="#secao-4">Room: entidade, DAO e banco</a></li><li><a href="#secao-5">Rede, segurança de transporte e emulador</a></li><li><a href="#secao-6">Trabalho persistente e WorkManager</a></li><li><a href="#secao-7">Conflitos, sincronização e recuperação</a></li><li><a href="#secao-8">Prática: evoluir a tela em etapas verificáveis</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. Organizar uma aplicação que pode ser interrompida</h2>
+<p>Depois da primeira Activity, o próximo problema é manter regras e dados coerentes enquanto telas são recriadas, consultas falham e o processo pode desaparecer. Uma aplicação de notas precisa distinguir rascunho, registro salvo e resultado de consulta. A indicação Salvo deve corresponder a uma operação persistente confirmada, com uma política definida para sincronização quando existir servidor.</p>
+<p>Uma organização comum separa a UI, um ViewModel que apresenta o estado e um repositório que coordena as fontes de dados. O domínio continua contendo regras que podem ser testadas sem Activity. Essa estrutura permite representar carregamento, lista vazia, conteúdo e falha como estados explícitos. O projeto inicial do tema 20 é a base local; as evoluções deste capítulo exigem acrescentar as bibliotecas indicadas nas referências de cada etapa.</p>
+<p>Faça uma alteração por vez. Primeiro extraia a regra, depois modele o estado da tela, depois persista localmente e só então acrescente rede. Se introduzir banco, servidor e trabalho de fundo ao mesmo tempo, será difícil descobrir qual camada causou uma perda de estado ou uma duplicação.</p>
+<h2 id="secao-2">2. ViewModel, estado salvo e tempo de vida</h2>
+<p>Um ViewModel mantém dados de apresentação associados a um proprietário de ciclo de vida e pode sobreviver a mudanças de configuração. Ele não mantém automaticamente seus valores após a morte do processo. Use um mecanismo de estado salvo para informações pequenas de reconstrução e armazenamento persistente para registros que precisam sobreviver ao encerramento.</p>
+<p>Evite guardar Activity ou View num ViewModel de vida mais longa, pois isso pode reter uma instância descartada. Entregue dados ao estado de apresentação e deixe a tela observá-los conforme seu ciclo. Uma referência ao contexto também exige critério: use apenas o tipo de dependência necessário e conheça o tempo de vida dele. Consulte o <a href="https://developer.android.com/topic/libraries/architecture/viewmodel">guia oficial de ViewModel</a> para os proprietários e mecanismos disponíveis.</p>
+<p>Um estado de tela pode incluir entrada, itens, carregando e mensagem. Se campos independentes permitirem combinações impossíveis, agrupe-os em uma representação que preserve a regra: por exemplo, um resultado de consulta com estados explícitos. O teste deve verificar a transição de carregando para falha e a manutenção do rascunho, além do caminho de sucesso.</p>
+<h2 id="secao-3">3. Repositório e fonte de verdade</h2>
+<p>O repositório oferece operações que a aplicação precisa, como observar notas e registrar uma alteração. Ele pode consultar um banco local e uma API. Defina qual fonte decide o dado apresentado em cada momento. Uma estratégia que lê sempre do banco local e atualiza esse banco após sincronizar dá à tela uma origem estável, mas ainda precisa representar alterações pendentes e conflitos.</p>
+<p>DTOs de rede, entidades de banco e objetos de tela têm contratos diferentes. O DTO representa o formato da API; a entidade representa o armazenamento local; o modelo de apresentação representa o que a pessoa vê. Mapeamentos explícitos evitam que uma mudança de coluna ou campo remoto quebre diretamente o formulário. Uma única classe pode bastar num protótipo, desde que você reconheça os contratos que ela está acumulando.</p>
+<p>Inclua resultados de falha na operação. Uma lista vazia significa que a consulta terminou sem registros; uma falha de conexão significa que o resultado pode ser desconhecido ou desatualizado. Mostrar a mesma mensagem para as duas situações leva o usuário a decisões erradas, como cadastrar novamente algo que já existe.</p>
+<h2 id="secao-4">4. Room: entidade, DAO e banco</h2>
+<p>Room organiza persistência local sobre SQLite com entidades, interfaces de acesso e uma classe de banco. No projeto Java, o processamento de anotações precisa ser configurado conforme a versão escolhida; não copie uma configuração exclusiva de Kotlin sem adaptá-la. Use o <a href="https://developer.android.com/training/data-storage/room">guia oficial de Room</a> para as dependências Java, runtime e annotationProcessor correspondentes.</p>
+<p>Uma entidade define colunas, chave e restrições. O DAO declara consultas e operações. O banco registra as entidades e a versão do esquema. Consultas observáveis podem alimentar o estado da UI, enquanto escritas devem ocorrer fora da thread principal. Uma chamada de banco pequena hoje pode crescer quando o usuário acumular meses de dados.</p>
+<p>Escreva uma migração quando o esquema mudar e preserve os registros existentes. Apagar o banco como solução automática para qualquer mudança pode destruir dados do usuário. Um teste de migração deve criar o esquema anterior, inserir exemplos, migrar e conferir o novo formato e os valores. Diferencie dados descartáveis de cache dos registros que o usuário considera permanentes.</p>
+<h2 id="secao-5">5. Rede, segurança de transporte e emulador</h2>
+<p>O adaptador HTTP deve ter endereço configurável, timeout e política de erro. Android exige permissões e políticas de rede próprias. Use HTTPS para dados reais e mantenha exceções de desenvolvimento restritas ao ambiente necessário. Não transforme uma dificuldade de certificado local numa permissão ampla de tráfego inseguro para a versão distribuída.</p>
+<p>O endereço 127.0.0.1 no aparelho aponta para o próprio aparelho. O emulador padrão do Android possui um endereço especial para alcançar o host de desenvolvimento, descrito na <a href="https://developer.android.com/studio/run/emulator-networking">documentação de rede do emulador</a>. Um servidor limitado a loopback pode exigir um túnel ou encaminhamento específico para o teste. Não altere o laboratório Spring para exposição pública apenas para contornar essa etapa.</p>
+<p>Uma resposta HTTP precisa ser interpretada pelo status e pelo corpo esperado. Erro de autenticação, conflito de versão e timeout pedem ações diferentes. Preserve o rascunho e evite repetir automaticamente uma criação sem saber se ela já aconteceu. O servidor e o cliente precisam compartilhar uma estratégia de identificação da operação para resolver essa incerteza.</p>
+<h2 id="secao-6">6. Trabalho persistente e WorkManager</h2>
+<p>Uma tarefa que deve continuar de forma confiável após sair da tela pode exigir WorkManager. Ele oferece agendamento persistente com restrições e política de repetição. Seu uso não promete executar imediatamente em um instante exato. A decisão depende do tipo de trabalho, das limitações do sistema e da urgência percebida pelo usuário.</p>
+<p>Para sincronizar notas, registre a alteração pendente antes de agendar. O trabalho consulta pendências, envia operações com identificadores estáveis e marca o resultado confirmado. Se o processo cair entre envio e confirmação local, a repetição precisa ser tolerada pelo contrato remoto. O processamento deve ser idempotente ou possuir uma política explícita contra duplicação.</p>
+<p>Consulte a <a href="https://developer.android.com/develop/background-work/background-tasks/persistent">documentação de trabalho persistente</a> para as restrições e os testes. Um carregamento curto ligado à tela pode usar outro mecanismo. O fato de uma operação ocorrer fora da thread principal não implica que ela continuará existindo depois que o processo for encerrado.</p>
+<h2 id="secao-7">7. Conflitos, sincronização e recuperação</h2>
+<p>Considere dois aparelhos editando a mesma nota. Um carrega a versão 2, outro salva a versão 3 e o primeiro tenta enviar sua edição. O servidor pode recusar a versão antiga e devolver um conflito. O cliente deve preservar o rascunho e permitir comparar com o valor atual. Sobrescrever silenciosamente elimina trabalho de outra pessoa.</p>
+<p>Uma política de último valor recebido é simples, mas precisa ser uma decisão assumida para aquele dado. Para quantidades de estoque e operações financeiras, uma edição genérica pode violar invariantes. Modele comandos como retirar uma quantidade e valide o estado no servidor. O aplicativo móvel pode antecipar uma mensagem, mas não decide sozinho o saldo compartilhado.</p>
+<p>Registre erros sem copiar senhas, tokens ou dados pessoais completos. Uma falha de sincronização deve informar o que permanece pendente e quando tentar novamente. A saída da conta precisa esclarecer o destino de rascunhos e dados locais. Uma limpeza indiscriminada pode apagar uma alteração que ainda não chegou ao servidor.</p>
+<h2 id="secao-8">8. Prática: evoluir a tela em etapas verificáveis</h2>
+<p>Parta do laboratório Android e escreva uma tabela de estados para edição, carregamento, sucesso e falha. Extraia a regra e execute seu teste. Em seguida, escolha uma versão de AndroidX ViewModel compatível com o projeto, instale as dependências oficiais e teste rotação sem disparar consultas duplicadas. Registre a versão utilizada no build e no roteiro.</p>
+<p>Depois crie um pequeno cadastro local com Room, uma consulta e uma migração de esquema. Confira os dados após recriação e reabertura. A etapa final é um adaptador de rede simulado que pode recusar uma versão antiga. O trabalho termina quando cada falha tem resultado definido, o rascunho permanece recuperável e você consegue distinguir testes da regra, do banco e da interface. As bibliotecas dessas evoluções não estão pré-instaladas no Playground nem no ZIP básico.</p>
+<details><summary>ViewModel substitui salvar as notas num banco?</summary><p>Não. Ele mantém estado de apresentação durante seu ciclo de vida e pode atravessar recriações de configuração. Registros permanentes precisam de uma fonte persistente; morte do processo exige uma estratégia de recuperação adequada ao dado.</p></details>
+</article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-20.html">Anterior · Tema 20</a><a class="btn btn-primary" href="tema-22.html">Próximo · Tema 22</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <nav class="footer-links" aria-label="Atalhos do rodapé"><a href="index.html">Início</a><a href="cont.html">Conteúdo</a><a href="playground.html">Playground</a><a href="quiz.html">Quiz</a><a href="faq.html">FAQ</a><a href="extra.html">Extra</a></nav>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/code-blocks.js" defer></script>
+
+
+
+</body>
+</html>

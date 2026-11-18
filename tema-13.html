@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>13 · Concorrência e coordenação de tarefas · Java</title>
+<meta name="description" content="Coordene tarefas com threads, executores e Future, protegendo o estado compartilhado e tratando falhas e cancelamento.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 13 de 30</span></nav><header class="lesson-header"><h1>13 · Concorrência e coordenação de tarefas</h1><p class="lead">Coordene tarefas com threads, executores e Future, protegendo o estado compartilhado e tratando falhas e cancelamento.</p><p class="text-muted">Java 17 como referência · Teoria, exemplos e prática guiada</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-13">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Quando duas tarefas passam a existir ao mesmo tempo</a></li><li><a href="#secao-2">Thread, start, run e a ordem observada</a></li><li><a href="#secao-3">Estado compartilhado e operações compostas</a></li><li><a href="#secao-4">Exclusão mútua e visibilidade</a></li><li><a href="#secao-5">Atualizações atômicas e o limite do que elas protegem</a></li><li><a href="#secao-6">Separar tarefa de administração das threads</a></li><li><a href="#secao-7">Future representa resultado ou falha de uma tarefa</a></li><li><a href="#secao-8">Tempo limite, cancelamento e interrupção</a></li><li><a href="#secao-9">Encerrar o executor faz parte do programa</a></li><li><a href="#secao-10">Coleções concorrentes e sequências de decisões</a></li><li><a href="#secao-11">Compor etapas assíncronas sem perder as falhas</a></li><li><a href="#secao-12">Deadlock, ordem de bloqueios e trabalho limitado</a></li><li><a href="#secao-13">Prática: conclusão, falha e estado observável</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. Quando duas tarefas passam a existir ao mesmo tempo</h2>
+<p>Até aqui, acompanhamos um fluxo principal: ler, validar, calcular e apresentar. Uma aplicação maior pode receber várias solicitações, processar arquivos e aguardar respostas externas em tarefas distintas. Concorrência permite lidar com execuções que se sobrepõem no tempo; paralelismo envolve execução simultânea. O programa continua precisando de uma regra clara mesmo quando a ordem de passos entre tarefas varia. Uma saída que aparece correta numa execução isolada não comprova que a coordenação está correta.</p>
+<p>Comece separando tarefas independentes de tarefas que alteram o mesmo estado. Calcular quadrados de dois números usando apenas variáveis locais é diferente de duas retiradas que leem o mesmo estoque e gravam um novo saldo. No primeiro caso, é possível combinar resultados depois. No segundo, a regra de disponibilidade precisa ser preservada durante toda a operação que a verifica e altera. A presença de várias threads torna explícita uma fronteira de alteração que já existia no domínio.</p>
+<p>Os exemplos deste tema usam a biblioteca de concorrência disponível no ambiente do site. Eles possuem quantidades pequenas de tarefas e produzem resultados apresentados pelo fluxo principal, para permitir conferência. Não use um laço enorme como demonstração de capacidade de uma máquina. O tempo e os recursos variam entre dispositivos; a primeira pergunta deve ser se a regra continua correta, e depois se a execução concorrente ajuda a tarefa real.</p>
+<h2 id="secao-2">2. Thread, start, run e a ordem observada</h2>
+<p>Uma thread possui seu fluxo de execução. Chamar <code>start()</code> solicita que uma nova thread execute seu trabalho; chamar <code>run()</code> diretamente é uma chamada comum de método na thread atual. O nome de uma classe ou de uma variável não cria paralelismo. Também não há garantia geral de que a thread iniciada primeiro apresentará sua primeira mensagem antes das demais. O escalonamento pode variar entre execuções.</p>
+<p>Para aprender a diferença, crie duas tarefas curtas que apenas calculam valores e devolvem resultados. Evite usar a ordem de mensagens do console como a regra principal do teste. Duas ordens de impressão podem ser válidas se as tarefas são independentes. Quando a aplicação exige ordem de apresentação, imponha essa ordem no componente que reúne os resultados, em vez de esperar que a velocidade de cada tarefa produza a sequência desejada.</p>
+<p>Um atraso com <code>sleep</code> não é uma maneira confiável de provar que outra tarefa terminou. A duração escolhida pode ser insuficiente em outro dispositivo e desperdiçar tempo quando o trabalho já acabou. Use um mecanismo de conclusão, como <code>join</code>, um <code>Future</code> ou uma coordenação apropriada ao caso. O teste deve esperar pelo evento que importa, e não por uma estimativa de quanto tempo ele costuma levar.</p>
+<h2 id="secao-3">3. Estado compartilhado e operações compostas</h2>
+<p>Considere <code>contador++</code>. A expressão envolve obter um valor, calcular outro e gravá-lo. Duas tarefas podem ler o mesmo valor antes de ambas gravarem o incremento, fazendo uma atualização se perder. Mesmo que cada leitura isolada pareça simples, a sequência inteira precisa de uma propriedade de coordenação. O resultado esperado de quatro tarefas com mil incrementos é quatro mil; um contador comum compartilhado não oferece essa garantia automaticamente.</p>
+<p>A mesma ideia aparece no estoque: verificar que há cinco unidades e depois retirar quatro precisa ser tratado junto quando duas tarefas podem fazer a mesma solicitação. Proteger só a leitura ou só a escrita não impede que ambas decidam com base numa disponibilidade anterior. Identifique a região crítica pela regra de negócio que deve permanecer verdadeira. A unidade de coordenação deve cobrir a decisão e a alteração correspondentes.</p>
+<p>Um defeito concorrente pode não aparecer em várias tentativas e surgir depois de uma alteração de carga. A ausência de falha observada não equivale a uma prova de segurança. Para o exercício, desenhe uma intercalação possível: tarefa A lê cinco, tarefa B lê cinco, A grava um, B grava um. O saldo final não representa duas retiradas de quatro e o programa pode ter anunciado dois sucessos. Esse rastreamento explica o problema sem depender da sorte de uma execução.</p>
+<h2 id="secao-4">4. Exclusão mútua e visibilidade</h2>
+<p>Uma região sincronizada pode garantir que apenas uma thread por vez entre naquela região usando o mesmo monitor. A coordenação também participa da visibilidade entre leituras e escritas conforme o modelo de memória. A garantia depende de todos os caminhos relevantes usarem uma estratégia consistente. Proteger uma operação com um objeto de bloqueio e outra com um objeto diferente não cria automaticamente exclusão entre elas.</p>
+<p>Mantenha a região crítica focada no estado e na regra que ela protege. Fazer uma chamada de rede ou esperar indefinidamente por outra tarefa dentro do bloqueio pode impedir outros trabalhos de avançar. Se a operação precisa de um recurso externo, separe o que pode ser preparado antes e defina como verificar o estado de novo no momento da alteração. A <a href="https://docs.oracle.com/javase/tutorial/essential/concurrency/sync.html">documentação de sincronização</a> apresenta interferência e consistência de memória.</p>
+<p>A palavra-chave <code>volatile</code> ajuda a estabelecer visibilidade para acessos ao campo, mas não transforma qualquer sequência composta em uma operação indivisível. Um contador volátil ainda não faz <code>contador++</code> virar um incremento atômico. Escolha a ferramenta pela propriedade necessária: publicar uma sinalização, atualizar um número isolado e preservar a relação entre vários campos são problemas diferentes.</p>
+<h2 id="secao-5">5. Atualizações atômicas e o limite do que elas protegem</h2>
+<p><code>AtomicInteger</code> oferece operações atômicas para um valor inteiro. No exemplo abaixo, cada incremento é coordenado, e o fluxo principal aguarda todas as tarefas antes de apresentar o total. A combinação dessas duas decisões importa: um contador protegido consultado antes do término das tarefas ainda pode mostrar um valor parcial. Atomicidade da operação e conclusão do trabalho são propriedades distintas.</p>
+<p>Não conclua que dois campos atômicos preservam automaticamente uma regra entre eles. Uma transferência com saldo de origem e destino precisa de um contrato para a operação composta. Atualizar cada saldo separadamente pode permitir que outro observador veja um estado intermediário. Para o primeiro exercício, mantenha uma regra pequena e isolada; para a transferência, identifique a transação do domínio e escolha uma coordenação que cubra o conjunto necessário.</p>
+<pre><code>import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        AtomicInteger contador = new AtomicInteger();
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        List&lt;Future&lt;?&gt;&gt; tarefas = new ArrayList&lt;&gt;();
+        try {
+            for (int t = 0; t &lt; 4; t++) {
+                tarefas.add(executor.submit(() -&gt; {
+                    for (int i = 0; i &lt; 1000; i++) contador.incrementAndGet();
+                }));
+            }
+            for (Future&lt;?&gt; tarefa : tarefas) tarefa.get();
+            System.out.println(&quot;Total: &quot; + contador.get());
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+}</code></pre><p><a href="playground.html?ex=contador-atomico">Praticar Contagem com estado compartilhado</a></p><p>Saída do programa inicial:</p><pre><code>Total: 4000</code></pre><h2 id="secao-6">6. Separar tarefa de administração das threads</h2>
+<p>Criar uma thread para cada pequeno cálculo espalha detalhes de ciclo de vida e pode consumir recursos sem controle. Um <code>ExecutorService</code> recebe tarefas e administra sua execução conforme a implementação escolhida. Você descreve o trabalho e recebe mecanismos para acompanhar conclusão. Um pool com duas threads limita quantas tarefas daquele pool executam ao mesmo tempo, mas isso não significa que a quantidade de tarefas aguardando esteja automaticamente limitada em toda configuração.</p>
+<p>Uma fila que aceita trabalho mais rápido do que ele é concluído pode crescer e pressionar memória. Em uma aplicação real, defina a capacidade de espera e o que fazer quando ela for atingida: recusar, aguardar por um limite ou reduzir a produção. O exemplo didático usa apenas duas tarefas conhecidas para concentrar a leitura no resultado. Ele não é uma configuração pronta para receber solicitações sem limite. Confira o ciclo de vida e as garantias de <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ExecutorService.html">ExecutorService</a>.</p>
+<h2 id="secao-7">7. Future representa resultado ou falha de uma tarefa</h2>
+<p>Ao submeter um cálculo, você pode receber um <code>Future</code>. A chamada a <code>get</code> aguarda sua conclusão quando o resultado ainda não está disponível. Uma tarefa pode terminar com sucesso, lançar uma falha ou ser cancelada. Uma exceção de execução não deve ser convertida silenciosamente em um número que pareça um resultado válido. Diferencie ausência de resultado, falha e valor zero quando eles têm significados distintos.</p>
+<p>No programa a seguir, o cálculo das duas potências pode ocorrer em tarefas distintas, mas a apresentação segue a ordem escolhida pelo fluxo principal. Consultar novamente um Future concluído devolve seu resultado; isso não agenda o mesmo cálculo de novo. Antes de executar, preveja cada valor e a soma. Depois acrescente uma tarefa que falha e observe que obter seu resultado exige tratar o caminho de falha, não apenas somar um valor substituto.</p>
+<pre><code>import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        try {
+            Future&lt;Integer&gt; primeira = executor.submit(() -&gt; 12 * 12);
+            Future&lt;Integer&gt; segunda = executor.submit(() -&gt; 7 * 7);
+            System.out.println(&quot;Primeira: &quot; + primeira.get());
+            System.out.println(&quot;Segunda: &quot; + segunda.get());
+            System.out.println(&quot;Soma: &quot; + (primeira.get() + segunda.get()));
+        } finally {
+            executor.shutdownNow();
+        }
+    }
+}</code></pre><p><a href="playground.html?ex=tarefas-futuro">Praticar Coordenar tarefas e resultados</a></p><p>Saída do programa inicial:</p><pre><code>Primeira: 144
+Segunda: 49
+Soma: 193</code></pre><h2 id="secao-8">8. Tempo limite, cancelamento e interrupção</h2>
+<p>Esperar sem limite pode tornar uma interface incapaz de responder quando um recurso externo não termina. Algumas operações oferecem espera com timeout. Quando esse limite termina, a tarefa não necessariamente parou: o timeout descreve o que aconteceu com a espera. Se o contrato exige cancelar o trabalho, solicite o cancelamento apropriado e considere se a operação responde a essa solicitação. Não apresente a ausência de resposta como uma confirmação de que nada foi alterado.</p>
+<p>Interrupção é um mecanismo cooperativo. Uma tarefa precisa executar operações que a reconheçam ou verificar a sinalização em pontos adequados. Capturar <code>InterruptedException</code> e continuar um laço sem decisão pode ignorar o pedido de encerramento. Quando um método não consegue tratar o pedido e precisa repassá-lo por outro caminho, pode ser necessário restaurar a sinalização de interrupção. A política deve combinar com o nível que controla o ciclo de vida da tarefa. Consulte o <a href="https://docs.oracle.com/javase/tutorial/essential/concurrency/interrupt.html">guia de interrupções</a>.</p>
+<p>Uma operação de negócio que já produziu efeito não é desfeita automaticamente pelo cancelamento de quem estava esperando. Uma compra enviada a um serviço externo pode ter sido aceita mesmo que a resposta não chegou. Esse caso exige um identificador de operação e um protocolo para consultar ou repetir com segurança, discutido no Extra. O mecanismo de thread, sozinho, não decide a semântica da operação.</p>
+<p><a href="playground.html?ex=prazo-cancelamento">Praticar Prazo, cancelamento e interrupção</a></p>
+<h2 id="secao-9">9. Encerrar o executor faz parte do programa</h2>
+<p>Um executor possui ciclo de vida. <code>shutdown</code> deixa de aceitar novas tarefas e permite concluir as já submetidas conforme o contrato. <code>shutdownNow</code> tenta interromper tarefas em andamento e devolve as que não chegaram a começar; não garante que qualquer trabalho arbitrário obedecerá imediatamente. Uma aplicação que cria executores sem encerrá-los pode continuar consumindo recursos ou impedir o término esperado do processo.</p>
+<p>Os exemplos usam um bloco <code>finally</code> para solicitar o encerramento mesmo se a obtenção de um resultado falhar. Em aplicações com trabalho que precisa terminar de forma ordenada, defina um período de espera, confira a conclusão e escolha uma política de encerramento adicional. Não use um <code>finally</code> para imprimir “tudo concluído” se houve falha ou cancelamento. O estado final apresentado ao usuário deve corresponder ao que foi confirmado.</p>
+<h2 id="secao-10">10. Coleções concorrentes e sequências de decisões</h2>
+<p>Uma coleção concorrente oferece garantias próprias para suas operações. Isso não significa que qualquer combinação de chamadas feitas pelo seu código se torna uma transação. Consultar um mapa, verificar ausência e depois inserir são vários passos. Quando a intenção é uma inclusão condicional, procure uma operação que represente esse contrato ou proteja a sequência no nível necessário. Leia também as regras das funções executadas por métodos de atualização.</p>
+<p>Um iterador de uma coleção concorrente pode oferecer uma forma de observação diferente da de uma lista comum. Não suponha que ele produz uma fotografia estável do cadastro inteiro. Se uma tela precisa de um relatório consistente em determinado instante, defina como a fotografia será produzida. Uma coleção segura para acesso simultâneo não determina, sozinha, que todos os valores de um relatório representam o mesmo momento do domínio.</p>
+<p>Evite tentar resolver toda aplicação substituindo <code>HashMap</code> por <code>ConcurrentHashMap</code>. Essa troca não corrige invariantes distribuídos por vários objetos, ordem de chamadas, erros de persistência ou relatórios mal definidos. Primeiro declare quem pode alterar o estado e como a alteração é confirmada. Depois escolha a coleção que atende ao padrão de acesso que permaneceu.</p>
+<h2 id="secao-11">11. Compor etapas assíncronas sem perder as falhas</h2>
+<p><code>CompletableFuture</code> permite compor etapas que produzem e transformam resultados. Uma transformação como <code>thenApply</code> calcula outro valor a partir do resultado anterior. Uma composição como <code>thenCompose</code> conecta uma etapa que já devolve outro futuro. Confundir as duas pode produzir estruturas aninhadas que dificultam perceber qual conclusão está sendo aguardada. Desenhe o tipo de entrada e saída de cada etapa antes de encadear chamadas.</p>
+<p>As versões assíncronas e o executor utilizado também influenciam onde o trabalho é executado. Não envie tarefas bloqueantes sem avaliar o recurso que ficará ocupado. Um pipeline deve preservar as falhas até um ponto capaz de decidir recuperação ou apresentação. Retornar uma lista vazia em qualquer exceção pode fazer uma indisponibilidade parecer uma consulta legítima sem registros. A <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html">API de CompletableFuture</a> descreve os caminhos de composição e conclusão.</p>
+<p>Para o estudo, comece com uma etapa que produz uma nota, outra que calcula a situação e uma última que monta uma mensagem. Teste uma falha na primeira etapa e confira se a apresentação continua distinguindo falha de reprovação. Só depois substitua a etapa inicial por uma chamada externa. Assim, a semântica da composição pode ser verificada antes de acrescentar a variabilidade da rede.</p>
+<h2 id="secao-12">12. Deadlock, ordem de bloqueios e trabalho limitado</h2>
+<p>Um deadlock pode acontecer quando tarefas ficam esperando recursos umas das outras sem conseguir avançar. Por exemplo, uma segura o bloqueio da conta A e espera B, enquanto outra segura B e espera A. Uma política consistente de ordem dos bloqueios pode evitar esse ciclo nesse modelo. A solução precisa ser aplicada em todos os caminhos da operação; um método que usa a ordem inversa reintroduz a possibilidade de espera circular.</p>
+<p>Outro problema aparece quando todas as threads de um pool aguardam tarefas que também precisam daquele mesmo pool para começar. Limitar threads não dispensa analisar as dependências entre tarefas. Evite submeter trabalho e bloquear indiscriminadamente dentro de uma tarefa do mesmo recurso limitado. Descreva quem espera por quem e teste o encerramento sem usar apenas um timeout para esconder o travamento.</p>
+<p>Virtual threads, disponíveis a partir de Java 21, mudam parte do custo de administrar threads, mas não corrigem automaticamente dados compartilhados, deadlocks ou limites de um serviço externo. Elas não pertencem à JVM Java 17 do Playground. Estude esse recurso em um JDK local compatível depois de compreender o contrato da tarefa. O limite de conexões de um banco, por exemplo, continua sendo uma restrição relevante mesmo com muitas tarefas leves.</p>
+<h2 id="secao-13">13. Prática: conclusão, falha e estado observável</h2>
+<p>Execute as duas atividades e confira seus resultados. Depois mude a quantidade de incrementos, mantendo a previsão do total. Crie uma tarefa que falha e outra que conclui, e apresente os estados separadamente. Verifique que o executor é encerrado nos dois caminhos. Não conte uma tarefa que lançou exceção como concluída com sucesso apenas porque seu processamento terminou.</p>
+<p>Para uma retirada concorrente, comece pelo desenho de duas solicitações disputando o mesmo estoque. Escreva a regra: a soma das retiradas aceitas não pode superar a quantidade disponível. Identifique a operação composta que precisa de proteção e teste o saldo posterior. Uma repetição de teste ajuda a procurar sintomas, mas a justificativa do mecanismo de coordenação deve explicar por que uma intercalação inválida não consegue publicar dois sucessos.</p>
+<details><summary>AtomicInteger garante que uma transferência entre dois saldos será uma única operação?</summary><p>Não. Cada atualização isolada possui seu contrato, mas a regra entre origem e destino ainda exige uma coordenação que cubra a operação composta. O estado intermediário precisa ser considerado por quem pode observá-lo.</p></details><details><summary>Se Future.get com timeout falhou por tempo, posso afirmar que a tarefa não mudou nada?</summary><p>Não. O limite terminou para a espera. A tarefa pode continuar ou já ter produzido efeitos. Cancelamento, confirmação e eventual consulta posterior precisam de uma política definida para a operação.</p></details></article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-12.html">Anterior · Tema 12</a><a class="btn btn-primary" href="tema-14.html">Próximo · Tema 14</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <nav class="footer-links" aria-label="Atalhos do rodapé"><a href="index.html">Início</a><a href="cont.html">Conteúdo</a><a href="playground.html">Playground</a><a href="quiz.html">Quiz</a><a href="faq.html">FAQ</a><a href="extra.html">Extra</a></nav>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/code-blocks.js" defer></script>
+
+
+
+</body>
+</html>

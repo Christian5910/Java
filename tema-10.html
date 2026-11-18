@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10 · Modificadores de acesso e organização · Java</title>
+<meta name="description" content="Controle quem acessa o quê com modificadores, pacotes e testes, e organize o código além de um único arquivo.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 10 de 30</span></nav><header class="lesson-header"><h1>10 · Modificadores de acesso e organização</h1><p class="lead">Controle quem acessa o quê com modificadores, pacotes e testes, e organize o código além de um único arquivo.</p><p class="text-muted">Java 17 como referência · Teoria, exemplos e prática guiada</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-13">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Visibilidade faz parte do contrato</a></li><li><a href="#secao-2">Comparar os acessos de membros</a></li><li><a href="#secao-3">Public e private</a></li><li><a href="#secao-4">Pacotes e importação</a></li><li><a href="#secao-5">Protected dentro e fora do pacote</a></li><li><a href="#secao-6">Acesso não é static nem final</a></li><li><a href="#secao-7">Investigar um erro de acesso</a></li><li><a href="#secao-8">Do arquivo único a um projeto com build</a></li><li><a href="#secao-9">Testes que verificam comportamento</a></li><li><a href="#secao-10">Arquivos, concorrência e limites do ambiente</a></li><li><a href="#secao-11">Como o ecossistema se conecta aos fundamentos</a></li><li><a href="#secao-12">Roteiro para continuar estudando</a></li><li><a href="#secao-13">Revisão integrada do projeto</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. Visibilidade faz parte do contrato</h2>
+<p>Modificadores de acesso determinam onde classes e membros podem ser usados diretamente pelo código. Eles ajudam a definir quais operações compõem a interface pública e quais detalhes pertencem à implementação. Uma classe de conta pode permitir consulta de saldo e movimentações sem permitir atribuição direta do saldo. A escolha de acesso deve acompanhar essa responsabilidade.</p>
+<p>Há acesso <code>public</code>, <code>protected</code>, <code>private</code> e acesso de pacote quando nenhum desses modificadores é escrito. “Padrão” descreve essa ausência; não se escreve <code>default</code> antes de um atributo para obter acesso de pacote. A palavra <code>default</code> possui outros usos na linguagem, como o ramo de switch e métodos padrão de interfaces.</p>
+<h2 id="secao-2">2. Comparar os acessos de membros</h2>
+<div class="table-responsive"><table class="table"><caption>Acesso direto a membros, considerando classes de topo usuais</caption><thead><tr><th>Acesso</th><th>Na própria classe</th><th>Outras classes do pacote</th><th>Subclasse em outro pacote</th><th>Classe sem relação em outro pacote</th></tr></thead><tbody><tr><td><code>private</code></td><td>Sim</td><td>Não</td><td>Não</td><td>Não</td></tr><tr><td>Sem modificador</td><td>Sim</td><td>Sim</td><td>Não</td><td>Não</td></tr><tr><td><code>protected</code></td><td>Sim</td><td>Sim</td><td>Sim, com restrições sobre o receptor</td><td>Não</td></tr><tr><td><code>public</code></td><td>Sim</td><td>Sim</td><td>Sim</td><td>Sim, se o tipo também estiver acessível</td></tr></tbody></table></div>
+<p>A tabela simplifica classes de topo e membros comuns. Tipos aninhados têm regras adicionais, e módulos também podem restringir o acesso a pacotes. O ponto inicial para os exercícios é conferir o acesso do tipo, do construtor e do membro. Um método público dentro de uma classe que não é acessível não oferece, por si só, uma classe pública para qualquer chamador.</p>
+<h2 id="secao-3">3. Public e private</h2>
+<p><code>public</code> permite acesso onde o tipo e as demais regras de organização o permitem. Use-o nas operações que o código externo deve chamar. Expor todos os atributos como públicos torna os detalhes do estado parte do contrato e permite alterações sem validação. Ao mudar esses detalhes depois, outros arquivos podem deixar de compilar ou passar a depender de um comportamento que você não pretendia oferecer.</p>
+<p><code>private</code> restringe o acesso conforme as regras de encapsulamento da classe. Nos exercícios com classes de topo distintas, outra classe não acessa diretamente o campo privado. A consulta passa por um método acessível. Privado não significa constante: a própria classe pode mudar seu atributo privado quando a operação permite. Para impedir reatribuição de um campo, existe <code>final</code>, que resolve uma questão diferente.</p>
+<pre><code>class Produto {
+    private int estoque;
+
+    Produto(int estoque) {
+        this.estoque = estoque;
+    }
+
+    public int getEstoque() {
+        return estoque;
+    }
+}
+// Em Main, use produto.getEstoque().
+// produto.estoque não é um acesso permitido entre essas classes.</code></pre>
+<p><a href="playground.html?ex=fabrica-codigo">Praticar Fábrica com construtor privado</a></p>
+<h2 id="secao-4">4. Pacotes e importação</h2>
+<p>Um pacote organiza nomes e participa das regras de acesso. <code>package escola;</code> declara o pacote de um arquivo e deve aparecer antes dos imports e das declarações de tipos. Os diretórios do projeto normalmente refletem esse nome. <code>import escola.Aluno;</code> permite usar o nome curto quando o tipo está disponível; não contorna <code>private</code>, acesso de pacote ou <code>protected</code>.</p>
+<pre><code>// Arquivo escola/Aluno.java
+package escola;
+public class Aluno {
+    String nome;
+    public Aluno(String nome) {
+        this.nome = nome;
+    }
+    public String getNome() {
+        return nome;
+    }
+}</code></pre>
+<p>Nesse exemplo, <code>nome</code> tem acesso de pacote. Uma classe em outro pacote pode chamar o construtor público e o getter público, mas não ler o campo diretamente. Uma subclasse fora do pacote também não recebe acesso ao campo apenas por herdar de <code>Aluno</code>. A relação de herança não abre uma exceção geral ao acesso de pacote.</p>
+<p>No computador, os comandos precisam considerar o nome qualificado da classe e o caminho de classes. Se uma classe principal for <code>escola.Main</code>, compile a partir da raiz apropriada, por exemplo <code>javac -d out escola/*.java</code>, e execute com <code>java -cp out escola.Main</code>. O editor do Playground usa um único arquivo sem pacote para os exercícios guiados. O exemplo com arquivos de pacote é uma referência para a IDE, e está identificado como tal.</p>
+<h2 id="secao-5">5. Protected dentro e fora do pacote</h2>
+<p>No mesmo pacote, <code>protected</code> permite acesso a outras classes. Fora do pacote, o acesso envolve código de uma subclasse e restrições sobre a referência usada para acessar um membro de instância. Dizer apenas “subclasses acessam protected” esconde parte da regra. Uma subclasse não recebe autorização para acessar esse membro em qualquer objeto de um tipo-base arbitrário.</p>
+<p>Considere uma superclasse <code>Base</code> com campo protegido e uma subclasse <code>Derivada</code> em outro pacote. Dentro de <code>Derivada</code>, o acesso pelo próprio objeto com <code>this</code> é permitido. Um acesso por uma variável declarada como <code>Base</code> não fica permitido apenas porque o código está na subclasse. Para esse detalhe, confira a <a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-6.html#jls-6.6.2">regra de acesso protected na especificação</a>.</p>
+<p>O exemplo de carro e motor da apostila ajuda a distinguir herança e composição. Uma classe que herda de <code>Carro</code> não herda de <code>Motor</code> só porque o carro guarda um motor. O acesso a <code>motor.darPartida()</code> deve ser verificado usando o pacote e o modificador do método declarado em <code>Motor</code>. Estar no pacote do motor pode permitir um acesso que a relação com carro, isoladamente, não permitiria.</p>
+<h2 id="secao-6">6. Acesso não é static nem final</h2>
+<p><code>public</code>, <code>private</code> e <code>protected</code> tratam de acesso. <code>static</code> trata da associação à classe, e <code>final</code> tem significados de restrição conforme a declaração. Um campo pode ser privado e estático ao mesmo tempo. Uma constante de classe pode usar <code>public static final</code> quando sua exposição fizer parte do contrato. Uma referência final a um objeto mutável não torna esse objeto automaticamente imutável.</p>
+<p>Em classes de topo comuns, use <code>public</code> ou nenhum modificador de acesso. Não declare uma classe de topo como <code>private</code> ou <code>protected</code>. Quando houver vários tipos no mesmo arquivo dos exercícios, mantenha apenas <code>Main</code> como público. Ao separar o projeto em arquivos, cada classe pública deve estar no arquivo correspondente ao seu nome.</p>
+<h2 id="secao-7">7. Investigar um erro de acesso</h2>
+<p>Comece localizando a declaração do tipo e do membro. Confira o pacote do chamador, se existe herança e qual é o tipo da referência usada na chamada. Verifique também o construtor quando a falha ocorre no <code>new</code>. Trocar tudo para <code>public</code> pode fazer a mensagem desaparecer, mas altera o contrato e permite operações que deveriam continuar controladas.</p>
+<p>Quando o chamador precisa de uma operação legítima, ofereça um método que represente essa necessidade. Para consultar estoque, um getter pode bastar. Para retirar um item, um método que verifica disponibilidade evita que o chamador calcule e atribua um estoque negativo. O projeto deve deixar claro onde a regra é aplicada e como a operação informa uma recusa.</p>
+<h2 id="secao-8">8. Do arquivo único a um projeto com build</h2>
+<p>Quando o programa cresce, ferramentas de build automatizam tarefas como resolver dependências, compilar, executar testes e empacotar. Maven e Gradle cumprem esse papel e continuam usando ferramentas e regras Java. Uma importação não instala uma biblioteca: ela precisa estar disponível no projeto, com versão e configuração apropriadas.</p>
+<p>Em um projeto Maven convencional, <code>src/main/java</code> recebe os fontes da aplicação, <code>src/main/resources</code> os recursos e <code>src/test/java</code> os testes. O <code>pom.xml</code> declara informações e configuração do projeto. <code>mvn test</code> executa a fase de testes e as fases anteriores necessárias; <code>mvn package</code> chega ao empacotamento. A versão Java alvo deve estar explícita. Consulte o <a href="https://maven.apache.org/guides/getting-started/index.html">guia do Maven</a> antes de criar esse projeto na IDE.</p>
+<p>O Playground mantém um único <code>Main.java</code> e não instala bibliotecas externas. Para evoluir o banco que você praticou no Playground, baixe o código, crie um projeto local e separe classes por responsabilidade. Primeiro mantenha o mesmo comportamento no console; depois acrescente testes e armazenamento. Assim você consegue distinguir um erro de reorganização de uma mudança na regra de negócio.</p>
+<h2 id="secao-9">9. Testes que verificam comportamento</h2>
+<p>Um teste precisa de preparação, operação e verificação do resultado. Para uma conta com 1.000 centavos, depositar 200 deve produzir 1.200. Um depósito inválido deve ser recusado e manter os 1.000. Verificar apenas que não houve mensagem de erro deixa de conferir a regra principal. Use um objeto novo em cada cenário para evitar que o teste dependa de outro.</p>
+<p>JUnit fornece recursos para organizar testes e asserções; Mockito permite criar substitutos de colaboradores quando o isolamento é necessário. Um teste unitário observa uma unidade pequena, enquanto um teste de integração confere a colaboração com componentes como um banco. Uma asserção do JUnit funciona pelo mecanismo da biblioteca e não depende de habilitar a palavra-chave Java <code>assert</code>. Configure a biblioteca no projeto local e confira a compatibilidade entre sua versão e o JDK na <a href="https://docs.junit.org/current/user-guide/">documentação do JUnit</a>.</p>
+<p>Como prática, escreva casos de saque menor que o saldo, saque exato, saldo insuficiente e valor inválido. Verifique retorno ou exceção e o estado posterior. Para uma transferência, confira origem e destino depois de uma operação aceita e de uma recusada. Se o código só pode ser testado digitando todo o menu, retome a separação entre interface e regra de negócio do tema 9.</p>
+<h2 id="secao-10">10. Arquivos, concorrência e limites do ambiente</h2>
+<p>Para estudar persistência local, <code>Path</code> representa um caminho e <code>Files</code> reúne operações de arquivo. Defina o formato dos dados, a codificação e o tratamento de ausência ou falha de leitura. Ler tudo para a memória pode servir a um exercício pequeno, mas arquivos grandes pedem processamento adequado ao tamanho. Métodos como <code>Files.readString</code> são posteriores a Java 8 e devem ser praticados no JDK local, pois o compilador do site usa assinaturas Java 8. O sistema de arquivos virtual da JVM no navegador não é a pasta pessoal do computador. Consulte o <a href="https://docs.oracle.com/javase/tutorial/essential/io/fileio.html">guia de arquivos e NIO.2</a>.</p>
+<p>Concorrência permite que tarefas tenham execuções sobrepostas; paralelismo envolve execução simultânea. Uma thread criada com <code>start()</code> agenda uma nova execução, enquanto chamar <code>run()</code> diretamente faz uma chamada comum no fluxo atual. O escalonamento não garante uma ordem fixa de mensagens. Compartilhar um contador e fazer <code>contador++</code> de várias threads pode perder atualizações, pois leitura, cálculo e escrita não formam automaticamente uma operação atômica.</p>
+<p>Compartilhamento exige um projeto que trate visibilidade e coordenação, com mecanismos como sincronização ou classes concorrentes apropriadas. Criar mais threads não garante menor tempo. Virtual threads são um recurso de Java 21 e não fazem parte da JVM Java 17 deste Playground. Dimensione a quantidade de tarefas de acordo com a memória disponível e a carga que precisa processar. O <a href="https://docs.oracle.com/javase/tutorial/essential/concurrency/">guia de concorrência</a> apresenta os problemas básicos de interferência e sincronização.</p>
+<h2 id="secao-11">11. Como o ecossistema se conecta aos fundamentos</h2>
+<p>Uma aplicação com Spring pode organizar colaboradores por injeção de dependência. Spring Boot facilita a configuração e a inicialização de aplicações Spring, mas continua exigindo regras de domínio, configuração e testes. Em uma API HTTP, uma camada de entrada recebe e valida o formato da requisição; uma camada de serviço coordena o caso de uso; uma camada de acesso a dados trata a persistência. Esses papéis organizam responsabilidades; nomes de pastas não são regras obrigatórias da linguagem. Veja a <a href="https://spring.io/projects/spring-boot/">apresentação oficial do Spring Boot</a>.</p>
+<p>JDBC é a API Java para acesso a fontes de dados por drivers. Consultas parametrizadas com <code>PreparedStatement</code> separam valores de entrada do texto SQL; nomes de tabelas e outros elementos estruturais exigem uma estratégia própria. Uma conexão deve ser fechada e uma transação precisa definir quais alterações são confirmadas ou desfeitas. Jakarta Persistence é uma especificação de persistência por mapeamento de objetos; Hibernate é uma implementação conhecida. Um ORM não elimina a necessidade de entender SQL, relacionamentos e transações. O <a href="https://docs.oracle.com/javase/tutorial/jdbc/basics/">guia JDBC</a> explica os componentes básicos.</p>
+<p>Docker pode empacotar a aplicação e seu ambiente; uma rotina de integração contínua pode compilar e executar testes a cada alteração. Kafka trabalha com eventos e mensagens em sistemas que precisam dessa comunicação. Quarkus e Micronaut oferecem outras abordagens para aplicações JVM. Kotlin, Scala, Groovy e Clojure são outras linguagens que podem usar a plataforma JVM; seus programas seguem regras próprias de sintaxe e não devem ser colados como Java no editor. Para um primeiro projeto, uma aplicação de console com testes é um passo suficiente antes de estudar serviços distribuídos.</p>
+<h2 id="secao-12">12. Roteiro para continuar estudando</h2>
+<p>Para concluir a etapa fundamental, revise os temas 1 a 10 e explique os programas sem depender da saída pronta. Em seguida, avance para contratos de coleções no tema 11, arquivos e persistência no tema 12, concorrência no tema 13 e o projeto integrador no tema 14. Essa continuação aprofunda as estruturas e regras que você já praticou. Os laboratórios em Extra acompanham a passagem para um projeto local e suas verificações.</p>
+<p>Consulte a documentação da versão adotada e o <a href="https://dev.java/learn/">índice de estudos do Dev.java</a>. Em <a href="extra.html">Extra</a>, você encontra fontes, pesquisas, ferramentas, cursos e downloads para continuar. Se decidir fazer uma certificação, consulte o catálogo oficial da Oracle antes da inscrição para confirmar exame, objetivos, formato e condições.</p>
+
+<h2 id="secao-13">13. Revisão integrada do projeto</h2>
+<p>Releia o banco e identifique atributos que pertencem a cada conta, métodos que verificam regras e instruções que apenas apresentam mensagens. Confira se o saldo é independente entre objetos, se argumentos inválidos são rejeitados antes da alteração e se a entrada de console é compartilhada sem fechamento prematuro. Compile depois de cada mudança pequena e teste uma operação válida e outra recusada.</p>
+<p>Para revisar o conjunto da apostila, explique o percurso desde o texto de <code>Main.java</code> até a execução, acompanhe as variáveis de um laço, interprete o índice de um array e justifique a visibilidade de um atributo. Faça o quiz sem consultar a resposta e use o resultado por tema para escolher o que retomar. No <a href="playground.html?ex=acesso">exercício de acesso</a>, altere uma linha para provocar uma falha de compilação e depois restaure a chamada permitida.</p>
+<p id="extraActivities10">Outras atividades deste tema: <a href="playground.html?ex=static-final">Acesso, static e final</a>.</p></article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-09.html">Anterior · Tema 9</a><a class="btn btn-primary" href="tema-11.html">Próximo · Tema 11</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <nav class="footer-links" aria-label="Atalhos do rodapé"><a href="index.html">Início</a><a href="cont.html">Conteúdo</a><a href="playground.html">Playground</a><a href="quiz.html">Quiz</a><a href="faq.html">FAQ</a><a href="extra.html">Extra</a></nav>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/code-blocks.js" defer></script>
+
+
+
+</body>
+</html>

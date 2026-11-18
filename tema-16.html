@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>16 · Interfaces gráficas com Swing · Java</title>
+<meta name="description" content="Monte uma interface Swing que valida a entrada e respeita a thread de eventos, sem perder a regra de negócio.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 16 de 30</span></nav><header class="lesson-header"><h1>16 · Interfaces gráficas com Swing</h1><p class="lead">Monte uma interface Swing que valida a entrada e respeita a thread de eventos, sem perder a regra de negócio.</p><p class="text-muted">Java 17 como referência · Teoria, exemplos e prática guiada</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-8">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Criar a interface usando o próprio Java</a></li><li><a href="#secao-2">Janela, contêiner e componente</a></li><li><a href="#secao-3">A thread que cuida dos eventos</a></li><li><a href="#secao-4">Montar o formulário e estabelecer uma ação</a></li><li><a href="#secao-5">Validar um número antes de decidir a situação</a></li><li><a href="#secao-6">Compilar, executar e conferir o comportamento</a></li><li><a href="#secao-7">Como interpretar os testes e as limitações</a></li><li><a href="#secao-8">Prática: evoluir o formulário sem perder a regra</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. Criar a interface usando o próprio Java</h2>
+<p>Swing permite construir uma interface gráfica com classes Java da biblioteca de desktop. Uma janela JFrame contém componentes como rótulos, campos e botões. O programa reage a eventos produzidos pelo usuário e pelo sistema de janelas. Diferentemente do menu sequencial com Scanner, a aplicação mantém um ciclo de eventos e aguarda ações que podem acontecer em várias ordens.</p>
+<p>Neste capítulo, você vai transformar a regra de notas numa janela simples. O usuário digita um valor, aciona Conferir e lê a situação. A regra continua numa classe sem dependência gráfica. O formulário trata a conversão e apresenta as mensagens, sem guardar a nota como uma variável global acessível a qualquer tela. Essa separação permite executar os testes de domínio mesmo em uma máquina sem monitor.</p>
+<p>O laboratório requer JDK 17 ou compatível e um ambiente gráfico do sistema operacional. Não há dependência Maven. O módulo java.desktop fornece Swing e AWT. No Playground do site, use os programas de console dos fundamentos; uma janela nativa precisa ser executada localmente. O pacote abaixo inclui os fontes completos e instruções de terminal.</p>
+<p><a href="assets/extras/laboratorio-swing.zip" download>Baixar o laboratório Swing com testes (.zip)</a></p><h2 id="secao-2">2. Janela, contêiner e componente</h2>
+<p>JFrame representa a janela de topo. JPanel agrupa controles e pode ser inserido no conteúdo da janela. JLabel apresenta texto, JTextField permite editar uma linha e JButton representa uma ação. O nome da variável deve ajudar a identificar o papel de cada controle. Um campo chamado nota é mais fácil de acompanhar do que campo1, especialmente quando a janela recebe novos elementos.</p>
+<p>Um layout manager calcula posições e tamanhos conforme o espaço disponível e os tamanhos preferidos dos componentes. BorderLayout organiza regiões; FlowLayout distribui uma linha que pode se reorganizar; GridBagLayout oferece restrições mais detalhadas. Escolha um layout que corresponda ao formulário. O exemplo combina BorderLayout para a estrutura e FlowLayout para a linha de entrada.</p>
+<p>Posições absolutas com setBounds exigem adivinhar dimensões que mudam com fonte, tradução, escala e aparência do sistema. Com um layout, pack calcula um tamanho inicial a partir dos componentes. Ainda é necessário verificar o redimensionamento e textos maiores. Um gerenciador de layout reduz trabalho manual; ele não garante sozinho que um formulário com dezenas de campos seja compreensível.</p>
+<h2 id="secao-3">3. A thread que cuida dos eventos</h2>
+<p>A Event Dispatch Thread, ou EDT, processa eventos e atualizações da interface Swing. Crie e altere os componentes nessa thread. SwingUtilities.invokeLater agenda uma ação para esse fluxo. O método main pode preparar a inicialização e solicitar a abertura, deixando o ciclo de eventos assumir a interação. Consulte o <a href="https://docs.oracle.com/javase/tutorial/uiswing/concurrency/dispatch.html">guia oficial da EDT</a> para as regras de acesso.</p>
+<p>Uma ação demorada dentro do listener ocupa a EDT. Enquanto ela espera uma requisição ou percorre um arquivo grande, pintura, cliques e movimento da janela podem ficar sem resposta. Para o cálculo de uma nota, a operação é curta. Quando houver rede ou processamento demorado, use uma tarefa apropriada e devolva apenas o resultado para a interface. O tema 18 aprofunda essa coordenação.</p>
+<p>Sincronizar um campo com synchronized não transforma qualquer thread numa thread autorizada a manipular Swing. O controle de concorrência do domínio e o acesso à interface são questões relacionadas, com regras diferentes. Mantenha o trabalho pesado fora da EDT e concentre as alterações visuais nela.</p>
+<pre><code>public static void main(String[] args) {
+    javax.swing.SwingUtilities.invokeLater(Main::abrir);
+}</code></pre>
+<h2 id="secao-4">4. Montar o formulário e estabelecer uma ação</h2>
+<p>O formulário do ZIP associa o JLabel ao campo com setLabelFor. O botão recebe um ActionListener. Quando a ação ocorre, o listener lê getText, chama Nota.avaliar e coloca o retorno no rótulo de resultado. Uma IllegalArgumentException esperada se transforma numa orientação de preenchimento, preservando o campo para correção.</p>
+<p>O botão é definido como ação padrão da janela para que Enter execute a conferência. O mnemônico C permite acesso pelo atalho apresentado pelo sistema. O fechamento usa EXIT_ON_CLOSE porque o laboratório possui uma única janela e não mantém gravação pendente. Em um aplicativo com várias janelas ou edição não salva, o fechamento precisa de uma política que respeite o estado do trabalho.</p>
+<p>O trecho abaixo pertence ao método abrir do Main fornecido. As variáveis nota, resultado e conferir são controles criados nesse mesmo método. A classe Nota está no mesmo pacote br.estudo e permanece independente de javax.swing.</p>
+<pre><code>conferir.addActionListener(evento -&gt; {
+    try {
+        resultado.setText(Nota.avaliar(nota.getText()));
+    } catch (IllegalArgumentException erro) {
+        resultado.setText(erro.getMessage());
+        nota.requestFocusInWindow();
+    }
+});
+janela.getRootPane().setDefaultButton(conferir);</code></pre>
+<h2 id="secao-5">5. Validar um número antes de decidir a situação</h2>
+<p>Double.parseDouble aceita formatos que talvez não correspondam ao formulário desejado. No laboratório, a vírgula é convertida para ponto para permitir a entrada 7,5. A classe ainda precisa recusar NaN e infinitos, porque comparações de faixa sozinhas podem deixar passar NaN. Double.isFinite verifica essa condição antes de comparar com 0 e 10.</p>
+<p>Essa normalização é adequada ao pequeno campo decimal descrito. Ela não implementa toda a formatação regional: uma entrada com separador de milhar e separador decimal exige uma estratégia de parsing com Locale e formato definido. Para valores financeiros, retome BigDecimal no tema 12. Escolha o tipo e o formato conforme o contrato da operação.</p>
+<p>A validação visual pode apontar o campo com erro antes do envio, enquanto a classe de domínio mantém a regra final. Não use apenas cor para indicar a recusa. Uma mensagem como Use um número de 0 a 10 informa o que precisa ser corrigido. O resultado deve continuar legível até a próxima ação, permitindo que o usuário compare a entrada com a explicação.</p>
+<h2 id="secao-6">6. Compilar, executar e conferir o comportamento</h2>
+<p>Extraia o pacote numa pasta própria. Os três arquivos ficam em src/br/estudo e declaram package br.estudo. Execute o compilador com UTF-8 e grave as classes em out. A execução utiliza o nome qualificado, sem caminho de arquivo e sem a extensão .class. O comando de testes não abre a interface.</p>
+<pre><code>javac --release 17 -encoding UTF-8 -d out src/br/estudo/Nota.java src/br/estudo/Main.java src/br/estudo/Testes.java
+java -cp out br.estudo.Testes
+java -cp out br.estudo.Main</code></pre>
+<h2 id="secao-7">7. Como interpretar os testes e as limitações</h2>
+<p>O teste distribuído confere doze casos do domínio, incluindo 7, 10, 7,5, 0, 6.99, nulo, vazio, texto, valor negativo, valor acima da faixa, NaN e Infinity. Uma falha lança AssertionError. A execução bem-sucedida escreve 12 verificações de domínio passaram. Esse teste independe de cliques e demonstra que a regra funciona sem a janela.</p>
+<p>A apresentação exige uma conferência manual adicional. Use Tab, acione o botão com Enter, aumente a escala do sistema e leia os textos com a janela redimensionada. Confira se a mensagem muda depois de corrigir um erro. O teste do domínio não verifica a associação do rótulo, o foco nem a leitura por tecnologia assistiva. Registre separadamente o que foi automatizado e o que foi observado.</p>
+<p>O laboratório trabalha em memória e não salva histórico. Fechar a janela encerra o processo. Antes de acrescentar uma lista persistente, defina o que precisa sobreviver ao fechamento e como uma falha de gravação será comunicada. Esse passo evita apresentar uma confirmação de salvamento quando o dado existe apenas num componente da tela.</p>
+<h2 id="secao-8">8. Prática: evoluir o formulário sem perder a regra</h2>
+<p>Execute os doze testes e depois abra a janela. Confira uma aprovação, uma recuperação e três recusas. Acrescente um botão Limpar que esvazie o campo, restaure a mensagem inicial e devolva o foco. A ação não deve apagar dados externos, pois esta versão não possui armazenamento.</p>
+<p>Como segunda atividade, inclua um nome de aluno obrigatório. Defina se espaços nas extremidades serão removidos e quais entradas devem ser recusadas. Coloque a validação numa função testável e apresente uma mensagem junto ao campo correspondente. Conclua quando o programa permanecer navegável por teclado e todas as entradas antigas continuarem com o mesmo resultado.</p>
+<p>Para fazer esta prática com um ponto de partida que já compila, uma ferramenta que confere a interface sem abrir janela, um roteiro com a conferência manual e uma possível solução em pasta separada, baixe o <a href="assets/extras/laboratorio-swing-formulario.zip" download>laboratório de Swing do tema 16</a>. Ele executa no seu computador, com JDK 17 ou superior; a janela exige ambiente gráfico, e nada disso executa no Playground.</p>
+<details><summary>Posso chamar Thread.sleep no listener para simular uma consulta?</summary><p>Isso bloqueia a EDT e impede o processamento normal dos eventos durante a espera. Faça a simulação numa tarefa de fundo e atualize os controles na EDT quando o resultado chegar.</p></details>
+</article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-15.html">Anterior · Tema 15</a><a class="btn btn-primary" href="tema-17.html">Próximo · Tema 17</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <nav class="footer-links" aria-label="Atalhos do rodapé"><a href="index.html">Início</a><a href="cont.html">Conteúdo</a><a href="playground.html">Playground</a><a href="quiz.html">Quiz</a><a href="faq.html">FAQ</a><a href="extra.html">Extra</a></nav>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/code-blocks.js" defer></script>
+
+
+
+</body>
+</html>

@@ -22,7 +22,7 @@ for (const file of htmlFiles) {
   }
 }
 const content = read('cont.html');
-const chapters = Array.from({length:8},(_,i)=>read(`tema-0${i+1}.html`));
+const chapters = Array.from({length:30},(_,i)=>read(`tema-${String(i+1).padStart(2,'0')}.html`));
 const allContent = content + chapters.join('\n');
 const guide = read('assets/extras/roteiro-avancado.html');
 assert.equal([...guide.matchAll(/<section>/g)].length,16);
@@ -34,14 +34,23 @@ for(const [,url] of guide.matchAll(/\b(?:src|href)="([^"]+)"/g)) {
   if(fragment) assert.ok(fs.readFileSync(absolute,'utf8').includes('id="'+fragment+'"'),'guide missing #'+fragment);
 }
 assert.equal([...content.matchAll(/id="modal\d+"/g)].length, 30);
-assert.equal([...content.matchAll(/class="study-text"/g)].length, 22);
-assert.equal([...content.matchAll(/data-chapter-url=/g)].length, 8);
-for (let n = 1; n <= 8; n++) {
-  assert.ok(content.includes(`href="tema-0${n}.html"`));
+// Os 30 capítulos têm página própria; cont.html guarda só o índice e um espaço de impressão por tema.
+assert.equal([...content.matchAll(/class="study-text"/g)].length, 0);
+assert.equal([...content.matchAll(/data-chapter-url=/g)].length, 30);
+assert.equal([...content.matchAll(/class="modal fade"/g)].length, 0);
+for (let n = 1; n <= 30; n++) {
+  const file = `tema-${String(n).padStart(2,'0')}.html`;
+  assert.ok(content.includes(`href="${file}"`), 'índice sem link para ' + file);
+  assert.ok(content.includes(`data-chapter-url="${file}"`), 'impressão sem ' + file);
   assert.ok(!content.includes(`data-bs-target="#modal${n}"`));
-  assert.ok(!content.includes(`class="modal fade" id="modal${n}"`));
-  assert.ok(chapters[n-1].includes('class="study-text lesson-article"'));
-  assert.ok(chapters[n-1].replace(/<[^>]*>/g, ' ').split(/\s+/).length > 3500);
+  assert.ok(chapters[n-1].includes('class="study-text lesson-article"'), file);
+  assert.ok(chapters[n-1].includes(`<span>Tema ${n} de 30</span>`), 'breadcrumb de ' + file);
+  const words = chapters[n-1].replace(/<[^>]*>/g, ' ').split(/\s+/).length;
+  assert.ok(words > (n <= 8 ? 3500 : n >= 15 ? 1100 : 1800), `${file}: poucas palavras (${words})`);
+  // navegação sequencial entre capítulos
+  if (n > 1) assert.ok(chapters[n-1].includes(`href="tema-${String(n-1).padStart(2,'0')}.html"`), file + ' sem anterior');
+  if (n < 30) assert.ok(chapters[n-1].includes(`href="tema-${String(n+1).padStart(2,'0')}.html"`), file + ' sem próximo');
+  else assert.ok(!chapters[n-1].includes('Próximo · Tema'), 'o último tema não tem próximo');
 }
 assert.equal([...content.matchAll(/data-topic="\d+"/g)].length, 30);
 assert.equal([...content.matchAll(/id="cat\d+"/g)].length, 0);
@@ -109,16 +118,15 @@ for (const size of [192,512]) {
 assert.ok(content.includes('<hr class="my-5"><section id="extra"'));
 assert.ok(!content.includes('researchTopic'));
 for (let n=1;n<=30;n++) {
-  if (n <= 8) {
-    const headings = [...chapters[n-1].matchAll(/<h2 id="secao-\d+">(\d+)\./g)].map(m => Number(m[1]));
-    assert.deepEqual(headings, headings.map((_,i) => i+1), 'linear standalone topic '+n);
-    continue;
+  const headings = [...chapters[n-1].matchAll(/<h2 id="secao-\d+">(\d+)\./g)].map(m => Number(m[1]));
+  assert.ok(headings.length > 0, 'topic '+n+' has sections');
+  assert.deepEqual(headings, headings.map((_,i) => i+1), 'linear topic '+n);
+  const toc = [...chapters[n-1].matchAll(/<aside class="lesson-toc[\s\S]*?<\/aside>/g)][0][0];
+  for (const [,id] of toc.matchAll(/href="#([^"]+)"/g)) assert.ok(chapters[n-1].includes(`id="${id}"`), `sumário do tema ${n} aponta para #${id} inexistente`);
+  if (n > 8) {
+    const article = chapters[n-1].split('<article class="study-text lesson-article">')[1].split('</article>')[0];
+    assert.ok(/Prática|Revisão integrada|Aplicar e conferir|Verificar a calculadora|Exercícios para verificar/.test(article.slice(article.lastIndexOf('<h2 id="secao-'))),'practice must end topic '+n);
   }
-  const body = content.split(`id="modal${n}"`)[1].split('<article class="study-text">')[1].split('</article>')[0];
-  const headings = [...body.matchAll(/<h3>(\d+)\./g)].map(m=>Number(m[1]));
-  assert.deepEqual(headings, headings.map((_,i)=>i+1), 'linear topic '+n);
-  assert.ok(/Prática|Revisão integrada|Aplicar e conferir|Verificar a calculadora|Exercícios para verificar/.test(body.slice(body.lastIndexOf('<h3>'))),'practice must end topic '+n);
-  if(n>=15) assert.ok(body.replace(/<[^>]*>/g,' ').split(/\s+/).length>1100,'detailed topic '+n);
 }
 const faq = JSON.parse(read('assets/data/faq.json'));
 for(const [,q,a] of faq) assert.ok(read('faq.html').includes(q.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')),q);

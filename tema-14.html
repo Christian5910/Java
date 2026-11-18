@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>14 · Arquitetura, testes e projeto integrador · Java</title>
+<meta name="description" content="Reúna os conceitos em um programa completo: requisitos, domínio, testes, persistência e documentação.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 14 de 30</span></nav><header class="lesson-header"><h1>14 · Arquitetura, testes e projeto integrador</h1><p class="lead">Reúna os conceitos em um programa completo: requisitos, domínio, testes, persistência e documentação.</p><p class="text-muted">Java 17 como referência · Teoria, exemplos e prática guiada</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-14">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Transformar os conceitos em um programa completo</a></li><li><a href="#secao-2">Requisitos observáveis antes das classes</a></li><li><a href="#secao-3">Escolher responsabilidades que acompanham mudanças</a></li><li><a href="#secao-4">Representação do estado e invariantes</a></li><li><a href="#secao-5">Operações de domínio com resultado claro</a></li><li><a href="#secao-6">Separar formato, regra e apresentação de falha</a></li><li><a href="#secao-7">Testes pequenos, independentes e repetíveis</a></li><li><a href="#secao-8">Verificações que não dependem de -ea</a></li><li><a href="#secao-9">Testar a fotografia e o encapsulamento</a></li><li><a href="#secao-10">Compilar uma organização em arquivos</a></li><li><a href="#secao-11">Introduzir persistência sem trocar a regra central</a></li><li><a href="#secao-12">Evoluir a interface para uma API</a></li><li><a href="#secao-13">Documentar o que outra pessoa precisa executar</a></li><li><a href="#secao-14">Prática: projeto integrado e revisão do percurso</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. Transformar os conceitos em um programa completo</h2>
+<p>Este tema reúne o percurso anterior num estoque de materiais de estudo. O programa recebe itens, retira quantidades e apresenta o estado disponível. O domínio é pequeno para que seja possível acompanhar todas as regras, mas contém decisões encontradas em aplicações maiores: identidade, validação, recusa, consulta, independência de estado e testes. O objetivo é fazer cada decisão aparecer no código e no comportamento observável, antes de acrescentar frameworks.</p>
+<p>A primeira versão é de console e usa um único fluxo de alteração. Ela não promete atender solicitações concorrentes nem manter dados depois do encerramento. Essas propriedades exigiriam os contratos estudados nos temas 12 e 13. Definir o limite da versão ajuda a testar o que ela realmente oferece. Se depois houver persistência, você saberá qual regra precisa sobreviver à troca do meio de armazenamento, sem confundir essa mudança com uma regra nova de estoque.</p>
+<p>O pacote do projeto integrador está disponível em <a href="extra.html#extraProjeto">Projeto integrador para baixar</a>. Ele contém os fontes, comandos de compilação, dados de exemplo e testes que não exigem dependências externas. Você pode acompanhar a explicação e executar a atividade simplificada no Playground; para praticar a organização em arquivos, use o pacote local com JDK compatível com Java 17. Nenhum arquivo de outra pasta do autor é necessário.</p>
+<h2 id="secao-2">2. Requisitos observáveis antes das classes</h2>
+<p>Escreva os requisitos em termos de operações e efeitos. Receber cinco unidades de um item válido deve aumentar sua disponibilidade em cinco. Retirar duas de um saldo cinco deve aceitar a operação e deixar três. Retirar quatro de um saldo três deve recusar e manter três. Uma quantidade zero ou negativa deve ser considerada argumento inválido, conforme o contrato escolhido. Não misture esses casos numa mensagem única se o chamador precisa distingui-los.</p>
+<p>A identidade do item é um texto não vazio. Neste modelo, <code>A</code> e <code>a</code> são identificadores diferentes; o programa não transforma a grafia por conta própria. Se você preferir ignorar maiúsculas, a normalização precisa acontecer de forma consistente em todas as operações e nos dados persistidos. Faça essa escolha antes de gravar um cadastro. Mudar a regra de identidade depois pode juntar registros que antes eram distintos.</p>
+<p>A consulta deve devolver uma fotografia que o chamador não consegue alterar para mudar o estoque. Também deve ser possível criar dois estoques independentes. Esses dois requisitos impedem soluções que expõem o mapa interno ou usam um saldo estático compartilhado indevidamente. Inclua-os no roteiro de teste desde o início. Uma aplicação pode acertar as três primeiras retiradas e ainda falhar no encapsulamento quando outra parte do programa recebe a coleção.</p>
+<h2 id="secao-3">3. Escolher responsabilidades que acompanham mudanças</h2>
+<p>A classe de domínio concentra disponibilidade e movimentações. A interface de console interpreta comandos e apresenta mensagens. O teste chama a classe de domínio diretamente para verificar suas regras. Separar essas responsabilidades permite alterar a forma de entrada sem reescrever a aritmética de estoque. Também evita que uma validação de quantidade só funcione quando o usuário passa por determinado menu.</p>
+<p>Não coloque um <code>Scanner</code> dentro de cada método de estoque. O domínio deve receber identificador e quantidade já representados em tipos apropriados. Isso não elimina sua validação: o método ainda precisa impedir argumentos inválidos de qualquer chamador. A interface valida o formato de entrada; o domínio valida a operação. Uma string “dois” falha na conversão; um inteiro -2 falha na regra. Saber em qual fronteira o erro ocorreu ajuda a apresentar uma orientação correta.</p>
+<p>Comece com poucas classes e dependências explícitas. Uma interface é útil quando existe um contrato que precisa de implementações distintas, como um repositório em memória e outro persistente. Ela não é obrigatória para cada classe pequena do exercício. Introduzir camadas vazias torna o caminho da operação mais difícil de acompanhar sem acrescentar uma responsabilidade. A organização deve permitir localizar a regra pelo nome da operação.</p>
+<h2 id="secao-4">4. Representação do estado e invariantes</h2>
+<p>O mapa associa um identificador à quantidade disponível. A invariante principal é que uma operação aceita não deixa quantidade negativa. O tipo <code>int</code> possui limite, por isso a soma de recebimento usa <code>Math.addExact</code>. Se houver overflow, a exceção acontece antes de publicar o novo valor no mapa. Fazer a soma diretamente e gravar o número transbordado quebraria a regra mesmo com argumentos individualmente positivos.</p>
+<p>Uma retirada consulta o saldo, compara a quantidade solicitada e só altera quando há disponibilidade suficiente. Nesse modelo, item ausente possui disponibilidade zero para a decisão de retirada. A consulta do cadastro continua permitindo distinguir ausência de um registro e registro com quantidade zero, pois o mapa apresentado mostra quais chaves existem. Decida se um item que chega a zero permanece cadastrado; a versão inicial mantém a chave para tornar a regra simples e verificável.</p>
+<p>A criação de uma fotografia copia o mapa antes de aplicar uma restrição de modificação. Assim, o receptor não consegue editar o estoque por aquele resultado, e recebimentos posteriores não mudam a fotografia já guardada. Essa independência se baseia também nos tipos dos elementos: strings e inteiros empacotados não oferecem alteração interna de conteúdo. Trocar o valor por um objeto mutável exigiria rever a política de cópia.</p>
+<h2 id="secao-5">5. Operações de domínio com resultado claro</h2>
+<p>No exemplo, um argumento inválido lança <code>IllegalArgumentException</code>; uma falta de disponibilidade retorna <code>false</code>. Essa distinção comunica que a solicitação tem formato e intervalo válidos, mas não pôde ser atendida no estado atual. Outra API poderia representar recusas de outro modo. O ponto necessário é manter a política consistente e não apresentar sucesso quando a retirada não aconteceu.</p>
+<p>Leia o programa inteiro antes de executá-lo. O primeiro recebimento cria disponibilidade cinco. A retirada aceita deixa três. A fotografia é obtida nesse momento. A retirada seguinte pede quatro, recebe recusa e mantém três. Um recebimento posterior muda o estado atual para quatro, mas a fotografia anterior deve continuar mostrando três. A saída inicial confere a recusa e a independência da fotografia em uma sequência curta.</p>
+<pre><code>import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+class Estoque {
+    private final Map&lt;String, Integer&gt; itens = new LinkedHashMap&lt;&gt;();
+    private static void validar(String id, int quantidade) {
+        if (id == null || id.trim().isEmpty() || quantidade &lt;= 0) {
+            throw new IllegalArgumentException(&quot;Dados inválidos&quot;);
+        }
+    }
+    void receber(String id, int quantidade) {
+        validar(id, quantidade);
+        int novo = Math.addExact(itens.getOrDefault(id, 0), quantidade);
+        itens.put(id, novo);
+    }
+    boolean retirar(String id, int quantidade) {
+        validar(id, quantidade);
+        int atual = itens.getOrDefault(id, 0);
+        if (quantidade &gt; atual) return false;
+        itens.put(id, atual - quantidade);
+        return true;
+    }
+    Map&lt;String, Integer&gt; consultar() {
+        return Collections.unmodifiableMap(new LinkedHashMap&lt;&gt;(itens));
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Estoque estoque = new Estoque();
+        estoque.receber(&quot;A&quot;, 5);
+        System.out.println(&quot;Retirada aceita: &quot; + estoque.retirar(&quot;A&quot;, 2));
+        Map&lt;String, Integer&gt; fotografia = estoque.consultar();
+        System.out.println(&quot;Retirada recusada: &quot; + estoque.retirar(&quot;A&quot;, 4));
+        System.out.println(&quot;Estoque: &quot; + estoque.consultar());
+        estoque.receber(&quot;A&quot;, 1);
+        System.out.println(&quot;Fotografia anterior: &quot; + fotografia);
+    }
+}</code></pre><p><a href="playground.html?ex=servico-estoque">Praticar Estoque com operações de domínio</a></p><p>Saída do programa inicial:</p><pre><code>Retirada aceita: true
+Retirada recusada: false
+Estoque: {A=3}
+Fotografia anterior: {A=3}</code></pre><h2 id="secao-6">6. Separar formato, regra e apresentação de falha</h2>
+<p>Na versão de console, uma linha de comando pode conter a ação, o identificador e a quantidade. A interface primeiro verifica a estrutura e converte a quantidade. Depois chama o domínio e interpreta o resultado. Um comando desconhecido deve produzir uma orientação e permitir nova entrada, sem cair em uma operação arbitrária de recebimento ou retirada. A leitura do fim da entrada também precisa encerrar o fluxo sem tentar obter uma linha inexistente.</p>
+<p>Trate exceções específicas nos pontos que conseguem orientar a correção. Um erro de conversão pode informar que a quantidade precisa ser inteira. Uma violação de regra pode apresentar a mensagem do domínio. Uma falha inesperada de programação deve ser investigada e não transformada em “item não encontrado” apenas para continuar o menu. Esse tipo de captura genérica dificulta saber se o programa preservou seu estado.</p>
+<p>Não use o texto da mensagem como único contrato entre as classes. O domínio pode devolver um booleano ou um tipo de resultado, e a interface escolhe uma mensagem para o usuário. Testes da regra verificam o valor e o estado; testes da interface verificam o que foi apresentado e como o fluxo segue. Essa separação permite melhorar a escrita da interface sem quebrar todo teste de cálculo.</p>
+<h2 id="secao-7">7. Testes pequenos, independentes e repetíveis</h2>
+<p>Prepare um estado conhecido, execute uma operação e confira o resultado. Cada teste deve poder começar com um estoque novo, sem depender de uma operação executada por outro teste. Se o cenário envolve uma sequência, essa sequência deve estar explícita dentro dele. Um teste que só passa depois de outro pode esconder estado global compartilhado ou preparação incompleta.</p>
+<p>Verifique exemplos aceitos e recusados. Para a retirada, teste quantidade menor que o saldo, igual ao saldo e maior que o saldo. Para o recebimento, teste saldo inicial vazio, acumulação e overflow. Verifique ainda argumento nulo, identificador em branco e quantidade não positiva. Um teste não precisa experimentar todos os números possíveis; ele deve representar classes de comportamento e os limites que mudam a decisão.</p>
+<p>Uma mensagem de teste precisa permitir localizar a regra que falhou. Se todos os casos lançam apenas “erro”, a investigação vira outra busca. Nomeie a expectativa, como “recusa preserva saldo” ou “fotografia não acompanha alteração posterior”. Essas frases também ajudam a revisar se o teste está observando o resultado desejado ou apenas repetindo uma linha da implementação.</p>
+<h2 id="secao-8">8. Verificações que não dependem de -ea</h2>
+<p>A palavra-chave Java <code>assert</code> pode estar desativada na execução. Não coloque uma operação necessária ao teste apenas dentro dela, porque essa operação pode nem ser avaliada sem a opção correspondente. Para este projeto sem bibliotecas externas, uma função explícita lança <code>AssertionError</code> quando a condição não é satisfeita. O resultado do teste passa a independer dessa opção do lançador.</p>
+<p>O pequeno programa abaixo verifica uma função de recebimento antes de levá-la para um domínio maior. Os dois primeiros casos observam resultados aceitos; os outros dois conferem as recusas. Se uma exceção esperada não ocorrer, a variável de verificação continua falsa e o teste falha. Capture apenas a exceção que comprova o comportamento esperado, evitando tratar qualquer falha como uma aprovação do cenário.</p>
+<pre><code>public class Main {
+    static int acrescentar(int atual, int quantidade) {
+        if (atual &lt; 0 || quantidade &lt;= 0) throw new IllegalArgumentException(&quot;Dados inválidos&quot;);
+        return Math.addExact(atual, quantidade);
+    }
+    static void conferir(boolean condicao, String nome) {
+        if (!condicao) throw new AssertionError(nome);
+    }
+    public static void main(String[] args) {
+        conferir(acrescentar(0, 3) == 3, &quot;Entrada inicial&quot;);
+        conferir(acrescentar(3, 2) == 5, &quot;Acumulação&quot;);
+        boolean recusouZero = false;
+        try { acrescentar(3, 0); }
+        catch (IllegalArgumentException esperado) { recusouZero = true; }
+        conferir(recusouZero, &quot;Recusar zero&quot;);
+        boolean recusouNegativo = false;
+        try { acrescentar(-1, 2); }
+        catch (IllegalArgumentException esperado) { recusouNegativo = true; }
+        conferir(recusouNegativo, &quot;Recusar estado negativo&quot;);
+        System.out.println(&quot;4 cenários verificados&quot;);
+    }
+}</code></pre><p><a href="playground.html?ex=testes-contrato">Praticar Testes explícitos de uma regra</a></p><p>Saída do programa inicial:</p><pre><code>4 cenários verificados</code></pre><h2 id="secao-9">9. Testar a fotografia e o encapsulamento</h2>
+<p>Um teste de fotografia deve guardar o resultado de consulta, alterar legitimamente o estoque e comparar o resultado guardado com o esperado anterior. Se a fotografia mudou junto, o getter devolveu uma visão compartilhada ou um objeto interno mutável, em desacordo com esse contrato. Não basta conferir que o mapa devolvido possui os dados corretos no momento da criação.</p>
+<p>Faça também uma tentativa de modificar o mapa devolvido e verifique a recusa prevista. Em seguida consulte o estoque de novo para confirmar que nada foi alterado. O teste de encapsulamento observa uma fronteira pública da API, e não o nome privado do campo. Se a implementação mudar de mapa para outra estrutura, esse teste ainda deve representar uma necessidade válida do chamador.</p>
+<p>Crie dois estoques e receba material em apenas um. A consulta do outro deve continuar vazia. Esse teste detecta compartilhamento acidental de estado, como um mapa estático. Se você usar um repositório compartilhado intencionalmente em outra versão, atualize o contrato e o teste: independência por instância e compartilhamento global são decisões diferentes e não devem ser confundidas.</p>
+<h2 id="secao-10">10. Compilar uma organização em arquivos</h2>
+<p>No pacote local, os fontes estão em uma pasta própria. A classe de domínio fica em <code>Estoque.java</code>, a interface de console em <code>Main.java</code> e as verificações em <code>Testes.java</code>. Os comandos fornecidos compilam os três arquivos para um diretório de saída e executam as classes pelo caminho de classes. Uma alteração no fonte precisa de nova compilação para atualizar o que será executado.</p>
+<p>Abra o terminal na pasta extraída do projeto e execute os comandos do arquivo de instruções. Eles usam nomes explícitos de arquivos para que você não dependa de uma expansão de curingas do shell. Primeiro execute os testes, depois o programa de console com a entrada de exemplo. Se os testes falharem, leia a expectativa indicada e investigue a regra antes de alterar a saída do teste para coincidir com o defeito.</p>
+<pre><code>javac --release 17 -encoding UTF-8 -d out src/Estoque.java src/Main.java src/Testes.java
+java -cp out Testes
+java -cp out Main</code></pre><h2 id="secao-11">11. Introduzir persistência sem trocar a regra central</h2>
+<p>Depois de verificar a versão em memória, defina como representar os dados e quando confirmá-los no armazenamento. Uma interface de repositório pode separar o contrato de consulta e gravação das decisões de arquivo ou banco. A troca de implementação deve preservar o significado das operações. Se o repositório de arquivo aceita matrículas duplicadas que o de memória recusa, a abstração não preservou a mesma regra.</p>
+<p>Não acrescente uma gravação depois de cada linha de menu sem considerar falhas. Se a regra mudou em memória e a persistência falhou, o programa precisa saber qual estado considera confirmado e o que deve informar ao usuário. Uma transação de banco pode reunir alterações do armazenamento; um arquivo requer outra estratégia. O tema 12 e a seção <a href="extra.html#extraPersistencia">Persistência, SQL e transações</a> ajudam a escolher a fronteira de confirmação.</p>
+<p>Teste a integração com um diretório ou banco exclusivo de teste. Um teste de domínio não precisa de disco para verificar uma retirada; um teste de persistência precisa conferir que o dado gravado é lido corretamente por outra instância da operação. Manter os dois tipos de teste separados ajuda a localizar uma falha de formato sem suspeitar da aritmética que já foi verificada isoladamente.</p>
+<h2 id="secao-12">12. Evoluir a interface para uma API</h2>
+<p>Uma API HTTP pode substituir o menu como ponto de entrada. Ela precisa converter a solicitação para os tipos do domínio, chamar a operação e traduzir o resultado em uma resposta. A regra não deve depender de qual tela ou cliente enviou o pedido. Uma quantidade inválida continua inválida quando chega por JSON, formulário ou linha de comando. Esse é um motivo para manter a validação essencial na operação de domínio.</p>
+<p>A passagem para um servidor também muda o padrão de acesso. Solicitações podem chegar ao mesmo tempo, exigindo reavaliar a coordenação do estado compartilhado. Expor pela rede a classe sequencial deste tema não a transforma automaticamente numa implementação concorrente correta. Antes de aceitar várias retiradas simultâneas, defina a fronteira de proteção ou use garantias transacionais do armazenamento. A seção <a href="extra.html#extraHttp">APIs HTTP e contratos</a> aprofunda esse passo.</p>
+<p>Uma nova interface exige testes próprios de transporte: comando ou rota inexistente, corpo inválido, status de resposta e limite de tamanho. Preserve os testes do domínio e acrescente essas verificações, em vez de substituir tudo por um teste que apenas confere se o servidor iniciou. Iniciar um processo prova uma condição diferente de cumprir a regra de estoque.</p>
+<h2 id="secao-13">13. Documentar o que outra pessoa precisa executar</h2>
+<p>A documentação do projeto deve informar versão de Java, estrutura dos arquivos, comandos de compilação, entrada de exemplo e resultado esperado. Se uma dependência for necessária, ela precisa aparecer com sua forma de obtenção e configuração. Um projeto que funciona apenas na máquina do autor, usando uma biblioteca invisível ao leitor, ainda não oferece uma experiência de estudo reproduzível.</p>
+<p>Registre também os limites: a versão inicial usa memória, os identificadores distinguem maiúsculas e o fluxo de alteração é sequencial. Esses limites ajudam a escolher a próxima evolução, não substituem a correção do que já foi prometido. Mantenha os exemplos curtos o suficiente para conferir manualmente e acrescente casos de teste quando uma regra nova surgir. Um README não deve prometer uma funcionalidade que existe apenas como intenção.</p>
+<p>Para encerrar uma etapa, tente executá-la a partir de uma pasta nova com os arquivos distribuídos. Compile, rode os testes e use a entrada de exemplo sem consultar pastas externas. Essa conferência aproxima a experiência da pessoa que está aprendendo pelo site. O pacote em Extra reúne os arquivos necessários para repetir essa verificação.</p>
+<h2 id="secao-14">14. Prática: projeto integrado e revisão do percurso</h2>
+<p>Implemente o estoque local e conclua os testes de inclusão, acumulação, retirada parcial, retirada exata, recusa e fotografia. Depois acrescente um comando de consulta de um item específico. Faça a interface tratar fim de entrada e comando desconhecido. Registre uma execução com operação aceita e outra recusada, mostrando que o saldo permanece correto nos dois caminhos.</p>
+<p>Escolha uma única evolução por vez: persistir em arquivo, trocar a interface por HTTP ou permitir acesso concorrente. Para cada uma, escreva a propriedade nova, os pontos de falha e os testes correspondentes antes de alterar o programa. Retome os temas 11, 12 e 13 para justificar estrutura, formato e coordenação. Essa sequência permite avançar sem esconder uma mudança de contrato no meio de uma reorganização de arquivos.</p>
+<p>Os <a href="extra.html#extraLaboratorios">laboratórios avançados</a> propõem cenários adicionais e critérios de aceitação. Use as referências e os downloads de Extra para continuar. O quiz atual revisa os fundamentos dos temas 1 a 10; para os quatro temas avançados, faça as práticas, as questões comentadas de cada capítulo e os testes do projeto integrador.</p>
+<details><summary>Um teste que só confere a mensagem “retirada recusada” protege a regra do estoque?</summary><p>Não. É necessário verificar a recusa e o estado posterior. O programa poderia apresentar a mensagem correta depois de descontar indevidamente a quantidade. Os dois resultados observáveis devem ser conferidos.</p></details><details><summary>Posso transformar a versão sequencial em servidor e reutilizar o mapa sem rever nada?</summary><p>Não. A entrada concorrente muda o padrão de acesso. Você pode preservar o contrato de domínio, mas precisa oferecer uma coordenação que mantenha a verificação e a alteração juntas ou usar uma estratégia transacional equivalente no armazenamento.</p></details></article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-13.html">Anterior · Tema 13</a><a class="btn btn-primary" href="tema-15.html">Próximo · Tema 15</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <nav class="footer-links" aria-label="Atalhos do rodapé"><a href="index.html">Início</a><a href="cont.html">Conteúdo</a><a href="playground.html">Playground</a><a href="quiz.html">Quiz</a><a href="faq.html">FAQ</a><a href="extra.html">Extra</a></nav>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/code-blocks.js" defer></script>
+
+
+
+</body>
+</html>

@@ -141,7 +141,7 @@
     "Playground e arquivos",
     "Posso usar bibliotecas externas ou vários arquivos?",
     "O editor guiado trabalha com Main.java e classes auxiliares não públicas no mesmo arquivo. Não há gerenciador de dependências nem projeto com vários arquivos. Baixe o código e continue em sua IDE quando precisar de pacotes, bibliotecas externas ou outros tipos de aplicação.",
-    "cont.html#modal10"
+    "tema-10.html"
   ],
   [
     "Playground e arquivos",
@@ -183,7 +183,7 @@
     "Lógica e entrada",
     "Como sei se usei && ou || corretamente?",
     "Traduza a regra: exigir duas condições ao mesmo tempo pede &&; aceitar pelo menos uma pede ||. Confira as quatro combinações de verdadeiro e falso. Esses operadores também fazem curto-circuito, o que importa quando a segunda expressão não pode ser avaliada com segurança em todos os casos.",
-    "cont.html#modal4"
+    "tema-04.html"
   ],
   [
     "Lógica e entrada",
@@ -201,13 +201,13 @@
     "Textos e estruturas",
     "Por que toUpperCase não mudou minha variável?",
     "String é imutável e toUpperCase retorna um resultado. Se você descartou esse retorno, a variável continua apontando para a string anterior. Atribua o retorno quando quiser guardar o texto transformado.",
-    "cont.html#modal3"
+    "tema-03.html"
   ],
   [
     "Textos e estruturas",
     "Qual é a diferença entre length, length() e size()?",
     "Arrays oferecem o campo length. Strings oferecem o método length(). Listas como ArrayList oferecem size(). Todos ajudam a consultar quantidade ou comprimento, mas pertencem a tipos diferentes e usam sintaxes diferentes.",
-    "cont.html#modal6"
+    "tema-06.html"
   ],
   [
     "Textos e estruturas",
@@ -237,7 +237,7 @@
     "Objetos e regras",
     "Herança permite acessar qualquer protected?",
     "No mesmo pacote há acesso por essa regra. Fora dele, o acesso envolve código de uma subclasse e restrições sobre o receptor do membro de instância. Herdar de Carro também não torna uma classe herdeira de Motor, mesmo quando carro possui um motor.",
-    "cont.html#modal10"
+    "tema-10.html"
   ],
   [
     "Estudo e materiais",
@@ -291,7 +291,7 @@
     "Lógica e entrada",
     "Por que o ponto e vírgula depois de if muda o resultado?",
     "Em if (condicao);, a instrução controlada pela condição é uma instrução vazia. Um bloco colocado depois pode executar independentemente dela, ainda que a indentação sugira outra intenção. Remova esse ponto e vírgula quando quiser que o if controle o bloco. Para conferir, teste um valor que torne a condição falsa e observe se a mensagem ainda aparece.",
-    "cont.html#modal4"
+    "tema-04.html"
   ],
   [
     "Lógica e entrada",
@@ -321,7 +321,7 @@
     "Textos e estruturas",
     "Por que o for-each não alterou os inteiros do meu array?",
     "A variável de iteração recebe uma cópia do valor de cada posição. Fazer valor *= 2 muda essa variável local, sem gravar de volta no array. Para alterar os elementos, percorra os índices e faça numeros[i] *= 2. Se os elementos forem referências a objetos, um método chamado no objeto pode alterar seu estado; reatribuir a variável de iteração continua não substituindo a posição do array.",
-    "cont.html#modal6"
+    "tema-06.html"
   ],
   [
     "Textos e estruturas",
@@ -423,19 +423,19 @@
     "Objetos e regras",
     "Quando devo usar uma interface em vez de uma classe abstrata?",
     "Uma interface permite que o consumidor dependa de uma capacidade ou contrato comum a implementações diferentes. Uma classe abstrata pode reunir estado, construtores e comportamento compartilhado em uma relação de herança. Uma classe estende uma classe diretamente e pode implementar várias interfaces. Antes de escolher, escreva qual comportamento o chamador precisa e quais dados realmente pertencem à base.",
-    "cont.html#modal7"
+    "tema-07.html"
   ],
   [
     "Objetos e regras",
     "Injeção de dependência exige Spring?",
     "Você pode receber um colaborador pelo construtor sem usar framework. Se uma classe recebe um objeto que implementa uma interface, o chamador escolhe qual implementação fornecer. Isso torna a colaboração explícita e facilita substituir um recurso em um teste. Spring oferece mecanismos para organizar essa criação em aplicações maiores, mas o conceito pode ser aprendido primeiro em um programa de console.",
-    "cont.html#modal9"
+    "tema-09.html"
   ],
   [
     "Objetos e regras",
     "Uma exceção capturada significa que a operação deu certo?",
     "A captura informa que uma falha foi tratada naquele ponto. Ela não prova que a regra foi concluída nem desfaz automaticamente alterações anteriores. Confira o resultado e o estado depois da operação. Em um saque recusado, por exemplo, o saldo precisa continuar igual. Evite imprimir sucesso fora do caminho que realmente concluiu a alteração esperada.",
-    "cont.html#modal9"
+    "tema-09.html"
   ],
   [
     "Objetos e regras",

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>25 · Spring Security: autenticação, autorização e proteção de APIs · Java</title>
+<meta name="description" content="Proteja uma API com autenticação, autorização, CSRF e CORS e confira o acesso de cada operação.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 25 de 30</span></nav><header class="lesson-header"><h1>25 · Spring Security: autenticação, autorização e proteção de APIs</h1><p class="lead">Proteja uma API com autenticação, autorização, CSRF e CORS e confira o acesso de cada operação.</p><p class="text-muted">Java 17 como referência · Teoria, exemplos e prática guiada</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-7">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Autenticar e autorizar cada operação</a></li><li><a href="#secao-2">SecurityFilterChain e ordem de regras</a></li><li><a href="#secao-3">Por que o laboratório mantém CSRF</a></li><li><a href="#secao-4">Sessão, token e OAuth2 têm contratos próprios</a></li><li><a href="#secao-5">CORS não substitui autorização</a></li><li><a href="#secao-6">Senhas, logs e superfície operacional</a></li><li><a href="#secao-7">Prática: uma matriz de acesso verificável</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. Autenticar e autorizar cada operação</h2>
+<p>Autenticação identifica quem faz a chamada; autorização decide o que essa identidade pode realizar. No catálogo, leituras de produtos são públicas e escritas exigem o papel ADMIN. Uma API maior também precisa decidir quais registros cada usuário pode acessar. Ter um papel de editor não implica poder alterar qualquer registro de qualquer pessoa.</p>
+<p>Spring Security aplica filtros antes de muitas chamadas chegarem ao controller. A configuração do laboratório declara as rotas permitidas e termina com denyAll para os demais casos. Isso torna visível o que foi aberto. Uma nova rota precisa de revisão de contrato e acesso, em vez de herdar uma permissão ampla por acidente.</p>
+<p>O projeto usa HTTP Basic com uma conta fictícia local para estudar o fluxo. Ele escuta em 127.0.0.1 e não representa uma configuração pública pronta. Basic deve ser protegido por TLS quando transporta credenciais em uma implantação real. Base64 não oferece sigilo. A <a href="https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/basic.html">documentação de Basic</a> descreve o tratamento pelo filtro e a resposta de autenticação.</p>
+<h2 id="secao-2">2. SecurityFilterChain e ordem de regras</h2>
+<p>Um bean SecurityFilterChain configura o HttpSecurity da aplicação servlet. As regras precisam considerar método e rota. GET de produtos é permitido; POST de produtos e retiradas exige ADMIN; saúde e token CSRF possuem acesso explícito; as demais requisições são recusadas. A ordem das regras participa da decisão, então coloque os casos específicos de forma intencional.</p>
+<p>O laboratório declara httpBasic explicitamente. A conta em memória utiliza BCrypt para armazenar a representação da senha no gerenciador. A senha inicial é pública e didática, fornecida pela configuração do exercício. Um sistema real exige gestão de usuários, política de credenciais e proteção operacional apropriadas. Não publique essa conta de laboratório como acesso administrativo de um serviço.</p>
+<p>Regras na camada web podem ser complementadas por segurança de métodos quando houver entradas além do controller. Para autorização por proprietário, receba a identidade confiável do contexto e confira a relação com o recurso no servidor. Um campo usuarioId enviado pelo cliente não comprova que o chamador possui aquele identificador.</p>
+<pre><code>return http.authorizeHttpRequests(regras -&gt; regras
+    .requestMatchers(&quot;/api/csrf&quot;, &quot;/actuator/health&quot;).permitAll()
+    .requestMatchers(HttpMethod.GET, &quot;/api/produtos&quot;, &quot;/api/produtos/**&quot;).permitAll()
+    .requestMatchers(HttpMethod.POST, &quot;/api/produtos&quot;, &quot;/api/produtos/**&quot;).hasRole(&quot;ADMIN&quot;)
+    .anyRequest().denyAll())
+    .httpBasic(Customizer.withDefaults())
+    .build();</code></pre>
+<h2 id="secao-3">3. Por que o laboratório mantém CSRF</h2>
+<p>CSRF envolve requisições indesejadas em contextos nos quais o navegador pode enviar credenciais automaticamente. A escolha entre sessão, cookie e outro transporte de credencial muda a análise. O uso de Basic não é uma justificativa automática para remover toda proteção CSRF, porque navegadores também podem manter e enviar esse tipo de credencial.</p>
+<p>O catálogo mantém a proteção padrão. GET /api/csrf devolve um token e o nome do cabeçalho. O cliente preserva o cookie da sessão e envia o token em X-CSRF-TOKEN nas operações de escrita. Os testes usam o suporte de segurança para confirmar a recusa quando o token está ausente. Consulte a <a href="https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html">documentação de CSRF</a> para o mecanismo e a configuração da versão.</p>
+<p>Ao usar uma ferramenta de API, habilite a preservação de cookies entre as chamadas. Copiar um token e perder sua sessão correspondente pode gerar uma recusa correta. Uma resposta 403 sem token pode acontecer antes da autenticação. Para demonstrar 401 por ausência de credencial no laboratório, forneça primeiro um token válido, como fazem os testes.</p>
+<h2 id="secao-4">4. Sessão, token e OAuth2 têm contratos próprios</h2>
+<p>Numa arquitetura com sessão, o servidor mantém ou coordena o estado associado à identidade e o cliente usa um identificador de sessão. A aplicação precisa tratar login, expiração, logout, proteção do cookie e CSRF conforme o fluxo. Uma API que recebe um bearer token tem outra forma de apresentar a credencial e precisa validar o token em cada contexto adequado.</p>
+<p>JWT é um formato de token, não uma implementação completa de login, revogação ou autorização. Um resource server deve validar assinatura, emissor, validade temporal e as restrições exigidas pelo contrato, incluindo audiência quando aplicável. Use a integração oficial do provedor e do framework. Não escreva um filtro que apenas decodifica o payload e passa a confiar nos campos.</p>
+<p>OAuth2 e OpenID Connect organizam papéis e fluxos específicos. Um cliente público móvel não consegue manter um segredo embutido como se fosse um servidor confidencial. A escolha deve seguir o fluxo recomendado pelo provedor, com bibliotecas adequadas e redirecionamentos registrados. Consulte o <a href="https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html">guia de resource server</a> ao evoluir o laboratório; essa integração não está habilitada no ZIP inicial.</p>
+<h2 id="secao-5">5. CORS não substitui autorização</h2>
+<p>CORS define como navegadores tratam acesso entre origens. Uma configuração que aceita uma origem de frontend não autentica o usuário e não impede um cliente de terminal de chamar a API. A autorização deve permanecer no servidor para cada operação e recurso. Evite liberar qualquer origem com credenciais apenas para fazer um teste passar.</p>
+<p>Quando houver um frontend separado, liste as origens necessárias, os métodos e os cabeçalhos usados. O preflight deve ser tratado de acordo com a integração de segurança. Se a interface e a API forem servidas pela mesma origem, talvez você não precise de uma configuração CORS adicional. Identifique o cenário concreto antes de acrescentar uma regra ampla.</p>
+<p>No laboratório local, os testes de MVC não demonstram uma política de navegador entre origens. Faça um teste no ambiente correspondente quando introduzir um frontend. Registre a origem exata, incluindo esquema, host e porta, e confira também a recusa de uma origem que não foi autorizada.</p>
+<h2 id="secao-6">6. Senhas, logs e superfície operacional</h2>
+<p>Use uma função de derivação de senha apropriada com parâmetros e política de atualização compatíveis com o sistema. Nunca guarde senha recuperável apenas para compará-la em texto. O laboratório utiliza BCrypt pela integração do Spring, com credencial fictícia e conhecida. Contas reais exigem cadastro, recuperação e limites de tentativa tratados como funcionalidades próprias.</p>
+<p>Logs não devem registrar Authorization, cookies de sessão, tokens completos ou senhas. Uma mensagem de erro pode informar que a autenticação falhou sem revelar se determinado cadastro existe. Detalhes operacionais devem ficar num canal com acesso apropriado. A saúde pública do laboratório não divulga componentes internos.</p>
+<p>Não exponha console de banco, ambiente, heap dump e endpoints de administração sem necessidade e controle. Uma ferramenta útil no computador de desenvolvimento pode revelar configuração ou dados em uma implantação pública. Revise o conjunto efetivamente acessível, em vez de presumir que adicionar Actuator deixou apenas uma página inofensiva.</p>
+<h2 id="secao-7">7. Prática: uma matriz de acesso verificável</h2>
+<p>Teste leitura pública, escrita com ADMIN, escrita sem autenticação com CSRF válido, papel insuficiente e ausência de CSRF com credencial válida. Os resultados esperados são, respectivamente, sucesso, sucesso, 401, 403 e 403. Registre que a ordem dos filtros pode influenciar qual recusa aparece quando várias condições estão incorretas ao mesmo tempo.</p>
+<p>Como evolução, proponha uma rota que devolva apenas os produtos pertencentes ao usuário autenticado. Escreva cenários em que um usuário tenta acessar o id de outro. Implemente a verificação no servidor e confirme que alterar o id na URL não contorna a política. Conclua documentando quais ameaças foram tratadas e quais recursos, como TLS e OAuth2, ainda não fazem parte do laboratório local.</p>
+<details><summary>Liberar CORS para uma origem impede um programa de terminal não autorizado de chamar a API?</summary><p>Não. CORS participa da política do navegador. Autenticação e autorização precisam ser aplicadas pelo servidor independentemente do tipo de cliente.</p></details>
+</article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-24.html">Anterior · Tema 24</a><a class="btn btn-primary" href="tema-26.html">Próximo · Tema 26</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <nav class="footer-links" aria-label="Atalhos do rodapé"><a href="index.html">Início</a><a href="cont.html">Conteúdo</a><a href="playground.html">Playground</a><a href="quiz.html">Quiz</a><a href="faq.html">FAQ</a><a href="extra.html">Extra</a></nav>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/code-blocks.js" defer></script>
+
+
+
+</body>
+</html>

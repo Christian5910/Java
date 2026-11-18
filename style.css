@@ -1014,3 +1014,89 @@ textarea.code-editor {
     .export-row { padding: 1rem; }
   }
 }
+
+/* =========================================================
+   Etapa 4 · Alinhamento do topo das páginas e barra do Playground
+   Cabeçalho, introdução e busca passam a compartilhar a mesma coluna
+   central; a barra de ações do Playground acompanha a coluna do editor.
+   Só tela. Para desfazer, remova este bloco.
+   ========================================================= */
+@media screen {
+  :root { --top-column: 42rem; }
+
+  .page-header { max-width: var(--top-column); }
+  .page-header p { max-width: none; text-wrap: balance; }
+  .page-header p.fs-5 { font-size: clamp(1.05rem, 0.98rem + 0.35vw, 1.25rem) !important; }
+  .extra-intro, .topic-search, main details.playground-intro { max-width: var(--top-column); }
+  .extra-intro { text-align: left; }
+
+  /* Ações do Playground: três colunas, alinhadas à largura do editor */
+  #executionPanel > .playground-actions {
+    grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr));
+    width: calc((100% - 1.5rem) * 1.25 / 2.25);
+    max-width: none;
+  }
+  @media (max-width: 900px) {
+    #executionPanel > .playground-actions { width: 100%; }
+  }
+  @media (max-width: 550px) {
+    #executionPanel > .playground-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    #executionPanel > .playground-actions #runJava { grid-column: 1 / -1; }
+  }
+}
+
+/* =========================================================
+   Etapa 5 · Capítulos 9 a 30 em páginas próprias
+   Ajuste de acabamento comum aos capítulos: a legenda da tabela
+   deixa de encostar na borda do contêiner. Só tela.
+   ========================================================= */
+@media screen {
+  .study-text caption { padding: 0.75rem 1rem 0.5rem; }
+}
+
+/* =========================================================
+   Etapa 6 · Grade de links
+   Rodapé, listas de fontes, atalhos oficiais, recursos e PDFs deixam de
+   ser texto corrido com "·" e passam a ser cartões alinhados em grade,
+   com alvo mínimo de 44px. Só tela; na impressão valem as listas simples.
+   ========================================================= */
+@media screen {
+  .footer-links {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
+    gap: 0.5rem; max-width: 46rem; margin: 0.75rem auto;
+  }
+  .link-grid, .resource-list, .material-list {
+    list-style: none; padding: 0; margin: 1rem 0 1.25rem; display: grid; gap: 0.75rem;
+  }
+  .link-grid, .material-list { grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); }
+  .resource-list { grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); }
+
+  .footer-links a, .link-grid a {
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    min-height: 44px; padding: 0.55rem 0.9rem; text-align: center; text-decoration: none;
+    background: var(--color-surface); border: 1px solid var(--color-secondary-mid);
+    border-radius: 12px; line-height: 1.35; font-weight: 600;
+    transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+  }
+  .link-grid a { justify-content: flex-start; text-align: left; height: 100%; }
+  .footer-links a:hover, .link-grid a:hover {
+    border-color: var(--color-accent); background: var(--color-secondary); color: #FFD7A1;
+  }
+  .link-grid a[href^="http"]::after {
+    content: "\2197"; content: "\2197" / ""; margin-left: auto; padding-left: 0.5rem;
+    color: var(--color-accent-strong); font-weight: 400;
+  }
+
+  .link-grid li, .link-grid li + li, .resource-list li + li, .material-list li + li { margin: 0; padding-top: 0; padding-bottom: 0; }
+  .resource-list li, .material-list li {
+    background: var(--color-surface); border: 1px solid var(--color-secondary-mid);
+    border-radius: 12px; line-height: 1.5;
+  }
+  .resource-list li, .material-list li, .resource-list li + li, .material-list li + li { padding: 0.85rem 1rem; }
+  .material-list li { display: grid; gap: 0.35rem; align-content: start; }
+  .material-title { font-weight: 600; }
+  .material-size { color: var(--color-muted); font-size: 0.875rem; }
+  .material-size::before { content: "("; } .material-size::after { content: ")"; }
+  .material-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; margin-top: 0.4rem; }
+  .material-actions .btn { text-decoration: none; padding: 0.4rem 0.5rem; font-size: 0.9rem; }
+}

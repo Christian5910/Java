@@ -121,11 +121,9 @@ async function run() {
   } catch { stop('Não foi possível iniciar o ambiente. Recarregue o site e tente novamente.'); }
 }
 
-/* Capítulos com página própria (tema-NN.html). Os demais abrem a janela de leitura em cont.html
-   até virarem páginas; atualize este limite quando novos capítulos forem publicados. */
-const STANDALONE_CHAPTERS = 8;
+/* Todos os 30 capítulos têm página própria (tema-NN.html). */
 function chapterHref(theme) {
-  return theme <= STANDALONE_CHAPTERS ? 'tema-' + String(theme).padStart(2, '0') + '.html' : 'cont.html#modal' + theme;
+  return 'tema-' + String(theme).padStart(2, '0') + '.html';
 }
 
 function selectExercise(id, savePrevious = true) {

@@ -8,7 +8,7 @@ const work=path.resolve(__dirname,'../../.work/print-qa');
   fs.mkdirSync(work,{recursive:true});
   const browser=await chromium.launch({channel:'msedge'});
   try {
-    for(const [file,count,hash] of [['cont',30,'#modal30'],['extra',20,'#extraCapstone']]) {
+    for(const [file,count,hash] of [['cont',30,''],['extra',20,'#extraCapstone']]) {
       const page=await browser.newPage({serviceWorkers:'block',reducedMotion:'reduce'});
       await page.goto(base+file+'.html'+hash,{waitUntil:'networkidle'});
       assert.equal(await page.locator('.print-toc li').count(),count);
@@ -22,7 +22,7 @@ const work=path.resolve(__dirname,'../../.work/print-qa');
           window.dispatchEvent(new Event('afterprint'));
         };
       });
-      await page.locator('.modal.show .btn-close').click();
+      if(await page.locator('.modal.show .btn-close').count()) await page.locator('.modal.show .btn-close').click();
       await page.click('#printBook');
       assert.equal(await page.evaluate(()=>window.printButtonState),true);
       assert.equal(await page.locator('main details:not([open])').count(),closed);

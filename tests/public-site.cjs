@@ -42,7 +42,7 @@ const screenshots = path.resolve(__dirname, '../../.work/site-shots');
       assert.equal(await page.locator('[data-topic]').count(),30);
       await inspect(page,device+'-content');
       for(const number of [17,20,25,30]) {
-        await page.goto(base+'cont.html#modal'+number);await page.locator('#modal'+number+'.show').waitFor();
+        await page.goto(base+'tema-'+String(number).padStart(2,'0')+'.html');await page.locator('.lesson-article').waitFor();
         await inspect(page,device+'-theme-'+number);
       }
       await page.goto(base+'tema-06.html');await page.locator('.lesson-article').waitFor();

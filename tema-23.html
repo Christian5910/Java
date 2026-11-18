@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>23 · Spring Boot e APIs REST: contratos, validação e erros · Java</title>
+<meta name="description" content="Defina e teste o contrato de uma API REST: rotas, status, validação de entrada e erros estruturados.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 23 de 30</span></nav><header class="lesson-header"><h1>23 · Spring Boot e APIs REST: contratos, validação e erros</h1><p class="lead">Defina e teste o contrato de uma API REST: rotas, status, validação de entrada e erros estruturados.</p><p class="text-muted">Java 17 como referência · Teoria, exemplos e prática guiada</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-8">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Uma API precisa de um contrato observável</a></li><li><a href="#secao-2">Rotas, métodos e status</a></li><li><a href="#secao-3">DTOs com validação de entrada</a></li><li><a href="#secao-4">Conversão, ausência e valores inesperados</a></li><li><a href="#secao-5">Erros estruturados com ProblemDetail</a></li><li><a href="#secao-6">Paginação, ordem e evolução do contrato</a></li><li><a href="#secao-7">Reproduzir a criação e a recusa</a></li><li><a href="#secao-8">Prática: documentar e testar um contrato</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. Uma API precisa de um contrato observável</h2>
+<p>Uma API HTTP descreve recursos, operações, formatos e respostas que outro programa consegue interpretar. No catálogo, produtos possuem identificador, código, quantidade e versão. O cliente pode listar, consultar, criar e solicitar retirada. Cada operação precisa dizer quais campos recebe, quais regras podem recusá-la e como o cliente identifica o resultado.</p>
+<p>O controller transforma o protocolo em chamada de aplicação. A regra não deve depender de HttpServletRequest nem de um componente gráfico. Um DTO de entrada representa o contrato recebido e limita os campos aceitos pela operação. Um DTO de saída escolhe o que será apresentado. Isso evita expor automaticamente toda a entidade de persistência, inclusive relações e atributos internos.</p>
+<p>Os exemplos usam JSON e a pilha Spring MVC servlet do laboratório. O servidor real executa localmente, fora do Playground. O projeto completo do tema 22 contém Contratos.java, ProdutoController.java e Erros.java. Ao copiar um trecho isolado, mantenha os imports e os colaboradores correspondentes do pacote para que o exemplo tenha o mesmo comportamento.</p>
+<h2 id="secao-2">2. Rotas, métodos e status</h2>
+<p>GET /api/produtos lista uma página e GET /api/produtos/{id} consulta um produto. POST /api/produtos cria um registro e devolve 201 com Location apontando para o recurso. POST /api/produtos/{id}/retiradas expressa um comando que altera a quantidade e devolve o estado confirmado. A escolha deixa visível a operação de negócio.</p>
+<p>GET deve ser usado para consulta, sem depender de uma alteração de negócio para cumprir sua finalidade. Um formulário que retira estoque ao abrir um link pode sofrer acionamentos inesperados por navegação ou ferramentas. Métodos e status precisam acompanhar a intenção da operação. Uma resposta 200 com um corpo que diz erro obriga o cliente a adivinhar um contrato paralelo.</p>
+<p>No laboratório, 400 corresponde a entrada inválida, 404 a produto ausente e 409 a conflito com o estado atual. A segurança pode produzir 401 ou 403 antes de o controller executar. O cliente deve distinguir essas situações de uma falha de conexão, na qual pode não ter recebido resposta alguma.</p>
+<h2 id="secao-3">3. DTOs com validação de entrada</h2>
+<p>Contratos.Criar exige código não vazio com letras maiúsculas, dígitos, sublinhado ou hífen, de 1 a 30 caracteres, e quantidade inteira não negativa. Contratos.Retirar exige quantidade positiva e uma versão não negativa. Os wrappers Integer e Long permitem distinguir ausência do campo de um valor numérico zero.</p>
+<p>@Valid na entrada do controller solicita a validação do objeto convertido. Anotações como @NotNull e @Positive representam restrições desse contrato. A validação de faixa na entidade ou no serviço mantém a regra mesmo para chamadas que venham de outro adaptador. A <a href="https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-validation.html">documentação de validação em controllers</a> explica os caminhos e exceções conforme a assinatura.</p>
+<p>Não aceite id ou versao gerados pelo servidor na operação de criação apenas porque existem na entidade. Um DTO específico permite revisar o que o cliente realmente controla. Para edição, descreva quais campos podem mudar e quais identificam o estado observado. Validação sintática e autorização continuam sendo verificações diferentes.</p>
+<pre><code>public record Criar(
+    @NotBlank @Pattern(regexp = &quot;[A-Z0-9_-]{1,30}&quot;) String codigo,
+    @NotNull @PositiveOrZero Integer quantidade
+) {}
+public record Retirar(
+    @NotNull @Positive Integer quantidade,
+    @NotNull @PositiveOrZero Long versao
+) {}</code></pre>
+<h2 id="secao-4">4. Conversão, ausência e valores inesperados</h2>
+<p>Um JSON malformado pode falhar antes da validação de campos. Um parâmetro textual onde se espera um long pode falhar na conversão da rota. A resposta deve continuar legível para o cliente e preservar o status adequado. Não devolva uma página de stack trace como contrato de API.</p>
+<p>Defina limites de tamanho e quantidade nos pontos de entrada. O laboratório limita a página a 100 itens e aceita apenas a ordenação fixa por id. Em um serviço maior, reveja limites de corpo, upload, tempo de processamento e combinações de filtros. Um parâmetro controlado pelo cliente nunca deve ser concatenado diretamente em SQL.</p>
+<p>Nulos e campos ausentes precisam de um significado documentado, especialmente em atualizações parciais. Omitir um campo pode significar preservar o valor, enquanto enviá-lo como null pode significar limpar ou recusar. A operação de retirada evita essa ambiguidade ao exigir todos os dados necessários num comando pequeno.</p>
+<h2 id="secao-5">5. Erros estruturados com ProblemDetail</h2>
+<p>@RestControllerAdvice permite traduzir falhas conhecidas para respostas comuns. ProblemDetail oferece uma estrutura de problema HTTP. O laboratório usa mensagens públicas curtas e não devolve o texto do SQL nem o nome de tabela recebido de uma exceção. O log interno pode registrar contexto suficiente para diagnóstico, respeitando dados sensíveis.</p>
+<p>Conflitos de código único e de versão são convertidos em 409. O usuário pode precisar atualizar a consulta ou escolher outro código. Uma entrada negativa gera 400 e deve preservar o banco. Uma falha inesperada deve ser investigada como falha de servidor, sem transformá-la indiscriminadamente em erro de preenchimento.</p>
+<p>Se a API exigir detalhes por campo, padronize uma extensão com nome do campo e mensagem. Evite devolver diretamente qualquer objeto de exceção, que pode conter dados e nomes internos. Documente quais mensagens são estáveis para apresentação e quais identificadores de erro podem ser utilizados pela lógica do cliente.</p>
+<pre><code>@ExceptionHandler(NoSuchElementException.class)
+ProblemDetail ausente(NoSuchElementException erro) {
+    return ProblemDetail.forStatusAndDetail(
+        HttpStatus.NOT_FOUND, &quot;Produto não encontrado&quot;);
+}</code></pre>
+<h2 id="secao-6">6. Paginação, ordem e evolução do contrato</h2>
+<p>Uma lista potencialmente grande precisa de paginação ou outro mecanismo de percurso. O laboratório recebe pagina começando em zero e tamanho entre 1 e 100. A resposta contém itens e total, sem expor diretamente a representação interna de Page do framework. A ordenação por id torna o exemplo previsível.</p>
+<p>Paginação por deslocamento pode mostrar mudanças quando registros entram ou saem entre consultas. Em fluxos maiores, paginação por cursor pode oferecer outra relação com ordem e continuidade. A escolha depende das consultas e do índice disponível. O cliente também precisa saber quando a lista terminou e como preservar a seleção durante uma atualização.</p>
+<p>Ao evoluir o JSON, prefira adições compatíveis e confira consumidores existentes. Renomear um campo ou mudar sua unidade pode quebrar um aplicativo Android já instalado. Uma versão de aplicação no servidor não garante que todos os clientes serão atualizados juntos. Mantenha exemplos de requisição e resposta como parte da documentação do contrato.</p>
+<h2 id="secao-7">7. Reproduzir a criação e a recusa</h2>
+<p>Leia a sequência de autenticação e CSRF do LEIA-ME do projeto. Primeiro obtenha o token em /api/csrf preservando o cookie. Depois crie KIT01 com quantidade 5 usando Basic local, o token e Content-Type application/json. A resposta deve ser 201 e conter id e versao. Uma retirada de 2 com a versão observada deve devolver saldo 3.</p>
+<p>Repita uma retirada com versão antiga e confira 409. Consulte o produto e verifique que a recusa preservou o saldo. Essa consulta posterior comprova uma propriedade que a mensagem sozinha não demonstra. Não repita uma criação às cegas depois de um timeout; a operação pode ter sido gravada antes de a resposta se perder.</p>
+<h2 id="secao-8">8. Prática: documentar e testar um contrato</h2>
+<p>Monte uma tabela com método, rota, entrada, sucesso e recusas das quatro operações. Inclua um JSON válido, um malformado, um campo ausente, uma quantidade negativa e um produto inexistente. Para as escritas, separe falhas de autorização das falhas de validação.</p>
+<p>Como evolução, acrescente uma descrição opcional com limite de tamanho e atualize DTO, persistência, resposta e testes. Confira que o cliente antigo ainda consegue criar um produto sem esse campo. A atividade termina quando um colega consegue usar o contrato a partir dos exemplos publicados e cada recusa deixa o estado esperado no banco.</p>
+<details><summary>Uma resposta 409 deve ser tratada como autorização insuficiente?</summary><p>Não. No contrato do catálogo ela representa conflito com o estado atual, como versão antiga ou código repetido. Falhas de autenticação e autorização possuem respostas próprias e podem ocorrer antes do controller.</p></details>
+</article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-22.html">Anterior · Tema 22</a><a class="btn btn-primary" href="tema-24.html">Próximo · Tema 24</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <nav class="footer-links" aria-label="Atalhos do rodapé"><a href="index.html">Início</a><a href="cont.html">Conteúdo</a><a href="playground.html">Playground</a><a href="quiz.html">Quiz</a><a href="faq.html">FAQ</a><a href="extra.html">Extra</a></nav>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/code-blocks.js" defer></script>
+
+
+
+</body>
+</html>

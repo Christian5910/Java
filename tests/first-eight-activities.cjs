@@ -27,8 +27,8 @@ fs.mkdirSync(shots,{recursive:true});
         await page.locator('#solutionTitle').click();
         assert.equal(await page.locator('#sampleSolution').textContent(),exercise.source);
         assert.equal(await page.locator('#javaCode').inputValue(),'','solution must not fill editor');
-        /* Capítulos 1 a 8 têm página própria; os demais abrem a janela de leitura de cont.html. */
-        assert.equal(await page.locator('#topicLink').getAttribute('href'),exercise.theme<=8?'tema-0'+exercise.theme+'.html':'cont.html#modal'+exercise.theme,'review link '+exercise.id);
+        /* Todos os 30 capítulos têm página própria. */
+        assert.equal(await page.locator('#topicLink').getAttribute('href'),'tema-'+String(exercise.theme).padStart(2,'0')+'.html','review link '+exercise.id);
         await page.locator('#solutionTitle').click();
       }
       await page.selectOption('#exerciseSelect','ola');

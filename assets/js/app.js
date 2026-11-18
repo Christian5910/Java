@@ -22,12 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('grupo' + group[1])?.scrollIntoView();
       return;
     }
-    const chapter = location.pathname.endsWith('/cont.html') && location.hash.match(/^#modal([1-8])$/);
+    const chapter = location.pathname.endsWith('/cont.html') && location.hash.match(/^#modal([1-9]|[12][0-9]|30)$/);
     if (chapter) {
-      location.replace('tema-0' + chapter[1] + '.html');
+      location.replace('tema-' + chapter[1].padStart(2, '0') + '.html');
       return;
     }
-    if (!/^#(?:modal(?:[1-9]|[12][0-9]|30)|extra[A-Za-z]+)$/.test(location.hash)) return;
+    if (!/^#extra[A-Za-z]+$/.test(location.hash)) return;
     const dialog = document.querySelector(location.hash);
     if (dialog && window.bootstrap) bootstrap.Modal.getOrCreateInstance(dialog).show();
   };
@@ -115,12 +115,12 @@ document.addEventListener('DOMContentLoaded', () => {
       chapter.querySelector('p').remove();
     })).then(() => {
       printButton.disabled = false;
-      status.textContent = '30 temas disponíveis para busca e impressão. Os temas 1 a 8 abrem em páginas completas.';
+      status.textContent = '30 temas disponíveis para busca e impressão. Todos abrem em páginas próprias.';
       annotatePrintLinks();
       const input = document.getElementById('topicSearch');
       searchTopics({target: input});
     }).catch(error => {
-      status.textContent = 'Não foi possível reunir os temas 1 a 8 para busca e impressão completas. Recarregue a página por HTTP/HTTPS ou abra os temas pelos seus links.';
+      status.textContent = 'Não foi possível reunir os 30 temas para busca e impressão completas. Recarregue a página por HTTP/HTTPS ou abra os temas pelos seus links.';
       console.warn(status.textContent, error);
     });
   }

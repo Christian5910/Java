@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>19 · Java multiplataforma e distribuição de aplicações · Java</title>
+<meta name="description" content="Entregue aplicações Java fora da IDE: JAR executável, dependências, instaladores e limites de cada plataforma.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 19 de 30</span></nav><header class="lesson-header"><h1>19 · Java multiplataforma e distribuição de aplicações</h1><p class="lead">Entregue aplicações Java fora da IDE: JAR executável, dependências, instaladores e limites de cada plataforma.</p><p class="text-muted">Java 17 como referência · Teoria, exemplos e prática guiada</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-8">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">O que significa executar em várias plataformas</a></li><li><a href="#secao-2">Escolher a versão de compilação e as APIs</a></li><li><a href="#secao-3">Produzir um JAR executável</a></li><li><a href="#secao-4">Dependências e imagem de execução</a></li><li><a href="#secao-5">jpackage e instaladores próprios de cada destino</a></li><li><a href="#secao-6">Sistema de arquivos, recursos e preferências</a></li><li><a href="#secao-7">GraalVM Native Image e o custo de mudar o runtime</a></li><li><a href="#secao-8">Prática: entregar uma aplicação fora da IDE</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. O que significa executar em várias plataformas</h2>
+<p>Uma aplicação Java de desktop pode executar sobre uma JVM compatível em sistemas diferentes. Para isso, o bytecode precisa ser aceito pelo runtime e todas as dependências utilizadas precisam existir no destino. Quando há bibliotecas nativas, componentes gráficos ou integração com o sistema, entram também diferenças de arquitetura e empacotamento. A portabilidade deve ser conferida nos ambientes que você pretende atender.</p>
+<p>Java no Android segue outro caminho de build e execução. O código usa APIs do Android, passa pelas ferramentas dessa plataforma e chega ao runtime ART em formato adequado. Swing e JavaFX do desktop não se tornam telas Android ao copiar o JAR. Uma regra de cálculo pode ser reaproveitada se estiver restrita a APIs compatíveis; janela, permissões, ciclo de vida e instalação precisam de adaptadores próprios.</p>
+<p>Defina uma matriz de suporte antes de distribuir: sistema, arquitetura, versão mínima de runtime e recursos exigidos. Para uma aplicação Swing de notas, a primeira matriz pode conter Windows x64 e Linux x64 com ambiente gráfico e JDK 17. Uma plataforma ainda não testada deve aparecer como pendente. Isso dá ao usuário uma informação verificável sobre onde o pacote foi conferido.</p>
+<h2 id="secao-2">2. Escolher a versão de compilação e as APIs</h2>
+<p>A opção --release 17 do javac seleciona a versão de linguagem, o formato de classe e as APIs públicas correspondentes ao Java 17. Compilar apenas com um nível de sintaxe antigo, mantendo acesso livre à biblioteca de um JDK mais novo, pode produzir um programa que chama uma API ausente no runtime alvo. O build deve declarar a intenção de compatibilidade de forma consistente.</p>
+<p>Dependências externas possuem requisitos próprios. Um JAR que você utiliza pode ter sido compilado para um Java posterior. A JVM pode recusar essa classe mesmo que seus fontes tenham sido compilados com --release 17. Inspecione as versões e execute o artefato com o runtime mínimo declarado. A IDE usando um JDK novo pode esconder essa diferença durante o desenvolvimento.</p>
+<p>O laboratório JavaFX fixa uma versão compatível com seu JDK e resolve bibliotecas específicas do sistema pelo Maven. Para um pacote destinado a outra plataforma, produza o conjunto correspondente e confira o resultado nessa plataforma. Misturar bibliotecas nativas x64 e arm64 não é resolvido pelo bytecode portável da aplicação.</p>
+<h2 id="secao-3">3. Produzir um JAR executável</h2>
+<p>Um JAR reúne classes e recursos. O manifesto pode declarar a classe principal para a execução com java -jar. O comando abaixo pressupõe que você compilou o laboratório Swing para out, como descrito no tema 16. A pasta dist é criada manualmente antes do empacotamento. O programa continua precisando de um runtime Java compatível no computador de destino.</p>
+<pre><code>jar --create --file dist/notas.jar --main-class br.estudo.Main -C out .
+java -jar dist/notas.jar</code></pre>
+<h2 id="secao-4">4. Dependências e imagem de execução</h2>
+<p>Um JAR simples não incorpora automaticamente todos os JARs de que seu projeto depende. Bibliotecas podem ser distribuídas numa pasta lib com classpath documentado ou reunidas por uma ferramenta que trate os recursos e metadados adequadamente. O Spring Boot possui seu próprio empacotamento executável. O modo correto depende da estrutura do projeto e do carregador utilizado.</p>
+<p>jlink cria uma imagem de runtime a partir de módulos. Ela contém o necessário para a configuração declarada, com redução de componentes em relação a um JDK completo. O exemplo abaixo prepara um runtime com java.desktop para o laboratório Swing. Ele é produzido para o sistema e a arquitetura das ferramentas utilizadas. A imagem não substitui a verificação de bibliotecas externas e recursos carregados dinamicamente.</p>
+<p>Use o <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/man/jlink.html">manual de jlink</a> para conferir opções e limitações. Um aplicativo não modular pode ser distribuído com um runtime preparado a partir dos módulos da plataforma, enquanto sua aplicação permanece no classpath. A escolha precisa ser documentada para que o comando de lançamento encontre tanto o runtime quanto o JAR.</p>
+<pre><code>jlink --add-modules java.desktop --output runtime-notas
+runtime-notas/bin/java -jar dist/notas.jar</code></pre>
+<h2 id="secao-5">5. jpackage e instaladores próprios de cada destino</h2>
+<p>jpackage produz uma imagem de aplicação e, quando o ambiente oferece as ferramentas necessárias, pacotes de instalação nativos. Uma imagem inclui um lançador e pode incluir o runtime. O usuário passa a executar o aplicativo pelo lançador, sem configurar manualmente um JDK. Consulte a <a href="https://docs.oracle.com/en/java/javase/17/jpackage/packaging-overview.html">visão geral de empacotamento</a> para os formatos e requisitos por sistema.</p>
+<p>Produza o pacote em cada sistema alvo com ferramentas compatíveis. Um instalador Windows não serve como pacote de instalação macOS. Assinatura, permissões, nome do aplicativo e diretório de instalação também merecem uma decisão explícita. Para começar, gere uma app-image e teste o lançador numa conta que não dependa do ambiente da IDE.</p>
+<p>No comando abaixo, dist contém somente os arquivos que devem acompanhar o aplicativo. Evite incluir capturas, arquivos temporários ou credenciais nessa pasta. A imagem de runtime criada no passo anterior é fornecida explicitamente. O comando é um exemplo para o laboratório Swing; JavaFX e Spring possuem requisitos adicionais que precisam ser tratados nos seus builds.</p>
+<pre><code>jpackage --type app-image --name NotasEstudo --input dist --main-jar notas.jar --main-class br.estudo.Main --runtime-image runtime-notas --dest pacote</code></pre>
+<h2 id="secao-6">6. Sistema de arquivos, recursos e preferências</h2>
+<p>O diretório de instalação pode ser protegido contra escrita. Salve dados do usuário numa localização apropriada e escolhida de forma documentada, como uma pasta selecionada no diálogo de exportação. Não presuma que o diretório corrente do processo é a pasta do JAR. Atalhos e lançadores podem iniciar o programa com outro diretório corrente.</p>
+<p>Nomes de arquivo, separadores, sensibilidade a maiúsculas e regras de permissão variam. Teste um arquivo com acentos e uma pasta com espaços. Feche streams antes de substituir arquivos e trate operações não suportadas. Uma gravação atômica do laboratório de arquivos precisa continuar falhando de forma explícita se o sistema não conseguir oferecer a garantia exigida.</p>
+<p>Preferências pequenas, como tamanho da janela, podem ter um armazenamento específico. Elas não devem substituir um documento de trabalho sem que o usuário saiba onde o dado fica e como recuperá-lo. Ao atualizar o aplicativo, preserve dados e explique eventuais migrações. Uma nova versão que reinicia preferências não deve apagar o histórico de negócio.</p>
+<h2 id="secao-7">7. GraalVM Native Image e o custo de mudar o runtime</h2>
+<p>Native Image produz um executável para um alvo, usando análise e compilação antecipada. Isso muda inicialização, distribuição e algumas exigências sobre reflexão, carregamento de classes e recursos. Uma aplicação que executa sobre a JVM pode precisar de metadados e ajustes para uma imagem nativa. Consulte a <a href="https://www.graalvm.org/latest/reference-manual/native-image/">documentação oficial de Native Image</a> para o ambiente escolhido.</p>
+<p>Compare tempo de inicialização, memória, tamanho do pacote e comportamento sob a carga que você realmente utiliza. Não prometa que a compilação nativa tornará qualquer programa mais rápido. O custo de build e as restrições também entram na escolha. Frameworks oferecem integração específica, que deve ser usada conforme a versão documentada.</p>
+<p>Para o estudo inicial, o JAR com runtime ou a app-image são suficientes para compreender a entrega. Deixe a imagem nativa como um experimento com hipótese: por exemplo, reduzir a latência de inicialização de uma ferramenta curta. Registre como mediu e quais testes foram repetidos no artefato final.</p>
+<h2 id="secao-8">8. Prática: entregar uma aplicação fora da IDE</h2>
+<p>Empacote o laboratório Swing como JAR e depois como app-image. Execute o teste de domínio com o runtime mínimo declarado e abra a imagem num ambiente gráfico. Confira um nome de pasta com espaços, entrada com vírgula e o fechamento. O pacote deve incluir um texto curto com versão, requisitos, comando ou lançador e limitações.</p>
+<p>Prepare uma matriz com ao menos dois destinos desejados e marque cada um como verificado ou pendente. Se você só dispõe de um sistema, entregue o pacote desse sistema e deixe a outra linha pendente. Como revisão, explique por que um JAR, uma imagem de runtime e um APK Android possuem funções diferentes no processo de distribuição.</p>
+<details><summary>Um instalador feito com jpackage no Windows instala o mesmo pacote no Android?</summary><p>Não. jpackage atende a distribuição desktop da plataforma em que o pacote é produzido. Android usa seu próprio projeto, SDK, formato de pacote e mecanismos de instalação.</p></details>
+</article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-18.html">Anterior · Tema 18</a><a class="btn btn-primary" href="tema-20.html">Próximo · Tema 20</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <nav class="footer-links" aria-label="Atalhos do rodapé"><a href="index.html">Início</a><a href="cont.html">Conteúdo</a><a href="playground.html">Playground</a><a href="quiz.html">Quiz</a><a href="faq.html">FAQ</a><a href="extra.html">Extra</a></nav>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/code-blocks.js" defer></script>
+
+
+
+</body>
+</html>

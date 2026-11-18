@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>12 · Arquivos, dados e persistência confiável · Java</title>
+<meta name="description" content="Grave e leia dados com segurança: codificação, validação antes de publicar, falhas e formatos que evoluem.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 12 de 30</span></nav><header class="lesson-header"><h1>12 · Arquivos, dados e persistência confiável</h1><p class="lead">Grave e leia dados com segurança: codificação, validação antes de publicar, falhas e formatos que evoluem.</p><p class="text-muted">Java 17 como referência · Teoria, exemplos e prática guiada</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-13">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Da memória do programa a um dado que sobrevive</a></li><li><a href="#secao-2">Caminho, arquivo e diretório são conceitos distintos</a></li><li><a href="#secao-3">Codificação e fronteiras entre bytes e texto</a></li><li><a href="#secao-4">Ler tudo ou processar em fluxo</a></li><li><a href="#secao-5">Fechar o recurso que sua operação abriu</a></li><li><a href="#secao-6">Um formato de registro pequeno e verificável</a></li><li><a href="#secao-7">Importação em duas etapas: validar e publicar</a></li><li><a href="#secao-8">Falha completa e aceitação parcial são políticas diferentes</a></li><li><a href="#secao-9">Gravação substitutiva e arquivo temporário</a></li><li><a href="#secao-10">Datas civis, instantes e relógio do teste</a></li><li><a href="#secao-11">Decimais com escala e arredondamento definidos</a></li><li><a href="#secao-12">Versão do formato e migração de dados</a></li><li><a href="#secao-13">Prática: importar, recusar e conferir o estado</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. Da memória do programa a um dado que sobrevive</h2>
+<p>Uma coleção em memória deixa de existir quando o processo termina. Persistir é representar o estado em um meio que possa ser lido depois, como um arquivo ou banco de dados. Essa mudança acrescenta falhas que um exemplo de console não apresenta: falta de permissão, conteúdo interrompido, codificação diferente e registros incompatíveis com a versão atual. O programa precisa distinguir “não há dados ainda” de “há dados, mas não foi possível lê-los”. Tratar ambos como cadastro vazio pode ocultar perda de informação.</p>
+<p>Continue usando o cadastro por matrícula do tema 11. Antes de escolher uma API de arquivo, descreva o formato: quais campos existem, como são separados, quais valores são obrigatórios e como uma linha inválida deve ser tratada. A política deste tema é validar uma importação inteira em uma estrutura temporária e publicar o novo cadastro somente depois do sucesso. Assim, uma falha na segunda linha não substitui o estado atual por um cadastro parcial.</p>
+<p>O Playground permite testar a leitura e a validação usando texto em memória. O acesso a arquivos reais do dispositivo pertence ao projeto local, com JDK instalado. A JVM do navegador usa seu próprio ambiente virtual e não abre automaticamente sua pasta pessoal. Os programas de leitura em memória demonstram a regra sem exigir acesso ao disco; o pacote em Extra inclui um programa local de gravação e leitura para completar a experiência.</p>
+<h2 id="secao-2">2. Caminho, arquivo e diretório são conceitos distintos</h2>
+<p>Um <code>Path</code> representa um caminho; criá-lo não cria o arquivo nem confirma que ele existe. Um caminho relativo depende do diretório de trabalho do processo. A pasta que contém o fonte e a pasta de execução podem ser diferentes, principalmente numa IDE. Por isso, um programa que procura <code>dados/alunos.txt</code> deve explicar qual é sua base de execução. Para investigar uma falha, apresente o caminho resolvido em um diagnóstico local, sem assumir que a instalação de outra pessoa possui o mesmo diretório.</p>
+<p>Combine trechos com <code>resolve</code> em vez de concatenar manualmente barras de um sistema operacional. Uma normalização sintática pode retirar segmentos redundantes, mas não garante autorização de acesso nem resolve todos os efeitos de links simbólicos. Se um programa aceita caminhos externos, precisa definir o limite permitido. Neste guia, os exercícios locais gravam dentro de um diretório de trabalho escolhido para eles; não solicitam acesso arbitrário a arquivos do sistema. O <a href="https://docs.oracle.com/javase/tutorial/essential/io/pathOps.html">guia de operações com Path</a> explica a composição.</p>
+<p>Também evite verificar existência e assumir que a operação seguinte necessariamente terá sucesso. O arquivo pode mudar entre a verificação e a abertura. Trate a exceção da própria operação e informe o que não foi concluído. Um diretório com o nome esperado não é o mesmo que um arquivo legível, e um arquivo existente pode ter outro formato. Validação do caminho, abertura e interpretação do conteúdo pertencem a etapas diferentes.</p>
+<h2 id="secao-3">3. Codificação e fronteiras entre bytes e texto</h2>
+<p>Arquivos armazenam bytes. Uma codificação define como interpretá-los como texto. Se você grava em UTF-8 e lê com outra codificação, nomes acentuados podem aparecer incorretos. Declare a codificação nas operações que oferecem essa escolha, por exemplo <code>StandardCharsets.UTF_8</code>. Não tente corrigir os caracteres trocando letras depois da leitura sem investigar a origem: isso pode mascarar o problema e alterar dados que estavam corretos.</p>
+<p>Uma linha é uma convenção do formato textual. Leitores podem reconhecer quebras de linha sem devolver esses separadores no conteúdo lido. Isso facilita processar registros por linha, mas exige cuidado se o próprio campo puder conter uma quebra. Para o formato didático deste tema, cada registro cabe em uma linha e os campos não contêm o separador. Esse limite é parte do contrato. Um CSV geral permite situações adicionais e precisa de um parser que implemente suas regras, não apenas de uma chamada a <code>split</code>.</p>
+<p>Defina também como tratar espaços e linhas vazias. Matrículas podem ser normalizadas com <code>trim</code> se espaços nas bordas não tiverem significado no domínio. Um texto livre pode precisar preservá-los. Uma linha vazia pode ser ignorada ou rejeitada, mas a decisão precisa ser consistente e testada. Não remova silenciosamente todo caractere que cause uma falha, pois o resultado pode passar a representar outro registro.</p>
+<p><a href="playground.html?ex=utf8-bytes">Praticar Bytes não são caracteres</a></p>
+<h2 id="secao-4">4. Ler tudo ou processar em fluxo</h2>
+<p>Ler o conteúdo inteiro simplifica alguns exercícios pequenos, mas consome memória proporcional ao tamanho do arquivo. Processar com um leitor por linhas permite trabalhar progressivamente. Isso não garante consumo constante se o programa ainda guardar todos os registros numa lista; a estrutura final também ocupa memória. Identifique o que precisa permanecer disponível: um total pode ser acumulado sem guardar cada linha, enquanto um cadastro completo exige uma representação dos dados aceitos.</p>
+<p>A API <code>Files</code> oferece operações de leitura e escrita, e leitores com buffer ajudam no processamento textual. Ao usar uma stream de linhas vinculada a arquivo, feche a stream conforme seu contrato. Uma stream sobre uma coleção em memória e uma stream que mantém um recurso de I/O não têm o mesmo ciclo de vida externo. Consulte <a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Files.html">Files</a> para conferir tipos de retorno, codificação, opções e exceções.</p>
+<p>Antes de otimizar, experimente um arquivo com poucas linhas conhecidas e outro com volume maior gerado para o teste. Verifique a mesma regra nos dois casos. Se a versão em fluxo aceita uma linha que a versão em memória recusa, elas não são equivalentes. O tamanho da entrada deve mudar o custo do processamento, não o significado dos campos.</p>
+<h2 id="secao-5">5. Fechar o recurso que sua operação abriu</h2>
+<p>Try-with-resources delimita a propriedade de recursos fecháveis. O método que abre um leitor de arquivo geralmente é responsável por fechá-lo. Se ele recebe um leitor de outro componente, o contrato precisa dizer quem controla o fechamento. Esse detalhe evita fechar uma entrada compartilhada que outra parte do programa ainda precisa usar. O caso de <code>System.in</code>, estudado antes, continua sendo um exemplo de recurso cujo ciclo de vida ultrapassa uma pequena operação auxiliar.</p>
+<p>O fechamento pode falhar, e uma operação de leitura também pode lançar uma exceção antes dele. O mecanismo de try-with-resources preserva a falha principal e pode registrar outras como suprimidas. Ao investigar um erro local, confira causa e exceções associadas. Para o usuário final, a mensagem deve dizer que a leitura ou gravação não foi concluída e qual ação é possível. O texto técnico completo pode pertencer ao diagnóstico, não a uma confirmação de sucesso.</p>
+<p>Uma mensagem como “arquivo salvo” só deve ser apresentada depois que a operação correspondente terminar. Preencher um buffer ou criar um objeto de caminho não comprova que os dados chegaram ao destino. No projeto de estudo, coloque a confirmação após o fechamento bem-sucedido da escrita. Nos sistemas em que durabilidade diante de falhas de energia é requisito, são necessárias decisões adicionais sobre sistema de arquivos e sincronização; uma chamada de alto nível não promete tudo isso automaticamente.</p>
+<h2 id="secao-6">6. Um formato de registro pequeno e verificável</h2>
+<p>O formato inicial terá duas colunas: matrícula e nota inteira, separadas por ponto e vírgula. Exemplo: <code>A01;8</code>. Matrícula não pode ser vazia; nota deve estar entre 0 e 10; matrícula repetida é recusada. Um registro com três colunas ou com a segunda coluna vazia também deve falhar. A chamada <code>split(";", -1)</code> preserva campos vazios no final, permitindo reconhecer uma nota ausente em vez de perder essa informação durante a separação.</p>
+<p>A numeração de linhas ajuda a localizar a entrada que falhou. Conte cada linha física processada antes de validá-la e mantenha esse número na mensagem. Para erros de conversão, preserve a exceção original como causa ao acrescentar o contexto da linha. Não devolva uma mensagem genérica que diga apenas “erro” se a operação consegue informar qual campo não correspondeu ao formato. Ao mesmo tempo, não apresente como inválido um arquivo inteiro quando o problema foi uma permissão de leitura.</p>
+<p>Esse formato não aceita ponto e vírgula dentro da matrícula. Não o anuncie como leitor de qualquer CSV. Se o domínio crescer para nomes com separadores, aspas e quebras de linha, escolha e documente uma representação adequada, como um formato com parser específico. A biblioteca utilizada também precisa ser distribuída e configurada no projeto local. Esconder esse requisito faria o exemplo depender de algo que o leitor não recebeu.</p>
+<h2 id="secao-7">7. Importação em duas etapas: validar e publicar</h2>
+<p>O programa abaixo recebe o conteúdo em uma string para que possa ser executado diretamente no site. O leitor usado é fechado dentro da operação de importação. Cada linha é validada e inserida num mapa novo, que só é devolvido quando a leitura termina. A variável <code>atual</code> recebe esse novo mapa apenas se a chamada retornar normalmente. Quando a segunda importação falha, a atribuição não acontece e o cadastro anterior continua disponível.</p>
+<p>Observe que validar em uma estrutura temporária consome memória para o novo conjunto de dados. Essa política é simples e útil para o exercício, mas não serve como promessa para arquivos de qualquer tamanho. Uma importação muito grande pode precisar de processamento em lotes e transações no armazenamento final. Primeiro compreenda qual estado deve ser visível em caso de falha; depois escolha uma estratégia que preserve esse contrato dentro dos limites do ambiente.</p>
+<pre><code>import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class Main {
+    static Map&lt;String, Integer&gt; importar(String texto) throws IOException {
+        Map&lt;String, Integer&gt; novo = new LinkedHashMap&lt;&gt;();
+        try (BufferedReader leitor = new BufferedReader(new StringReader(texto))) {
+            String linha;
+            int numero = 0;
+            while ((linha = leitor.readLine()) != null) {
+                numero++;
+                String[] partes = linha.split(&quot;;&quot;, -1);
+                if (partes.length != 2 || partes[0].trim().isEmpty()) {
+                    throw new IllegalArgumentException(&quot;Linha &quot; + numero + &quot; inválida&quot;);
+                }
+                String id = partes[0].trim();
+                int nota;
+                try { nota = Integer.parseInt(partes[1].trim()); }
+                catch (NumberFormatException erro) {
+                    throw new IllegalArgumentException(&quot;Nota inválida na linha &quot; + numero, erro);
+                }
+                if (nota &lt; 0 || nota &gt; 10 || novo.containsKey(id)) {
+                    throw new IllegalArgumentException(&quot;Regra inválida na linha &quot; + numero);
+                }
+                novo.put(id, nota);
+            }
+        }
+        return novo;
+    }
+    public static void main(String[] args) throws IOException {
+        Map&lt;String, Integer&gt; atual = importar(&quot;A01;8\nA02;7\n&quot;);
+        System.out.println(&quot;Cadastro: &quot; + atual);
+        try { atual = importar(&quot;A03;9\nA04;texto\n&quot;); }
+        catch (IllegalArgumentException erro) { System.out.println(erro.getMessage()); }
+        System.out.println(&quot;Após recusa: &quot; + atual);
+    }
+}</code></pre><p><a href="playground.html?ex=importacao-validada">Praticar Importar registros sem alteração parcial</a></p><p>Saída do programa inicial:</p><pre><code>Cadastro: {A01=8, A02=7}
+Nota inválida na linha 2
+Após recusa: {A01=8, A02=7}</code></pre><h2 id="secao-8">8. Falha completa e aceitação parcial são políticas diferentes</h2>
+<p>Recusar o lote inteiro é uma escolha. Outra possibilidade é aceitar linhas válidas e emitir um relatório das recusadas. Essa segunda política precisa dizer quais linhas foram publicadas, quais falharam e como reexecutar sem duplicar dados. Um simples <code>catch</code> dentro do laço, seguido de uma confirmação de importação, não descreve adequadamente o resultado. O chamador pode acreditar que todos os registros foram aceitos quando apenas parte deles entrou.</p>
+<p>Para exercitar as duas políticas, prepare três registros e torne o segundo inválido. Na política do exemplo, nenhum deles substitui o cadastro anterior. Em uma versão de aceitação parcial, o primeiro e o terceiro podem entrar, mas o resultado precisa registrar a falha da segunda linha. Verifique também o que acontece ao enviar o mesmo lote novamente. Uma operação idempotente produz o mesmo efeito observável quando repetida nas condições definidas; ela não é obtida apenas por dar esse nome ao método.</p>
+<p><a href="playground.html?ex=importacao-parcial">Praticar Importação parcial com relatório</a></p>
+<h2 id="secao-9">9. Gravação substitutiva e arquivo temporário</h2>
+<p>Gravar diretamente por cima do arquivo atual pode deixá-lo incompleto se a operação for interrompida. Para o projeto local, uma estratégia é escrever a nova representação em um arquivo temporário no mesmo diretório, fechar a escrita e só então tentar substituir o destino. A movimentação atômica, quando suportada pelo provedor e pelas condições da operação, pode evitar que um leitor observe uma representação parcialmente substituída. Confira as opções e as exceções da API antes de prometer essa propriedade.</p>
+<p>Se <code>ATOMIC_MOVE</code> não for suportado, você precisa escolher uma política explícita: informar que não conseguiu concluir com a garantia exigida ou aplicar uma alternativa que ofereça uma garantia diferente e a documente. Não capture qualquer falha de I/O e apresente a substituição comum como se fosse equivalente. Um problema de permissão, espaço ou caminho não significa simplesmente que o movimento atômico está indisponível.</p>
+<p>O pacote local em Extra demonstra criar um diretório próprio para os arquivos do exercício e gravar uma nova representação antes da leitura de conferência. Mantenha cópias dos dados que precisam ser preservados e teste uma falha num diretório de estudo, sem experimentar sobre documentos pessoais. A <a href="https://docs.oracle.com/javase/tutorial/essential/io/file.html">documentação de leitura e escrita</a> ajuda a relacionar abertura, fechamento e opções de criação. A operação do exemplo não configura, por si só, um sistema de backup.</p>
+<h2 id="secao-10">10. Datas civis, instantes e relógio do teste</h2>
+<p>Uma data de vencimento como 22 de outubro não contém, por si só, horário nem fuso. <code>LocalDate</code> representa essa data civil. Um instante representa um ponto na linha do tempo e exige outra interpretação para exibição em um local. Não converta uma data civil para milissegundos inventando um horário apenas para fazer uma comparação. Escolha o tipo de acordo com o significado do dado e defina como o programa interpreta o limite de um prazo.</p>
+<p>Usar a data atual diretamente em todos os métodos torna alguns testes dependentes do dia da execução. Para verificar uma regra de prazo, receba a data de referência como argumento ou use um relógio controlável na parte que o consulta. O exemplo a seguir usa uma data fixa para que qualquer pessoa consiga repetir a mesma saída. Não interprete a data escolhida como uma consulta ao calendário atual do dispositivo.</p>
+<p>Teste a travessia do fim do mês, do fim do ano e de um fevereiro com duração diferente. Acrescentar um mês e acrescentar trinta dias não são operações equivalentes em todo calendário. Ao ler datas em um arquivo, declare o formato aceito e recuse ambiguidades como uma string que possa representar dia e mês em ordens diferentes. A família <a href="https://docs.oracle.com/javase/8/docs/api/java/time/package-summary.html">java.time</a> separa tipos de acordo com esses significados.</p>
+<h2 id="secao-11">11. Decimais com escala e arredondamento definidos</h2>
+<p>Quando a regra exige aritmética decimal controlada, <code>BigDecimal</code> permite representar números decimais e escolher escala e arredondamento. Construa o valor a partir de uma string decimal quando ela expressa o dado esperado. Criá-lo diretamente a partir de um <code>double</code> pode carregar a aproximação binária que você pretendia evitar. O tipo não escolhe sozinho a regra comercial, o momento do arredondamento ou a moeda utilizada.</p>
+<p>Uma divisão decimal pode não terminar. Dividir sem definir uma política apropriada pode causar uma exceção quando não existe representação exata nas condições da chamada. Decida a escala e o modo de arredondamento no ponto exigido pelo contrato, em vez de aplicar duas casas em toda etapa por hábito. Arredondar cada item e depois somar pode produzir outro total que somar valores exatos e arredondar só no final. Os dois cálculos representam políticas distintas.</p>
+<p>A comparação também exige intenção. <code>equals</code> leva em conta a representação com escala; <code>compareTo</code> permite comparar o valor numérico. Assim, 2.0 e 2.00 podem ter comparação numérica igual a zero sem serem iguais segundo <code>equals</code>. Se um valor decimal será uma chave ou parte da igualdade de um objeto, defina uma representação canônica consistente. Consulte <a href="https://docs.oracle.com/javase/8/docs/api/java/math/BigDecimal.html">BigDecimal</a> antes de combinar comparação, armazenamento e arredondamento.</p>
+<pre><code>import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+public class Main {
+    public static void main(String[] args) {
+        LocalDate inicio = LocalDate.of(2026, 10, 15);
+        LocalDate prazo = inicio.plusDays(7);
+        BigDecimal unitario = new BigDecimal(&quot;19.90&quot;);
+        BigDecimal quantidade = new BigDecimal(&quot;3&quot;);
+        BigDecimal fator = new BigDecimal(&quot;0.90&quot;);
+        BigDecimal total = unitario.multiply(quantidade).multiply(fator)
+            .setScale(2, RoundingMode.HALF_UP);
+        System.out.println(&quot;Prazo: &quot; + prazo.format(DateTimeFormatter.ISO_LOCAL_DATE));
+        System.out.println(&quot;Total: &quot; + total.toPlainString());
+        System.out.println(&quot;Mesmo valor: &quot; +
+            (new BigDecimal(&quot;2.0&quot;).compareTo(new BigDecimal(&quot;2.00&quot;)) == 0));
+    }
+}</code></pre><p><a href="playground.html?ex=datas-decimais">Praticar Datas e valores com regras explícitas</a></p><p>Saída do programa inicial:</p><pre><code>Prazo: 2026-10-22
+Total: 53.73
+Mesmo valor: true</code></pre><h2 id="secao-12">12. Versão do formato e migração de dados</h2>
+<p>Um programa pode evoluir de matrícula e nota para matrícula, nome, nota e data. Se a versão nova simplesmente interpretar todo arquivo antigo como se já tivesse essas colunas, os dados podem ser associados aos campos errados. Inclua uma forma de identificar a versão do formato e defina quais versões o leitor aceita. A ausência de um cabeçalho não deve ser interpretada como uma versão arbitrária sem uma regra de compatibilidade.</p>
+<p>Uma migração precisa de entrada, saída e critérios de conferência. Leia a versão antiga, transforme para o modelo novo em uma estrutura temporária, valide o resultado e preserve o original até concluir a operação prevista. Registre o que não pôde ser convertido. Teste a migração com um arquivo pequeno conhecido, um arquivo vazio e um arquivo incompatível. O objetivo é conseguir explicar de onde veio cada campo da versão nova.</p>
+<h2 id="secao-13">13. Prática: importar, recusar e conferir o estado</h2>
+<p>Prepare uma importação com quatro matrículas distintas. Confirme a ordem e as notas. Depois teste matrícula repetida, nota negativa, nota 11, campo ausente e texto no lugar do número. Para cada recusa, verifique a mensagem e prove que o cadastro anterior permaneceu igual. Em seguida, crie uma versão que aceita linhas parciais e devolve um relatório; compare o contrato dessa versão com o do programa inicial.</p>
+<p>No JDK local, leia um arquivo UTF-8 com matrículas e nomes acentuados, usando um diretório exclusivo de exercício. Grave uma representação nova e leia de volta para conferir os mesmos dados, sem usar apenas a mensagem de gravação como prova. Registre ainda qual política foi adotada para uma versão desconhecida do formato. Os exemplos de arquivos e o roteiro de continuação estão em <a href="extra.html#extraPersistencia">Persistência, SQL e transações</a>.</p>
+<details><summary>Uma falha na última linha permite atribuir o mapa parcialmente preenchido do exemplo?</summary><p>Não. A função lança a exceção antes de devolver o novo mapa, e a atribuição ao cadastro atual não acontece. Uma política de aceitação parcial exigiria outro resultado, com registros aceitos e um relatório de recusas.</p></details><details><summary>LocalDate.now() dentro da regra facilita um teste de vencimento repetível?</summary><p>Não. O resultado passa a depender do dia em que o teste roda. Receba a data de referência ou controle o relógio consultado. Assim é possível verificar antes, no dia e depois do vencimento com os mesmos dados.</p></details></article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-11.html">Anterior · Tema 11</a><a class="btn btn-primary" href="tema-13.html">Próximo · Tema 13</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <nav class="footer-links" aria-label="Atalhos do rodapé"><a href="index.html">Início</a><a href="cont.html">Conteúdo</a><a href="playground.html">Playground</a><a href="quiz.html">Quiz</a><a href="faq.html">FAQ</a><a href="extra.html">Extra</a></nav>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/code-blocks.js" defer></script>
+
+
+
+</body>
+</html>

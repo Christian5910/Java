@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>20 · Android com Java: primeira aplicação e ciclo de vida · Java</title>
+<meta name="description" content="Crie o primeiro aplicativo Android com Java e Views e acompanhe o ciclo de vida da Activity.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 20 de 30</span></nav><header class="lesson-header"><h1>20 · Android com Java: primeira aplicação e ciclo de vida</h1><p class="lead">Crie o primeiro aplicativo Android com Java e Views e acompanhe o ciclo de vida da Activity.</p><p class="text-muted">Java 17 como referência · Teoria, exemplos e prática guiada</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-8">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Do Java de desktop ao aplicativo Android</a></li><li><a href="#secao-2">JDK, Gradle e SDK precisam combinar</a></li><li><a href="#secao-3">Ler a estrutura do projeto</a></li><li><a href="#secao-4">Montar a tela com Views XML</a></li><li><a href="#secao-5">O ciclo de vida da Activity</a></li><li><a href="#secao-6">Thread principal, recursos e permissões</a></li><li><a href="#secao-7">Compilar e verificar o primeiro aplicativo</a></li><li><a href="#secao-8">Prática: observar recriação e corrigir entradas</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. Do Java de desktop ao aplicativo Android</h2>
+<p>No Android, você escreve classes Java que utilizam as APIs do SDK e uma interface que segue o ciclo de vida da plataforma. O build transforma fontes e recursos no pacote instalado. O dispositivo executa a aplicação no ambiente Android, com isolamento, permissões e limites próprios. A JVM que executa o Gradle no computador de desenvolvimento tem uma função diferente do runtime do aplicativo no aparelho.</p>
+<p>O primeiro laboratório usa Views descritas em XML e uma Activity Java. A tela recebe uma nota, apresenta a situação e preserva o resultado numa recriação simples. Ele foi preparado com versões fixadas: JDK 17 para o build, Gradle 8.9, Android Gradle Plugin 8.7.3, compileSdk e targetSdk 35, minSdk 23. Essas versões atendem à reprodução do exercício; publicação em loja exige conferir requisitos atuais.</p>
+<p>As instruções completas e todos os fontes estão no ZIP abaixo. Não há dependência de arquivos privados nem de uma chave de serviço. O aplicativo não pede acesso à internet. O teste isolado da regra pode executar no JDK local; a interface, a instalação e a rotação precisam de Android Studio com emulador ou um dispositivo adequado.</p>
+<p><a href="assets/extras/laboratorio-android.zip" download>Baixar o projeto Android com Views e Java (.zip)</a></p><h2 id="secao-2">2. JDK, Gradle e SDK precisam combinar</h2>
+<p>O JDK executa ferramentas do build. Gradle coordena tarefas, o plugin Android acrescenta tarefas e regras específicas, e o SDK fornece APIs e ferramentas de compilação. Uma combinação incompatível pode falhar antes de compilar seu primeiro arquivo Java. Confira a <a href="https://developer.android.com/build/jdks">documentação de JDKs no build Android</a> e as <a href="https://developer.android.com/build/releases/agp-8-7-0-release-notes">notas do plugin 8.7</a> para o laboratório fixado.</p>
+<p>No Android Studio, abra a pasta que contém settings.gradle. Selecione JDK 17 para o Gradle, instale SDK Platform 35 e use Gradle 8.9 local conforme o LEIA-ME. O pacote não traz um Gradle Wrapper; por isso, a distribuição local precisa estar instalada e selecionada. No terminal, gradle --version deve confirmar a versão usada antes de assembleDebug.</p>
+<p>compileSdk determina as APIs disponíveis na compilação. minSdk determina o nível mínimo que você declara atender. targetSdk informa o nível de comportamento para o qual o aplicativo foi preparado e participa das políticas da plataforma. Chamar uma API posterior ao minSdk exige uma verificação de disponibilidade ou uma alternativa compatível. Escrever sintaxe Java 17 no projeto não torna todas as APIs Java SE 17 disponíveis em qualquer aparelho.</p>
+<h2 id="secao-3">3. Ler a estrutura do projeto</h2>
+<p>settings.gradle declara repositórios e inclui o módulo app. O build.gradle da raiz fixa a versão do plugin. O build do módulo declara namespace, SDKs, identificador da aplicação e opções de compilação. O manifesto informa a Activity inicial, a configuração do aplicativo e os componentes publicados. A Activity de entrada possui exported explícito para o launcher conseguir abri-la.</p>
+<p>Os fontes ficam em app/src/main/java e os recursos em app/src/main/res. Strings apresentadas na tela ficam em values/strings.xml para facilitar revisão e tradução. O layout activity_main.xml contém ScrollView, LinearLayout, rótulo, campo, botão e resultado. A classe R é gerada a partir dos recursos; ela não deve ser escrita manualmente.</p>
+<p>O namespace identifica o espaço de nomes de recursos e classes geradas. applicationId identifica o aplicativo instalado. Eles podem coincidir no exercício e ter papéis diferentes no build. Mover um arquivo entre pacotes exige revisar a declaração package e as referências relevantes. Uma falha de recurso pode fazer R parecer ausente; leia a primeira falha XML antes de tentar criar uma classe R própria.</p>
+<h2 id="secao-4">4. Montar a tela com Views XML</h2>
+<p>O layout usa largura disponível e altura adaptada ao conteúdo. Um ScrollView permite percorrer os controles quando teclado, escala de fonte ou orientação reduzem a área visível. O campo recebe inputType numérico decimal com sinal, mas a regra ainda valida tudo que chega: teclado e preenchimento por outros meios não garantem a faixa de notas.</p>
+<p>O projeto também trata os insets das barras do sistema, do recorte e do teclado em Android 15 ou posterior. Esse ajuste evita que controles sejam cobertos quando o targetSdk 35 ativa o desenho de ponta a ponta. Consulte o <a href="https://developer.android.com/develop/ui/views/layout/edge-to-edge">guia de insets para Views</a> ao adaptar a tela. TextView com labelFor associa o nome do campo à entrada. O botão e o campo possuem altura mínima de 48dp no exemplo. A mensagem usa uma região acessível de atualização suave. Não atribua uma descrição redundante a cada texto que já é legível pela tecnologia assistiva; confira a leitura real com TalkBack.</p>
+<p>Na Activity, setContentView infla o layout e findViewById encontra os controles por id. Faça a busca depois de instalar o conteúdo correspondente. Um id único possibilita localizar o controle e contribui para mecanismos de restauração de estado da hierarquia. O código a seguir mostra a ligação central, dentro de onCreate, com os recursos disponíveis no pacote.</p>
+<pre><code>setContentView(R.layout.activity_main);
+EditText nota = findViewById(R.id.nota);
+TextView resultado = findViewById(R.id.resultado);
+findViewById(R.id.conferir).setOnClickListener(view -&gt; {
+    try {
+        boolean aprovado = Regra.aprovado(nota.getText().toString());
+        resultado.setText(aprovado ? R.string.aprovado : R.string.recuperacao);
+        nota.setError(null);
+    } catch (IllegalArgumentException erro) {
+        nota.setError(getString(R.string.invalida));
+        resultado.setText(R.string.invalida);
+    }
+});</code></pre>
+<h2 id="secao-5">5. O ciclo de vida da Activity</h2>
+<p>A Activity passa por estados de criação, início, retomada, pausa, parada e destruição conforme a interação com o sistema. onCreate prepara a instância; onStart e onResume acompanham sua entrada em primeiro plano. onPause e onStop ajudam a suspender recursos associados à visibilidade. onDestroy pode ocorrer numa recriação, mas não deve ser tratado como uma garantia de salvamento de todos os dados antes de o processo desaparecer.</p>
+<p>Uma mudança de configuração pode destruir a instância e criar outra. Se você guardar o resultado apenas num campo da Activity, a nova instância começa sem esse valor. O laboratório salva o texto do resultado em onSaveInstanceState e o recupera quando recebe um Bundle. O campo de entrada tem id e usa os mecanismos da hierarquia de Views para seu estado de edição.</p>
+<p>Bundle é apropriado para estado pequeno necessário à reconstrução da interface. Ele não substitui armazenamento persistente de registros nem deve carregar grandes coleções de objetos. O <a href="https://developer.android.com/guide/components/activities/activity-lifecycle">guia do ciclo de vida</a> descreve as transições. Diferencie recriação da tela, morte do processo e remoção definitiva do aplicativo ao planejar o que precisa sobreviver.</p>
+<h2 id="secao-6">6. Thread principal, recursos e permissões</h2>
+<p>A thread principal processa a interação e os eventos da interface. Não faça acesso de rede ou processamento pesado dentro do listener do botão. O cálculo de uma nota é curto. Consultas externas precisam de trabalho fora da thread principal, resultado vinculado à tela ativa e tratamento de cancelamento e falha.</p>
+<p>O laboratório não usa câmera, localização nem internet, portanto não declara essas permissões. Quando acrescentar uma capacidade, identifique se ela exige declaração no manifesto e autorização em tempo de execução. A recusa deve deixar a aplicação num estado compreensível, com uma alternativa quando possível. Solicite o acesso no momento em que a pessoa entende sua finalidade.</p>
+<p>Não armazene senha de servidor dentro do APK. O pacote pode ser inspecionado e seus recursos podem ser extraídos. Configuração de endereço e credenciais possuem ameaças diferentes. Dados sensíveis exigem uma política de armazenamento, transmissão e sessão adequada ao aplicativo. O tema 21 continua essa separação ao introduzir repositórios e conectividade.</p>
+<h2 id="secao-7">7. Compilar e verificar o primeiro aplicativo</h2>
+<p>Com os requisitos instalados, execute gradle :app:assembleDebug ou use o build do Android Studio. O APK de depuração fica em app/build/outputs/apk/debug. A compilação gera um pacote; abrir a aplicação no emulador ou dispositivo é uma verificação adicional. Consulte o LEIA-ME se o plugin solicitar uma versão de Build-Tools diferente da já instalada.</p>
+<p>O arquivo TestesRegra.java executa nove verificações da função Regra.aprovado sem depender do SDK. Ele confere aprovação, recuperação e recusas. Esse teste ajuda a isolar uma falha de domínio de uma falha de layout. A execução bem-sucedida não comprova restauração de tela, adaptação de tamanho, instalação nem funcionamento numa versão específica do Android.</p>
+<h2 id="secao-8">8. Prática: observar recriação e corrigir entradas</h2>
+<p>Abra o aplicativo, informe 7,5 e confira a aprovação. Gire a tela e confirme a preservação da entrada e do resultado. Repita com 6 e com um campo vazio. Aumente a fonte, abra o teclado e confira se todos os controles continuam alcançáveis. Use TalkBack para identificar o campo e ouvir a mudança de resultado.</p>
+<p>Como evolução, acrescente um nome com um recurso de texto próprio e preserve seu rascunho numa recriação. Não prometa persistência depois de fechamento forçado. Entregue os resultados de teste com a versão do emulador ou aparelho utilizado e explique quais dados estão no Bundle, quais estão nos controles e quais não são gravados.</p>
+<details><summary>A configuração sourceCompatibility Java 17 disponibiliza Swing num aplicativo Android?</summary><p>Não. A configuração da linguagem não substitui as APIs da plataforma. A tela deste projeto usa Views do Android; o reaproveitamento deve se concentrar em regras e bibliotecas compatíveis com o destino.</p></details>
+</article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-19.html">Anterior · Tema 19</a><a class="btn btn-primary" href="tema-21.html">Próximo · Tema 21</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <nav class="footer-links" aria-label="Atalhos do rodapé"><a href="index.html">Início</a><a href="cont.html">Conteúdo</a><a href="playground.html">Playground</a><a href="quiz.html">Quiz</a><a href="faq.html">FAQ</a><a href="extra.html">Extra</a></nav>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/code-blocks.js" defer></script>
+
+
+
+</body>
+</html>

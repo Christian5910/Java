@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>22 · Spring Boot: projeto, injeção de dependências e configuração · Java</title>
+<meta name="description" content="Entenda como um projeto Spring Boot inicia: dependências, beans, injeção por construtor e configuração.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 22 de 30</span></nav><header class="lesson-header"><h1>22 · Spring Boot: projeto, injeção de dependências e configuração</h1><p class="lead">Entenda como um projeto Spring Boot inicia: dependências, beans, injeção por construtor e configuração.</p><p class="text-muted">Java 17 como referência · Teoria, exemplos e prática guiada</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-8">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">O problema que o Spring Boot organiza</a></li><li><a href="#secao-2">Ler o pom.xml antes de executar</a></li><li><a href="#secao-3">Classe principal e varredura de componentes</a></li><li><a href="#secao-4">Injeção por construtor e responsabilidade de cada bean</a></li><li><a href="#secao-5">Configuração automática e configuração explícita</a></li><li><a href="#secao-6">Executar e reconhecer as respostas iniciais</a></li><li><a href="#secao-7">O que abrir e o que o laboratório preserva</a></li><li><a href="#secao-8">Prática: seguir a inicialização e uma chamada</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. O problema que o Spring Boot organiza</h2>
+<p>Um serviço HTTP precisa iniciar o servidor, converter mensagens, ligar componentes, obter configuração e encerrar recursos. Spring Boot organiza essa inicialização sobre o ecossistema Spring, com convenções e configuração automática condicionada ao projeto. Você continua responsável pelo contrato da aplicação, pelas regras de negócio e pela escolha das dependências que entram no build.</p>
+<p>O laboratório utiliza Spring Boot 3.5.16, JDK 17 e Maven 3.9.x. Essa é a linha fixada para acompanhar os exemplos, com imports jakarta para persistência e validação. A documentação da linha 3.5 informa os requisitos; outras linhas, inclusive 4.x, podem exigir adaptações. Confira a <a href="https://docs.spring.io/spring-boot/3.5/system-requirements.html">compatibilidade do laboratório</a> antes de trocar o JDK ou copiar exemplos de outra versão.</p>
+<p>O projeto de catálogo retoma o estoque: registra produto, consulta saldo e retira uma quantidade. Ele escuta apenas no computador local, usa H2 em memória e possui segurança configurada para estudo. Ao longo dos capítulos, você vai acompanhar a requisição desde o controller até a transação e os testes. Não há execução desse servidor dentro do Playground de console.</p>
+<p><a href="assets/extras/laboratorio-spring.zip" download>Baixar o catálogo Spring Boot completo (.zip)</a></p><h2 id="secao-2">2. Ler o pom.xml antes de executar</h2>
+<p>O parent do Spring Boot gerencia versões de bibliotecas e plugins usados pelo projeto. A propriedade java.version define a referência de Java. Os starters agrupam dependências de uma capacidade: web para a aplicação servlet, data-jpa para persistência, validation para validação de objetos, security para filtros de segurança e actuator para recursos de operação.</p>
+<p>H2 entra como dependência de runtime, enquanto starter-test e security-test ficam em test. Isso corresponde ao papel de cada biblioteca no laboratório. O starter de teste fornece JUnit e utilitários; security-test permite reproduzir usuários, autenticação e tokens nos cenários web. As regras reais de acesso continuam definidas na aplicação.</p>
+<p>Use mvn dependency:tree para observar dependências transitivas. Se duas bibliotecas trouxerem versões diferentes de um componente, entenda a seleção e o gerenciamento antes de forçar uma versão. Arquivos JAR copiados manualmente de uma instalação antiga tornam o build mais difícil de repetir. O pom deve explicar o conjunto necessário para compilar e testar.</p>
+<h2 id="secao-3">3. Classe principal e varredura de componentes</h2>
+<p>A classe Aplicacao está em br.estudo.catalogo e recebe @SpringBootApplication. Essa anotação reúne configuração, configuração automática e varredura de componentes. Manter a classe num pacote raiz do projeto facilita localizar componentes dos subpacotes. A estrutura deve ser intencional para evitar que um serviço fique fora da área de varredura ou que um teste carregue configurações inesperadas.</p>
+<p>O método main chama SpringApplication.run. O contexto é criado, dependências são resolvidas e o servidor embutido é iniciado quando a configuração corresponde a uma aplicação web. Uma falha nessa etapa costuma apontar uma dependência não satisfeita, uma porta ocupada ou uma configuração inválida. Leia a causa inicial e a cadeia de exceções antes de alterar anotações.</p>
+<p>A <a href="https://docs.spring.io/spring-boot/3.5/reference/using/structuring-your-code.html">orientação oficial de estrutura de código</a> explica a localização da classe principal. Evite o pacote padrão sem nome em aplicações desse tipo. Pacotes claros também permitem separar web, domínio, persistência e configuração quando o projeto crescer.</p>
+<pre><code>package br.estudo.catalogo;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+@SpringBootApplication
+public class Aplicacao {
+    public static void main(String[] args) {
+        SpringApplication.run(Aplicacao.class, args);
+    }
+}</code></pre>
+<h2 id="secao-4">4. Injeção por construtor e responsabilidade de cada bean</h2>
+<p>Um bean é um objeto gerenciado pelo contexto Spring. @Service identifica uma classe que oferece operações da aplicação. O controller recebe esse serviço pelo construtor, e o serviço recebe o repositório da mesma maneira. As dependências ficam visíveis e podem ser fornecidas diretamente num teste que não precisa do contexto.</p>
+<p>O laboratório declara um único construtor no serviço; o Spring pode utilizá-lo para resolver a dependência. Se houver várias implementações candidatas, escolha explicitamente a que deve ser injetada, por configuração ou qualificação adequada. Não crie dependências circulares para compartilhar um detalhe entre serviços. Uma relação circular costuma pedir revisão da responsabilidade que cada classe assumiu.</p>
+<p>O escopo padrão de muitos componentes é singleton no contexto. Isso significa que requisições diferentes podem chegar ao mesmo objeto. Guarde colaboradores estáveis em campos finais e mantenha dados de cada requisição em parâmetros e variáveis locais. Um campo ultimoUsuario ou produtoAtual num serviço singleton pode misturar informações de chamadas concorrentes.</p>
+<pre><code>@Service
+public class ProdutoService {
+    private final ProdutoRepository repositorio;
+    public ProdutoService(ProdutoRepository repositorio) {
+        this.repositorio = repositorio;
+    }
+    // As operações completas estão no projeto para download.
+}</code></pre>
+<h2 id="secao-5">5. Configuração automática e configuração explícita</h2>
+<p>A configuração automática considera classes disponíveis, propriedades e beans já definidos. Adicionar uma dependência pode habilitar uma capacidade e também mudar a inicialização. Por isso, confira o relatório de condições quando precisar entender por que uma configuração foi aplicada. Declarar um bean próprio pode fazer uma configuração padrão recuar, conforme as condições daquela integração.</p>
+<p>application.properties contém valores do laboratório. O endereço é 127.0.0.1, a porta é 8080, o banco é H2 em memória e a exposição do Actuator fica restrita à saúde. A senha didática pode ser substituída por LAB_PASSWORD. O arquivo de configuração acompanha o build, mas valores sensíveis reais devem ser fornecidos por um mecanismo apropriado ao ambiente.</p>
+<p>Uma propriedade escrita incorretamente pode não ter o efeito esperado. Confira o nome na documentação da linha e observe o comportamento em execução. O fato de a aplicação iniciar não comprova que um timeout, uma restrição de acesso ou uma política de banco foi configurada como você pretendia.</p>
+<h2 id="secao-6">6. Executar e reconhecer as respostas iniciais</h2>
+<p>Na pasta do pom.xml, execute mvn clean test. Os dezessete testes cobrem operações web, segurança e persistência H2. Depois use mvn package e execute o JAR produzido. O servidor permanece ativo até você encerrá-lo. Se a porta estiver ocupada, escolha outra configuração e atualize o endereço dos seus testes manuais.</p>
+<pre><code>mvn clean test
+mvn package
+java -jar target/catalogo-1.0.0.jar</code></pre>
+<h2 id="secao-7">7. O que abrir e o que o laboratório preserva</h2>
+<p>A leitura pública começa em http://127.0.0.1:8080/api/produtos. Sem cadastros, o JSON contém itens vazio, página, tamanho e total. /actuator/health informa a saúde sem detalhar componentes. O endereço raiz não possui uma tela pública e é bloqueado pela política de acesso. Uma resposta de segurança nessa raiz não significa que o servidor deixou de iniciar.</p>
+<p>O catálogo usa memória no H2. Encerrar o processo elimina os dados, e uma nova inicialização cria um catálogo vazio. A propriedade create-drop foi escolhida para esse laboratório descartável. Ela não serve de política para conservar dados reais. A persistência permanente e as migrações serão discutidas no tema 24.</p>
+<p>Os cenários de teste usam a senha didática esperada. Se LAB_PASSWORD já estiver definida no seu terminal, remova-a apenas no ambiente de teste ou ajuste o cenário de credencial correspondente de forma consciente. Na execução local, uma senha diferente pode ser fornecida por configuração. O projeto continua sendo um ambiente de estudo, sem os requisitos completos de uma implantação pública.</p>
+<h2 id="secao-8">8. Prática: seguir a inicialização e uma chamada</h2>
+<p>Extraia o pacote, leia o pom e execute os testes. Inicie o JAR, consulte a lista e a saúde. Desenhe o caminho controller, service e repository, identificando onde cada objeto recebe seus colaboradores. Anote onde o produto será guardado e o que acontece depois do encerramento.</p>
+<p>Faça uma alteração controlada de porta e repita a consulta. Depois interrompa a aplicação e tente consultar novamente, distinguindo falha de conexão de uma resposta HTTP de erro. A atividade termina quando você consegue explicar a configuração usada, localizar a primeira falha do log e repetir a execução sem depender de opções escondidas na IDE.</p>
+<details><summary>Um campo de serviço singleton pode guardar o produto que a requisição atual está editando?</summary><p>Esse campo seria compartilhado por requisições concorrentes e poderia misturar estados. Passe os dados por parâmetros e variáveis locais; guarde estado compartilhado apenas quando houver um contrato e uma coordenação apropriados.</p></details>
+</article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-21.html">Anterior · Tema 21</a><a class="btn btn-primary" href="tema-23.html">Próximo · Tema 23</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <nav class="footer-links" aria-label="Atalhos do rodapé"><a href="index.html">Início</a><a href="cont.html">Conteúdo</a><a href="playground.html">Playground</a><a href="quiz.html">Quiz</a><a href="faq.html">FAQ</a><a href="extra.html">Extra</a></nav>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/code-blocks.js" defer></script>
+
+
+
+</body>
+</html>

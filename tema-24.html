@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>24 · Spring Data JPA: persistência, transações e concorrência · Java</title>
+<meta name="description" content="Persista dados com Spring Data JPA preservando a integridade: transações, concorrência otimista e migrações.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B0F19">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<link href="assets/vendor/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="assets/vendor/bootstrap-icons.css">
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet" href="assets/css/lessons.css">
+</head>
+<body class="lesson-page"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><nav class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="index.html"><img class="brand-logo me-2" src="assets/logo.svg" width="32" height="32" alt="">Java · Guia de estudo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="index.html">Início</a>
+<a class="nav-link active fw-semibold" href="cont.html" aria-current="page">Conteúdo</a>
+<a class="nav-link" href="playground.html">Playground</a>
+<a class="nav-link" href="quiz.html">Quiz</a>
+<a class="nav-link" href="faq.html">FAQ</a>
+<a class="nav-link" href="extra.html">Extra</a>
+</div>
+</div>
+</div>
+</nav>
+
+<main id="conteudo" class="container lesson-main"><nav class="lesson-breadcrumb" aria-label="Você está aqui"><a href="cont.html#temas">Conteúdo</a><span aria-hidden="true">/</span><span>Tema 24 de 30</span></nav><header class="lesson-header"><h1>24 · Spring Data JPA: persistência, transações e concorrência</h1><p class="lead">Persista dados com Spring Data JPA preservando a integridade: transações, concorrência otimista e migrações.</p><p class="text-muted">Java 17 como referência · Teoria, exemplos e prática guiada</p><div class="lesson-actions no-print"><a class="btn btn-primary" href="#secao-1">Começar a leitura</a><a class="btn btn-outline-primary" href="#secao-8">Ir aos exercícios</a><button class="btn btn-outline-primary" type="button" id="printBook">Imprimir este tema / PDF</button></div></header><div class="lesson-layout"><aside class="lesson-toc no-print"><details open><summary>O que você vai aprender</summary><nav aria-label="Sumário do tema"><ol><li><a href="#secao-1">Guardar dados preservando as regras</a></li><li><a href="#secao-2">Entidade, identidade e restrição no banco</a></li><li><a href="#secao-3">Repositórios e consultas</a></li><li><a href="#secao-4">Fronteira transacional do caso de uso</a></li><li><a href="#secao-5">Dirty checking, flush e confirmação</a></li><li><a href="#secao-6">Concorrência otimista com versão</a></li><li><a href="#secao-7">Migrações e dados permanentes</a></li><li><a href="#secao-8">Prática: demonstrar integridade e recusa</a></li></ol></nav></details></aside><div class="lesson-reading"><article class="study-text lesson-article"><h2 id="secao-1">1. Guardar dados preservando as regras</h2>
+<p>JPA define uma forma de mapear objetos e operações de persistência; Hibernate é a implementação utilizada pelo conjunto padrão do laboratório. Spring Data JPA organiza repositórios sobre essa integração. Uma entidade participa de um contexto de persistência e tem identidade própria. Ela não é apenas um DTO com uma anotação.</p>
+<p>Produto possui id gerado, código único, quantidade e versão. O construtor de negócio valida código e quantidade. Um construtor protegido sem argumentos atende à criação pela infraestrutura. A entidade não oferece setters genéricos que permitam qualquer alteração; a retirada passa por uma operação que confere a quantidade e o estado observado.</p>
+<p>O H2 em memória permite estudar sem instalar um servidor de banco. Ele não demonstra automaticamente o comportamento de PostgreSQL, MySQL ou outro destino. Dialeto, isolamento, tipos e bloqueios podem variar. Ao escolher um banco permanente, execute os testes de integração nesse banco e defina migrações e cópias de segurança.</p>
+<h2 id="secao-2">2. Entidade, identidade e restrição no banco</h2>
+<p>@Id identifica a chave e @GeneratedValue define sua geração conforme a estratégia. @Column marca obrigatoriedade e tamanho no mapeamento. A restrição única de código protege o banco contra cadastros duplicados inclusive quando duas requisições competem. Uma consulta prévia pode ajudar a apresentar a intenção, mas não substitui a restrição transacional.</p>
+<p>O id gerado pode não existir antes da persistência. Isso exige cuidado com equals e hashCode de entidades colocadas em conjuntos. Retome os contratos do tema 11 e escolha uma estratégia de identidade que permaneça consistente durante o uso da estrutura. Não gere igualdade automaticamente a partir de todas as relações e campos mutáveis.</p>
+<p>Use DTOs para retornar dados. Serializar uma entidade com relações pode disparar consultas, produzir ciclos ou revelar campos fora do contrato. O laboratório desativa open-in-view e transforma a entidade numa resposta dentro da operação do serviço. Assim, a camada web recebe os dados que precisa sem depender de uma sessão de persistência aberta durante a escrita do JSON.</p>
+<h2 id="secao-3">3. Repositórios e consultas</h2>
+<p>ProdutoRepository estende JpaRepository&lt;Produto, Long&gt; e recebe operações básicas. Consultas derivadas podem expressar buscas simples pelo nome do método. Para consultas maiores, avalie JPQL, projeções ou outro mecanismo apropriado. Parâmetros devem ser vinculados pelo mecanismo de consulta; concatenar texto recebido do cliente cria problemas de segurança e de conversão.</p>
+<p>Uma consulta com filtro e paginação precisa de uma ordem conhecida e de índices adequados ao volume. O método listar do laboratório fixa a ordem por id e converte os resultados para DTOs. Conte o número de consultas quando relações forem acrescentadas. Carregar uma lista e, para cada linha, disparar outra busca pode criar o problema conhecido como N+1.</p>
+<p>Fetch joins, entity graphs e projeções possuem usos e limites, especialmente com coleções e paginação. Escolha a forma conforme o resultado necessário e verifique o SQL produzido em ambiente de estudo. Mudar uma relação para eager em toda a aplicação pode aumentar a carga de consultas que nem precisavam daquela informação.</p>
+<h2 id="secao-4">4. Fronteira transacional do caso de uso</h2>
+<p>@Transactional delimita a operação do serviço que precisa consultar e alterar de modo consistente. No laboratório, retirar carrega o produto, confere a versão, aplica a regra e executa flush antes de produzir a resposta. Uma falha que provoque rollback deve preservar a quantidade anterior no banco.</p>
+<p>A propagação e as regras de rollback dependem da configuração e do tipo de exceção. Entenda o padrão da versão utilizada e declare outra política quando o caso exigir. No modo habitual baseado em proxy, uma chamada interna ao próprio objeto pode não passar pela interceptação transacional. Organize a fronteira em um método invocado pelo colaborador correto, em vez de presumir que qualquer anotação em qualquer chamada terá efeito.</p>
+<p>readOnly expressa uma intenção e pode orientar otimizações; ele não deve ser a única proteção contra alterações indevidas. Consulte a <a href="https://docs.spring.io/spring-data/jpa/reference/jpa/transactions.html">documentação de transações do Spring Data JPA</a> e teste as garantias importantes na tecnologia de banco escolhida.</p>
+<pre><code>@Transactional
+public Contratos.Resposta retirar(long id, Contratos.Retirar dados) {
+    Produto produto = encontrar(id);
+    produto.retirar(dados.quantidade(), dados.versao());
+    repositorio.flush();
+    return Contratos.Resposta.de(produto);
+}</code></pre>
+<h2 id="secao-5">5. Dirty checking, flush e confirmação</h2>
+<p>Uma entidade gerenciada pode ter suas alterações detectadas pelo contexto de persistência. flush sincroniza mudanças pendentes com o banco e pode revelar violações de restrição antes do retorno. Isso não equivale, em qualquer contexto, a encerrar a transação. O commit é a etapa que confirma o conjunto conforme a fronteira transacional.</p>
+<p>Um método que apenas chamou save pode ainda falhar quando o SQL for enviado ou quando a transação confirmar. Evite comunicar sucesso definitivo por um efeito externo antes de saber o resultado. Enviar uma mensagem para outro sistema dentro da transação exige uma estratégia que trate a falha entre os dois recursos. O tema 28 apresenta o padrão outbox.</p>
+<p>No laboratório, a resposta é criada após flush e a infraestrutura conclui a transação antes de a chamada terminar com sucesso. Testes de recusa consultam o estado novamente. Essa consulta reduz o risco de um teste verificar apenas a representação em memória e ignorar o que foi realmente persistido.</p>
+<h2 id="secao-6">6. Concorrência otimista com versão</h2>
+<p>@Version permite detectar atualizações concorrentes sobre a entidade. O banco e o provedor usam a versão observada para reconhecer que o registro mudou antes da confirmação. A API também recebe a versão que o cliente leu, permitindo recusar uma edição baseada em dados antigos mesmo quando a requisição só chegou depois da alteração anterior.</p>
+<p>Imagine dois clientes vendo quantidade 5 e versão 0. O primeiro retira 2 e confirma uma versão nova. O segundo tenta retirar usando a versão 0. A aplicação recusa a versão desatualizada, sem descontar novamente com base naquela observação. Se duas transações carregarem ao mesmo tempo, o mecanismo de versão da persistência protege a disputa na confirmação.</p>
+<p>Os testes distribuídos verificam a recusa de uma versão explicitamente antiga e a preservação do saldo. Eles não são uma prova de todas as intercalações de threads em todo banco. Para a versão de produção, acrescente cenários concorrentes no banco alvo e defina se o cliente deve recarregar, repetir uma operação segura ou pedir uma decisão do usuário.</p>
+<h2 id="secao-7">7. Migrações e dados permanentes</h2>
+<p>create-drop é adequado ao laboratório descartável e elimina dados no encerramento. Em uma aplicação com registros permanentes, use um esquema versionado e uma ferramenta de migração compatível com seu projeto. Cada mudança deve ter uma ordem, um efeito conhecido e uma verificação sobre dados existentes.</p>
+<p>Adicionar uma coluna obrigatória a uma tabela preenchida exige uma estratégia de preenchimento. Renomear ou remover um campo pode quebrar uma versão anterior da aplicação durante uma atualização gradual. Planeje fases compatíveis quando houver versões simultâneas. Uma cópia de segurança só ajuda se o processo de restauração for conhecido e testado.</p>
+<p>Credenciais e endereço do banco devem vir da configuração do ambiente. A aplicação não precisa de permissões administrativas para toda operação cotidiana. Diferencie o papel que aplica migrações do papel que consulta e altera registros quando a infraestrutura permitir essa separação. Documente o acesso necessário sem incluir senhas reais no pacote.</p>
+<h2 id="secao-8">8. Prática: demonstrar integridade e recusa</h2>
+<p>Execute os testes do catálogo e acompanhe cadastro, retirada, saldo insuficiente, código repetido e versão antiga. Para cada recusa, consulte o produto e confira quantidade e versão. Registre quais propriedades dependem da entidade, da transação e da restrição no banco.</p>
+<p>Como evolução, adicione uma descrição ao produto por uma migração num banco persistente de estudo. Preserve um cadastro anterior e teste a aplicação depois da mudança. Só considere a etapa concluída quando puder repetir a migração numa base anterior conhecida e explicar como recuperar os dados se a atualização falhar.</p>
+<details><summary>Verificar existsByCodigo antes de salvar impede qualquer duplicação concorrente?</summary><p>Não. Duas transações podem observar ausência antes de ambas tentarem incluir. A restrição única no banco continua necessária, e a aplicação deve traduzir a violação para uma resposta adequada.</p></details>
+</article><nav class="lesson-pagination no-print" aria-label="Navegação entre temas"><a class="btn btn-outline-primary" href="tema-23.html">Anterior · Tema 23</a><a class="btn btn-primary" href="tema-25.html">Próximo · Tema 25</a></nav></div></div></main><footer class="site-footer mt-auto">
+    <div class="container py-3 text-center">
+        <p class="brand-line mb-1">Java · Material de estudo com <a href="cont.html#materiais">apostilas e referências</a></p>
+        <p class="muted mb-0"></p>
+        <nav class="footer-links" aria-label="Atalhos do rodapé"><a href="index.html">Início</a><a href="cont.html">Conteúdo</a><a href="playground.html">Playground</a><a href="quiz.html">Quiz</a><a href="faq.html">FAQ</a><a href="extra.html">Extra</a></nav>
+        <p class="muted mb-0">Christian de Oliveira Rodrigues · <span id="yearNow">2026</span></p>
+    </div>
+</footer>
+
+<button type="button" class="back-to-top" id="backToTop" hidden aria-label="Voltar ao topo">
+<i class="bi bi-arrow-up" aria-hidden="true"></i>
+</button>
+<script src="assets/vendor/bootstrap.bundle.min.js"></script>
+<script src="assets/js/pwa-register.js" defer></script>
+<script src="assets/js/app.js" defer></script>
+<script src="assets/js/code-blocks.js" defer></script>
+
+
+
+</body>
+</html>
